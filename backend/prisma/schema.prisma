@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  OWNER
+}
+
+enum InsuranceCategory {
+  LIFE
+  HEALTH
+  MOTOR
+  TRAVEL
+  PROPERTY
+  COMMERCIAL
+  GENERAL
+}
+
+enum PaymentFrequency {
+  MONTHLY
+  QUARTERLY
+  HALF_YEARLY
+  YEARLY
+}
+
+enum PolicyStatus {
+  ACTIVE
+  PENDING
+  EXPIRED
+  CANCELLED
+}
+
+enum LeadType {
+  POSP
+  LEAD_EXECUTIVE
+  LEADERSHIP
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  CANCELLED
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+// ── Master Tables (Module 2 — Phase 1) ───────────────────────────────────────
+// These are independent reference tables. Policy still keeps free-text
+// insurerName / productName / leadSource for backward compatibility.
+
+model Insurer {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products        Product[]
+  invoiceProfile  InsurerInvoiceProfile?
+  invoices        Invoice[]
+
+  @@map("insurers")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  insurerId Int
+  insurer   Insurer  @relation(fields: [insurerId], references: [id], onDelete: Cascade)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([insurerId, name])
+  @@map("products")
+}
+
+model LeadMember {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  leadType  LeadType
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lead_members")
+}
+
+// ── Invoice Phase 1 ─────────────────────────────────────────────────────────
+// One row per insurer holding GST recipient details for tax invoices.
+// 1:1 with Insurer. Completely independent of Policy — no aggregation logic
+// yet. Invoice generation is Phase 2.
+
+model InsurerInvoiceProfile {
+  id              Int      @id @default(autoincrement())
+  insurerId       Int      @unique
+  insurer         Insurer  @relation(fields: [insurerId], references: [id], onDelete: Cascade)
+
+  recipientHeader String   // short title used on invoice header e.g. "STAR Health"
+  legalName       String   // full company name e.g. "Star Health Allied Insurance Co Ltd"
+  billingAddress  String   @db.Text
+  state           String   // e.g. "Tamil Nadu"
+  stateCode       String   // e.g. "033"
+  gstin           String
+
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("insurer_invoice_profiles")
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(OWNER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  policies Policy[]
+  invoices Invoice[]
+
+  @@map("users")
+}
+
+model Policy {
+  id Int @id @default(autoincrement())
+
+  // ── Insurer & Product ─────────────────────────────────────────────────────
+  insurerName       String
+  insuranceCategory InsuranceCategory
+  productName       String
+
+  // ── Customer ──────────────────────────────────────────────────────────────
+  customerName  String
+  customerPhone String?
+  customerEmail String?
+
+  // ── Policy Info ───────────────────────────────────────────────────────────
+  policyNumber     String           @unique
+  issueDate        DateTime
+  renewalDate      DateTime
+  paymentFrequency PaymentFrequency
+  status           PolicyStatus     @default(ACTIVE)
+
+  // ── Financial (all Decimal for accuracy) ──────────────────────────────────
+  grossPremium      Decimal  @db.Decimal(18, 2)
+  netPremium        Decimal  @db.Decimal(18, 2)
+  gstPercent        Decimal  @db.Decimal(8, 4)
+  gstAmount         Decimal  @db.Decimal(18, 2)
+  commissionPercent Decimal  @db.Decimal(8, 4)
+  commissionAmount  Decimal  @db.Decimal(18, 2)
+  tdsPercent        Decimal  @db.Decimal(8, 4)
+  tdsAmount         Decimal  @db.Decimal(18, 2)
+  finalReceivable   Decimal  @db.Decimal(18, 2)
+
+  // ── Business / Tracking ───────────────────────────────────────────────────
+  leadSource    String
+  invoiceNumber String?
+  invoiceDate   DateTime?
+  creditedDate  DateTime?
+  paymentMode   String?
+  remarks       String?
+
+  // ── Audit ─────────────────────────────────────────────────────────────────
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("policies")
+}
+
+// ── Invoice Phase 2 ─────────────────────────────────────────────────────────
+// One row per GST tax invoice generated for an insurer + month.
+// Recipient block is snapshot-stored so future address changes don't alter
+// historical invoices. Policy schema is NOT linked — aggregation happens at
+// generation time via Policy.insurerName + issueDate match.
+
+model Invoice {
+  id            Int      @id @default(autoincrement())
+  invoiceNumber String   @unique
+  invoiceDate   DateTime
+  insurerId     Int
+  insurer       Insurer  @relation(fields: [insurerId], references: [id])
+  billingMonth  String                          // "YYYY-MM"
+
+  description   String                          // "Brokerage for the month of March 2026"
+  lineItemText  String                          // "Vehicle Insurance - 10 Nos"
+  policyCount   Int
+
+  // ── Tax block (computed at generation, frozen on save) ────────────────────
+  taxableValue  Decimal  @db.Decimal(18, 2)
+  cgstRate      Decimal  @db.Decimal(5, 2)
+  cgstAmount    Decimal  @db.Decimal(18, 2)
+  sgstRate      Decimal  @db.Decimal(5, 2)
+  sgstAmount    Decimal  @db.Decimal(18, 2)
+  igstRate      Decimal  @db.Decimal(5, 2)
+  igstAmount    Decimal  @db.Decimal(18, 2)
+  totalAmount   Decimal  @db.Decimal(18, 2)
+  totalInWords  String
+
+  // ── Recipient snapshot (frozen at issue time) ─────────────────────────────
+  recipientHeader     String
+  recipientLegalName  String
+  recipientAddress    String  @db.Text
+  recipientState      String
+  recipientStateCode  String
+  recipientGstin      String
+
+  status        InvoiceStatus  @default(DRAFT)
+  notes         String?
+
+  createdById   Int
+  createdBy     User           @relation(fields: [createdById], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([insurerId, billingMonth])
+  @@map("invoices")
+}
