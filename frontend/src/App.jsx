@@ -11,6 +11,8 @@ import AddPolicy from './pages/AddPolicy';
 import EditPolicy from './pages/EditPolicy';
 import Reports from './pages/Reports';
 import InvoiceProfiles from './pages/InvoiceProfiles';
+import Invoices from './pages/Invoices';
+import InvoiceDetail from './pages/InvoiceDetail';
 
 export default function App() {
   return (
@@ -26,6 +28,10 @@ export default function App() {
               <Route path="/policies"           element={<Policies />} />
               <Route path="/policies/:id"       element={<PolicyDetail />} />
               <Route path="/reports"            element={<Reports />} />
+
+              {/* Invoices — list is ownerOrAdmin, generate/save are admin-gated inside the page */}
+              <Route path="/invoices"     element={<Invoices />} />
+              <Route path="/invoices/:id" element={<InvoiceDetail />} />
 
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>

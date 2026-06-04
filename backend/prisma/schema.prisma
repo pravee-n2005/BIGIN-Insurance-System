@@ -46,7 +46,8 @@ enum LeadType {
 
 enum InvoiceStatus {
   DRAFT
-  ISSUED
+  ISSUED      // legacy — kept for backward compat; new saves use FINALIZED
+  FINALIZED
   CANCELLED
 }
 
@@ -194,6 +195,7 @@ model Invoice {
   invoiceDate   DateTime
   insurerId     Int
   insurer       Insurer  @relation(fields: [insurerId], references: [id])
+  insurerName   String?                         // snapshot — frozen at save; insurer renames don't affect history
   billingMonth  String                          // "YYYY-MM"
 
   description   String                          // "Brokerage for the month of March 2026"

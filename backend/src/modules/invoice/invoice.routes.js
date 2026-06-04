@@ -10,7 +10,18 @@ router.use(authenticate);
 // Draft generation is ADMIN only (it computes a number sequence + reads policies).
 router.post('/draft', adminOnly,    c.generateDraft);
 
-// Listing saved invoices is read-only for both roles.
-router.get('/',       ownerOrAdmin, c.listInvoices);
+// Save a new invoice (ADMIN only — advances the sequence and commits to DB).
+router.post('/',      adminOnly,    c.saveInvoice);
+
+// Listing and viewing saved invoices is read-only for both roles.
+router.get('/',          ownerOrAdmin, c.listInvoices);
+
+// PDF download — must be declared before /:id so Express doesn't treat "pdf" as an id.
+router.get('/:id/pdf',    ownerOrAdmin, c.downloadPdf);
+
+// Cancel invoice (ADMIN only — sets status to CANCELLED, never deletes).
+router.patch('/:id/cancel', adminOnly,  c.cancelInvoice);
+
+router.get('/:id',        ownerOrAdmin, c.getInvoice);
 
 module.exports = router;

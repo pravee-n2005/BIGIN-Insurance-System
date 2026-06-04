@@ -153,4 +153,18 @@ async function byCategory({ from, to }) {
   }));
 }
 
-module.exports = { monthly, byInsurer, byLeadSource, byCategory };
+// ─── Available months ─────────────────────────────────────────────────────────
+// Returns distinct YYYY-MM strings for every month that has at least one policy.
+// Used by the Dashboard month picker so users only see months with real data.
+
+async function availableMonths() {
+  // Use raw query for DATE_TRUNC — clean and database-side, no JS post-processing.
+  const rows = await prisma.$queryRaw`
+    SELECT DISTINCT TO_CHAR(DATE_TRUNC('month', "issueDate"), 'YYYY-MM') AS month
+    FROM   policies
+    ORDER  BY month ASC
+  `;
+  return rows.map(r => r.month);
+}
+
+module.exports = { monthly, byInsurer, byLeadSource, byCategory, availableMonths };

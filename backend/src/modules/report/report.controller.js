@@ -1,5 +1,12 @@
 const service = require('./report.service');
 
+const availableMonthsReport = async (req, res, next) => {
+  try {
+    const months = await service.availableMonths();
+    res.json({ months });
+  } catch (err) { next(err); }
+};
+
 const monthlyReport = async (req, res, next) => {
   try {
     const { month, from, to } = req.query;
@@ -44,4 +51,4 @@ const categoryReport = async (req, res, next) => {
   }
 };
 
-module.exports = { monthlyReport, insurerReport, leadSourceReport, categoryReport };
+module.exports = { availableMonthsReport, monthlyReport, insurerReport, leadSourceReport, categoryReport };

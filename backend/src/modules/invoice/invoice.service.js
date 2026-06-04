@@ -157,11 +157,16 @@ async function generateDraft({ insurerId, billingMonth }) {
   const { year, mon, from, to, label: monthLabel } = monthRange(billingMonth);
 
   // 3. Aggregate policies
+  // Exclude CANCELLED — cancelled policies have their commission reversed by the insurer
+  // and must not appear on brokerage invoices.
+  // ACTIVE, PENDING, EXPIRED are all included: commission was earned at policy inception
+  // regardless of current lifecycle state.
   const names = matchingInsurerNames(insurer.name);
   const policies = await prisma.policy.findMany({
     where: {
       insurerName: { in: names },
       issueDate:   { gte: from, lt: to },
+      status:      { not: 'CANCELLED' },
     },
     select: { id: true, commissionAmount: true, insuranceCategory: true, policyNumber: true, customerName: true },
   });
@@ -200,11 +205,11 @@ async function generateDraft({ insurerId, billingMonth }) {
 
   // 7. Draft response (NOT saved)
   return {
-    status: 'DRAFT',
+    status:      'DRAFT',
     invoiceNumber,
     invoiceDate: new Date().toISOString(),
     insurerId:   insurer.id,
-    insurerName: insurer.name,
+    insurerName: insurer.name,  // snapshot value — stored on save
     billingMonth,
 
     description,
@@ -261,7 +266,10 @@ async function list({ insurerId, status, billingMonth, page = 1, limit = 20 }) {
       orderBy: { invoiceDate: 'desc' },
       skip: (page - 1) * limit,
       take: limit,
-      include: { insurer: { select: { id: true, name: true } } },
+      include: {
+        insurer:   { select: { id: true, name: true } },
+        createdBy: { select: { id: true, name: true } },
+      },
     }),
     prisma.invoice.count({ where }),
   ]);
@@ -269,4 +277,117 @@ async function list({ insurerId, status, billingMonth, page = 1, limit = 20 }) {
   return { data: items, meta: { total, page, limit, pages: Math.ceil(total / limit) } };
 }
 
-module.exports = { generateDraft, list, nextInvoiceNumber, inrToWords };
+// ─── Save invoice ─────────────────────────────────────────────────────────────
+// Generates authoritative draft (backend-only calculations), then writes inside
+// a transaction. The duplicate-check + insert happen atomically; the unique
+// constraint on invoiceNumber is the final guard against concurrent races.
+
+async function saveInvoice({ insurerId, billingMonth, createdById }) {
+  // Compute draft OUTSIDE the transaction — reads are safe and this keeps
+  // the transaction window short (minimises lock contention).
+  const draft = await generateDraft({ insurerId, billingMonth });
+
+  try {
+    const saved = await prisma.$transaction(async (tx) => {
+      // Guard: reject if a FINALIZED or legacy ISSUED invoice already exists
+      // for this insurer + month. DRAFT invoices do not block re-generation.
+      const existing = await tx.invoice.findFirst({
+        where: { insurerId, billingMonth, status: { in: ['FINALIZED', 'ISSUED'] } },
+        select: { invoiceNumber: true, status: true },
+      });
+      if (existing) {
+        throw Object.assign(
+          new Error(
+            `A finalized invoice (${existing.invoiceNumber}) already exists for this insurer and month.`
+          ),
+          { status: 409 }
+        );
+      }
+
+      return tx.invoice.create({
+        data: {
+          invoiceNumber:      draft.invoiceNumber,
+          invoiceDate:        new Date(draft.invoiceDate),
+          insurerId:          draft.insurerId,
+          insurerName:        draft.insurerName,           // snapshot
+          billingMonth:       draft.billingMonth,
+          description:        draft.description,
+          lineItemText:       draft.lineItemText,
+          policyCount:        draft.policyCount,
+          taxableValue:       draft.taxableValue,
+          cgstRate:           draft.cgstRate,
+          cgstAmount:         draft.cgstAmount,
+          sgstRate:           draft.sgstRate,
+          sgstAmount:         draft.sgstAmount,
+          igstRate:           draft.igstRate,
+          igstAmount:         draft.igstAmount,
+          totalAmount:        draft.totalAmount,
+          totalInWords:       draft.totalInWords,
+          recipientHeader:    draft.recipient.header,
+          recipientLegalName: draft.recipient.legalName,
+          recipientAddress:   draft.recipient.address,
+          recipientState:     draft.recipient.state,
+          recipientStateCode: draft.recipient.stateCode,
+          recipientGstin:     draft.recipient.gstin,
+          status:             'FINALIZED',
+          createdById,
+        },
+        include: {
+          insurer:   { select: { id: true, name: true } },
+          createdBy: { select: { id: true, name: true } },
+        },
+      });
+    });
+
+    return saved;
+  } catch (err) {
+    // Unique-constraint violation on invoiceNumber means two concurrent saves
+    // raced. Surface as a retriable 409 rather than an opaque 500.
+    if (err.code === 'P2002') {
+      throw Object.assign(
+        new Error('Invoice number conflict due to concurrent save. Please try again.'),
+        { status: 409 }
+      );
+    }
+    throw err;
+  }
+}
+
+// ─── Cancel invoice ───────────────────────────────────────────────────────────
+// Sets status → CANCELLED. Never deletes the record.
+
+async function cancelInvoice(id) {
+  const invoice = await prisma.invoice.findUnique({ where: { id } });
+  if (!invoice) {
+    throw Object.assign(new Error('Invoice not found.'), { status: 404 });
+  }
+  if (invoice.status === 'CANCELLED') {
+    throw Object.assign(new Error('Invoice is already cancelled.'), { status: 409 });
+  }
+  return prisma.invoice.update({
+    where: { id },
+    data:  { status: 'CANCELLED' },
+    include: {
+      insurer:   { select: { id: true, name: true } },
+      createdBy: { select: { id: true, name: true } },
+    },
+  });
+}
+
+// ─── Get single invoice ───────────────────────────────────────────────────────
+
+async function getInvoice(id) {
+  const invoice = await prisma.invoice.findUnique({
+    where: { id },
+    include: {
+      insurer:   { select: { id: true, name: true } },
+      createdBy: { select: { id: true, name: true } },
+    },
+  });
+  if (!invoice) {
+    throw Object.assign(new Error('Invoice not found.'), { status: 404 });
+  }
+  return invoice;
+}
+
+module.exports = { generateDraft, saveInvoice, cancelInvoice, getInvoice, list, nextInvoiceNumber, inrToWords };

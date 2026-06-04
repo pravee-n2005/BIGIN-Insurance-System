@@ -1,0 +1,19 @@
+import api from './axios';
+
+export const generateDraft = (insurerId, billingMonth) =>
+  api.post('/invoices/draft', { insurerId, billingMonth }).then((r) => r.data.draft);
+
+export const saveInvoice = (insurerId, billingMonth) =>
+  api.post('/invoices', { insurerId, billingMonth }).then((r) => r.data.invoice);
+
+export const fetchInvoices = (params = {}) =>
+  api.get('/invoices', { params }).then((r) => r.data);
+
+export const fetchInvoice = (id) =>
+  api.get(`/invoices/${id}`).then((r) => r.data.invoice);
+
+export const cancelInvoice = (id) =>
+  api.patch(`/invoices/${id}/cancel`).then((r) => r.data.invoice);
+
+export const downloadInvoicePdf = (id) =>
+  api.get(`/invoices/${id}/pdf`, { responseType: 'blob' }).then((r) => r.data);
