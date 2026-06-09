@@ -51,6 +51,13 @@ enum InvoiceStatus {
   CANCELLED
 }
 
+enum StatementStatus {
+  DRAFT       // being built, policies being attached / edited
+  FINALIZED   // totals locked, GST computed, ready for invoice generation
+  INVOICED    // GST Invoice (BG###) has been generated and linked
+  CANCELLED   // withdrawn — policies become available for re-attachment
+}
+
 // ─── Models ───────────────────────────────────────────────────────────────────
 
 // ── Master Tables (Module 2 — Phase 1) ───────────────────────────────────────
@@ -67,6 +74,7 @@ model Insurer {
   products        Product[]
   invoiceProfile  InsurerInvoiceProfile?
   invoices        Invoice[]
+  statements      InsurerStatement[]
 
   @@map("insurers")
 }
@@ -129,8 +137,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  policies Policy[]
-  invoices Invoice[]
+  policies   Policy[]
+  invoices   Invoice[]
+  statements InsurerStatement[]
 
   @@map("users")
 }
@@ -179,6 +188,9 @@ model Policy {
   createdBy   User     @relation(fields: [createdById], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // ── Module 3 — GST Statement linkage (junction table) ─────────────────────
+  statementPolicies StatementPolicy[]
 
   @@map("policies")
 }
@@ -229,6 +241,75 @@ model Invoice {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
+  // ── Module 3 — Reverse relation to the statement this invoice was generated from (if any) ─
+  statement     InsurerStatement?
+
   @@index([insurerId, billingMonth])
   @@map("invoices")
+}
+
+// ── Module 3 — GST Statement Workflow ───────────────────────────────────────
+// One row per brokerage statement received from an insurer.
+// Statement totals are frozen at FINALIZED time; the linked Invoice (if any)
+// is generated from the same frozen values.
+
+model InsurerStatement {
+  id                 Int       @id @default(autoincrement())
+  insurerId          Int
+  insurer            Insurer   @relation(fields: [insurerId], references: [id])
+
+  statementRefNo     String    // insurer-provided reference number
+  statementDate      DateTime  // date printed on the statement document
+  creditDate         DateTime? // when funds landed in BIGIN's account (optional)
+  businessMonth      String    // "YYYY-MM" — the month brokerage relates to
+  remarks            String?
+  statementFileUrl   String?   // optional path/URL to uploaded statement file for audit
+
+  // ── Frozen totals — populated by finalize(); zero while DRAFT ────────────
+  totalTaxableValue  Decimal   @db.Decimal(18, 2) @default(0)
+  cgstRate           Decimal   @db.Decimal(5, 2)  @default(0)
+  cgstAmount         Decimal   @db.Decimal(18, 2) @default(0)
+  sgstRate           Decimal   @db.Decimal(5, 2)  @default(0)
+  sgstAmount         Decimal   @db.Decimal(18, 2) @default(0)
+  igstRate           Decimal   @db.Decimal(5, 2)  @default(0)
+  igstAmount         Decimal   @db.Decimal(18, 2) @default(0)
+  invoiceValue       Decimal   @db.Decimal(18, 2) @default(0)
+
+  status             StatementStatus @default(DRAFT)
+
+  // Generated GST Invoice (nullable until generateInvoice() runs)
+  invoiceId          Int?      @unique
+  invoice            Invoice?  @relation(fields: [invoiceId], references: [id])
+
+  policies           StatementPolicy[]
+
+  createdById        Int
+  createdBy          User      @relation(fields: [createdById], references: [id])
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([insurerId, statementRefNo])
+  @@index([insurerId, statementDate])
+  @@index([status])
+  @@map("insurer_statements")
+}
+
+model StatementPolicy {
+  id            Int      @id @default(autoincrement())
+
+  statementId   Int
+  statement     InsurerStatement @relation(fields: [statementId], references: [id], onDelete: Cascade)
+
+  policyId      Int
+  policy        Policy   @relation(fields: [policyId], references: [id])
+
+  taxableValue  Decimal  @db.Decimal(18, 2)
+
+  createdAt     DateTime @default(now())
+
+  // A policy cannot appear twice in the same statement (service layer also
+  // enforces "policy cannot be in two non-cancelled statements").
+  @@unique([statementId, policyId])
+  @@index([policyId])
+  @@map("statement_policies")
 }

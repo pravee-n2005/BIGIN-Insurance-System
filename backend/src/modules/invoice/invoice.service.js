@@ -374,6 +374,105 @@ async function cancelInvoice(id) {
   });
 }
 
+// ─── Save invoice from a finalized InsurerStatement ───────────────────────────
+// Cross-module bridge used by the GST Module (statement.service.js). Reads
+// frozen totals from the statement, snapshots the insurer's invoice profile,
+// generates next BG### number, creates Invoice + links both directions.
+// Transactional: invoice creation and statement.invoiceId/status updates are
+// atomic.
+
+async function saveInvoiceFromStatement({ statementId, createdById }) {
+  const stmt = await prisma.insurerStatement.findUnique({
+    where: { id: statementId },
+    include: {
+      insurer:  { include: { invoiceProfile: true } },
+      policies: { include: { policy: { select: { insuranceCategory: true } } } },
+    },
+  });
+  if (!stmt) throw Object.assign(new Error('Statement not found.'), { status: 404 });
+  if (stmt.status !== 'FINALIZED')
+    throw Object.assign(new Error(`Statement status is ${stmt.status}; must be FINALIZED.`), { status: 409 });
+  if (stmt.invoiceId)
+    throw Object.assign(new Error('Statement is already invoiced.'), { status: 409 });
+
+  const profile = stmt.insurer.invoiceProfile;
+  if (!profile || !profile.active)
+    throw Object.assign(new Error('Insurer has no active invoice profile.'), { status: 400 });
+
+  // Build description from businessMonth
+  const [bmY, bmM] = stmt.businessMonth.split('-').map(Number);
+  const monthLabel = new Date(bmY, bmM - 1, 1).toLocaleString('en-US', { month: 'long' }) + ' ' + bmY;
+  const description = `Brokerage for the month of ${monthLabel}`;
+
+  // Build lineItemText from category breakdown
+  const byCategory = {};
+  for (const sp of stmt.policies) {
+    const cat = sp.policy.insuranceCategory;
+    byCategory[cat] = (byCategory[cat] || 0) + 1;
+  }
+  const policyCount  = stmt.policies.length;
+  const lineItemText = policyCount > 0 ? formatLineItemText(byCategory, policyCount) : '';
+
+  // Get next number OUTSIDE the transaction to keep the lock window small
+  const invoiceNumber = await nextInvoiceNumber();
+  const totalInWords  = inrToWords(Number(stmt.invoiceValue));
+
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const invoice = await tx.invoice.create({
+        data: {
+          invoiceNumber,
+          invoiceDate:        new Date(),
+          insurerId:          stmt.insurerId,
+          insurerName:        stmt.insurer.name,
+          billingMonth:       stmt.businessMonth,
+          description,
+          lineItemText,
+          policyCount,
+          taxableValue:       stmt.totalTaxableValue,
+          cgstRate:           stmt.cgstRate,
+          cgstAmount:         stmt.cgstAmount,
+          sgstRate:           stmt.sgstRate,
+          sgstAmount:         stmt.sgstAmount,
+          igstRate:           stmt.igstRate,
+          igstAmount:         stmt.igstAmount,
+          totalAmount:        stmt.invoiceValue,
+          totalInWords,
+          recipientHeader:    profile.recipientHeader,
+          recipientLegalName: profile.legalName,
+          recipientAddress:   profile.billingAddress,
+          recipientState:     profile.state,
+          recipientStateCode: profile.stateCode,
+          recipientGstin:     profile.gstin,
+          status:             'FINALIZED',
+          createdById,
+        },
+        include: {
+          insurer:   { select: { id: true, name: true } },
+          createdBy: { select: { id: true, name: true } },
+        },
+      });
+
+      await tx.insurerStatement.update({
+        where: { id: statementId },
+        data:  { invoiceId: invoice.id, status: 'INVOICED' },
+      });
+
+      return invoice;
+    });
+
+    return result;
+  } catch (e) {
+    if (e.code === 'P2002') {
+      throw Object.assign(
+        new Error('Invoice number conflict due to concurrent save. Please try again.'),
+        { status: 409 }
+      );
+    }
+    throw e;
+  }
+}
+
 // ─── Get single invoice ───────────────────────────────────────────────────────
 
 async function getInvoice(id) {
@@ -390,4 +489,8 @@ async function getInvoice(id) {
   return invoice;
 }
 
-module.exports = { generateDraft, saveInvoice, cancelInvoice, getInvoice, list, nextInvoiceNumber, inrToWords };
+module.exports = {
+  generateDraft, saveInvoice, saveInvoiceFromStatement,
+  cancelInvoice, getInvoice, list,
+  nextInvoiceNumber, inrToWords,
+};
