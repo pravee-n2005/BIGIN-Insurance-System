@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { fetchInvoice, downloadInvoicePdf, cancelInvoice } from '../api/invoices';
+import { fetchInvoice, downloadInvoicePdf, cancelInvoice, setGstExempt } from '../api/invoices';
 import { useAuth } from '../context/AuthContext';
 
 const fmt = (n) =>
@@ -69,6 +69,15 @@ export default function InvoiceDetail() {
       setDlError('Failed to download PDF. Please try again.');
     } finally {
       setDownloading(false);
+    }
+  }
+
+  async function handleToggleExempt() {
+    try {
+      const updated = await setGstExempt(invoice.id, !invoice.isGstExempt);
+      setInvoice({ ...invoice, isGstExempt: updated.isGstExempt });
+    } catch (err) {
+      setDlError(err.response?.data?.error || 'Failed to update GST classification.');
     }
   }
 
@@ -241,6 +250,25 @@ export default function InvoiceDetail() {
             <p className="text-gray-700">{fmtDateTime(invoice.createdAt)}</p>
           </div>
         </div>
+
+        {/* Module 4 — GST classification flag (admin only) */}
+        {isAdmin && invoice.status !== 'CANCELLED' && (
+          <div className="px-6 py-3 border-t border-gray-200 bg-amber-50/40 flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="gst-exempt-toggle"
+              checked={!!invoice.isGstExempt}
+              onChange={handleToggleExempt}
+              className="w-4 h-4"
+            />
+            <label htmlFor="gst-exempt-toggle" className="text-xs text-gray-700 cursor-pointer">
+              <span className="font-semibold">GST-Exempt Invoice</span>
+              <span className="text-gray-500 ml-1">
+                — when ticked, this invoice's taxable value moves to "EXEMPTED TURNOVER" on the GST Sales Report. Use only for genuinely exempt brokerage cases.
+              </span>
+            </label>
+          </div>
+        )}
       </div>
 
       {/* Cancel confirmation modal */}

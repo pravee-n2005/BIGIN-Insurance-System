@@ -40,3 +40,7 @@ export const generateInvoiceFromStatement = (id) =>
 
 export const cancelStatement = (id) =>
   api.patch(`/statements/${id}/cancel`).then((r) => r.data.statement);
+
+// ── Module 4 — credit details (INVOICED only) ─────────────────────────────────
+export const updateCreditDetails = (id, payload) =>
+  api.patch(`/statements/${id}/credit-details`, payload).then((r) => r.data.statement);

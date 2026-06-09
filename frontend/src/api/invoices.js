@@ -17,3 +17,6 @@ export const cancelInvoice = (id) =>
 
 export const downloadInvoicePdf = (id) =>
   api.get(`/invoices/${id}/pdf`, { responseType: 'blob' }).then((r) => r.data);
+
+export const setGstExempt = (id, isGstExempt) =>
+  api.patch(`/invoices/${id}/gst-exempt`, { isGstExempt }).then((r) => r.data.invoice);

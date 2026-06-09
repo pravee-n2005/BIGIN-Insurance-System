@@ -473,6 +473,26 @@ async function saveInvoiceFromStatement({ statementId, createdById }) {
   }
 }
 
+// ─── Module 4 — Toggle GST-exempt flag ────────────────────────────────────────
+// Admin-only classification flag for report use. Allowed in any status except
+// CANCELLED. Does not modify the invoice PDF or the financial calculations.
+
+async function setGstExempt(id, isGstExempt) {
+  const inv = await prisma.invoice.findUnique({ where: { id } });
+  if (!inv) throw Object.assign(new Error('Invoice not found.'), { status: 404 });
+  if (inv.status === 'CANCELLED')
+    throw Object.assign(new Error('Cannot modify a cancelled invoice.'), { status: 409 });
+
+  return prisma.invoice.update({
+    where: { id },
+    data:  { isGstExempt: !!isGstExempt },
+    include: {
+      insurer:   { select: { id: true, name: true } },
+      createdBy: { select: { id: true, name: true } },
+    },
+  });
+}
+
 // ─── Get single invoice ───────────────────────────────────────────────────────
 
 async function getInvoice(id) {
@@ -492,5 +512,6 @@ async function getInvoice(id) {
 module.exports = {
   generateDraft, saveInvoice, saveInvoiceFromStatement,
   cancelInvoice, getInvoice, list,
+  setGstExempt,
   nextInvoiceNumber, inrToWords,
 };

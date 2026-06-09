@@ -6,6 +6,7 @@ const {
   validateUpdate,
   validateAttachPolicies,
   validateUpdateStatementPolicy,
+  validateCreditDetails,
 } = require('./statement.validation');
 
 const VALID_STATUSES = ['DRAFT', 'FINALIZED', 'INVOICED', 'CANCELLED'];
@@ -138,6 +139,18 @@ const generateInvoice = async (req, res, next) => {
   } catch (e) { send(e, res, next); }
 };
 
+// ── PATCH /api/statements/:id/credit-details (Module 4) ─────────────────────
+const updateCreditDetails = async (req, res, next) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ error: 'Invalid statement id.' });
+  const errors = validateCreditDetails(req.body);
+  if (errors.length) return res.status(400).json({ errors });
+  try {
+    const statement = await service.updateCreditDetails(id, req.body);
+    res.json({ statement });
+  } catch (e) { send(e, res, next); }
+};
+
 // ── PATCH /api/statements/:id/cancel ────────────────────────────────────────
 const cancelStatement = async (req, res, next) => {
   const id = parseInt(req.params.id);
@@ -160,4 +173,5 @@ module.exports = {
   finalize,
   generateInvoice,
   cancelStatement,
+  updateCreditDetails,
 };

@@ -235,6 +235,7 @@ model Invoice {
 
   status        InvoiceStatus  @default(DRAFT)
   notes         String?
+  isGstExempt   Boolean        @default(false)   // Module 4 — report classification flag
 
   createdById   Int
   createdBy     User           @relation(fields: [createdById], references: [id])
@@ -264,6 +265,13 @@ model InsurerStatement {
   businessMonth      String    // "YYYY-MM" — the month brokerage relates to
   remarks            String?
   statementFileUrl   String?   // optional path/URL to uploaded statement file for audit
+
+  // ── Module 4 — Bank credit details (populated when money actually arrives) ─
+  // Only editable when status = INVOICED. amountCredited may differ from
+  // invoiceValue due to TDS, bank charges, partial credits, etc.
+  amountCredited     Decimal?  @db.Decimal(18, 2)
+  bankReference      String?   // e.g. "S98019073" or "CMS5587231631"
+  bankAccount        String?   // e.g. "Bank-1 (Old)" / "Bank-2 (New)" — free text
 
   // ── Frozen totals — populated by finalize(); zero while DRAFT ────────────
   totalTaxableValue  Decimal   @db.Decimal(18, 2) @default(0)

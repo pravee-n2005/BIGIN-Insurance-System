@@ -1,5 +1,8 @@
 const express = require('express');
-const { availableMonthsReport, monthlyReport, insurerReport, leadSourceReport, categoryReport } = require('./report.controller');
+const {
+  availableMonthsReport, monthlyReport, insurerReport, leadSourceReport, categoryReport,
+  gstSalesReport, gstSalesExport, creditsReport, creditsExport,
+} = require('./report.controller');
 const authenticate = require('../../middleware/authenticate');
 const { ownerOrAdmin } = require('../../middleware/authorize');
 
@@ -7,8 +10,14 @@ const router = express.Router();
 
 router.use(authenticate, ownerOrAdmin);
 
-router.get('/months',      availableMonthsReport);
-router.get('/monthly',     monthlyReport);
+router.get('/months',           availableMonthsReport);
+router.get('/monthly',          monthlyReport);
+
+// Module 4 — GST Sales + Credits reports (both JSON preview + xlsx export)
+router.get('/gst-sales',        gstSalesReport);
+router.get('/gst-sales/export', gstSalesExport);
+router.get('/credits',          creditsReport);
+router.get('/credits/export',   creditsExport);
 router.get('/insurer',     insurerReport);
 router.get('/lead-source', leadSourceReport);
 router.get('/category',    categoryReport);

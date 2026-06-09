@@ -153,6 +153,137 @@ async function byCategory({ from, to }) {
   }));
 }
 
+// ─── Module 4 — GST Sales Report ──────────────────────────────────────────────
+// One row per non-cancelled Invoice for the given month (by invoiceDate). Joins
+// to the linked InsurerStatement (if any) for creditDate, and to underlying
+// policies (via StatementPolicy) to derive a per-invoice TDS rate.
+
+function deriveTdsRate(statement) {
+  // If linked to a statement, take the most representative policy TDS%.
+  // Convention: if any policy is LIFE category, use 12%; else 10%.
+  if (!statement || !statement.policies?.length) return 0.10;
+  const hasLife = statement.policies.some(
+    (sp) => sp.policy?.insuranceCategory === 'LIFE'
+  );
+  return hasLife ? 0.12 : 0.10;
+}
+
+async function gstSales({ month }) {
+  if (!/^\d{4}-\d{2}$/.test(month))
+    throw Object.assign(new Error('month must be in YYYY-MM format.'), { status: 400 });
+  const [y, m] = month.split('-').map(Number);
+  const from = new Date(y, m - 1, 1);
+  const to   = new Date(y, m, 1);
+
+  const invoices = await prisma.invoice.findMany({
+    where: {
+      invoiceDate: { gte: from, lt: to },
+      status:      { in: ['FINALIZED', 'ISSUED'] },   // exclude DRAFT and CANCELLED
+    },
+    include: {
+      statement: {
+        include: {
+          policies: {
+            include: { policy: { select: { insuranceCategory: true } } },
+          },
+        },
+      },
+    },
+    orderBy: { invoiceDate: 'asc' },
+  });
+
+  const rows = invoices.map((inv) => {
+    const rate = Number(inv.cgstRate) > 0
+      ? (Number(inv.cgstRate) + Number(inv.sgstRate)) / 100   // 18% intra
+      : Number(inv.igstRate) / 100;                            // 18% inter
+
+    const taxable  = Number(inv.taxableValue);
+    const tdsRate  = deriveTdsRate(inv.statement);
+    const exempted = inv.isGstExempt ? taxable : 0;
+
+    return {
+      gstin:            inv.recipientGstin,
+      receiverName:     inv.recipientLegalName,
+      invoiceNumber:    inv.invoiceNumber,
+      invoiceDate:      inv.invoiceDate,
+      invoiceValue:     Number(inv.totalAmount),
+      hsn:              '997161',
+      rate,
+      taxableValue:     inv.isGstExempt ? 0 : taxable,
+      exemptedTurnover: exempted,
+      cgst:             Number(inv.cgstAmount),
+      sgst:             Number(inv.sgstAmount),
+      igst:             Number(inv.igstAmount),
+      tdsRate,
+      creditedOn:       inv.statement?.creditDate ?? null,
+      isGstExempt:      inv.isGstExempt,
+      status:           inv.status,
+    };
+  });
+
+  const totals = rows.reduce((acc, r) => ({
+    invoiceValue:     acc.invoiceValue     + r.invoiceValue,
+    taxableValue:     acc.taxableValue     + r.taxableValue,
+    exemptedTurnover: acc.exemptedTurnover + r.exemptedTurnover,
+    cgst:             acc.cgst             + r.cgst,
+    sgst:             acc.sgst             + r.sgst,
+    igst:             acc.igst             + r.igst,
+  }), { invoiceValue: 0, taxableValue: 0, exemptedTurnover: 0, cgst: 0, sgst: 0, igst: 0 });
+
+  return { period: month, rows, totals };
+}
+
+// ─── Module 4 — Credits Report ────────────────────────────────────────────────
+// One row per InsurerStatement that has a creditDate within [from,to] AND
+// has amountCredited populated (admin-entered actual credit). Filtered by
+// optional bankAccount.
+
+async function credits({ from, to, bankAccount }) {
+  if (!from || !to)
+    throw Object.assign(new Error('from and to dates are required (YYYY-MM-DD).'), { status: 400 });
+
+  const fromDate = new Date(from);
+  const toDate   = new Date(to);
+  toDate.setDate(toDate.getDate() + 1);  // make `to` inclusive
+
+  const where = {
+    creditDate:     { gte: fromDate, lt: toDate },
+    amountCredited: { not: null },
+    status:         { not: 'CANCELLED' },
+  };
+  if (bankAccount) where.bankAccount = bankAccount;
+
+  const statements = await prisma.insurerStatement.findMany({
+    where,
+    include: {
+      insurer: { select: { id: true, name: true } },
+      invoice: { select: { id: true, invoiceNumber: true } },
+    },
+    orderBy: [{ bankAccount: 'asc' }, { creditDate: 'asc' }],
+  });
+
+  const rows = statements.map((s) => ({
+    statementId:    s.id,
+    date:           s.creditDate,
+    receivedFrom:   s.insurer?.name ?? '—',
+    nature:         s.bankReference ?? '',
+    deposit:        Number(s.amountCredited ?? 0),
+    payment:        0,
+    notes:          s.remarks ?? '',
+    remarks:        s.invoice?.invoiceNumber ?? '',
+    bankAccount:    s.bankAccount ?? 'Unassigned',
+    statementRefNo: s.statementRefNo,
+    invoiceValue:   Number(s.invoiceValue),
+  }));
+
+  const totals = {
+    amountCredited: rows.reduce((sum, r) => sum + r.deposit, 0),
+    count:          rows.length,
+  };
+
+  return { period: { from, to }, rows, totals };
+}
+
 // ─── Available months ─────────────────────────────────────────────────────────
 // Returns distinct YYYY-MM strings for every month that has at least one policy.
 // Used by the Dashboard month picker so users only see months with real data.
@@ -167,4 +298,7 @@ async function availableMonths() {
   return rows.map(r => r.month);
 }
 
-module.exports = { monthly, byInsurer, byLeadSource, byCategory, availableMonths };
+module.exports = {
+  monthly, byInsurer, byLeadSource, byCategory, availableMonths,
+  gstSales, credits,
+};

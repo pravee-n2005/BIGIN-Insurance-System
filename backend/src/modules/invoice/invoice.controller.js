@@ -89,6 +89,21 @@ const cancelInvoice = async (req, res, next) => {
   }
 };
 
+// ── Module 4 — toggle GST-exempt flag ───────────────────────────────────────
+const setGstExempt = async (req, res, next) => {
+  try {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ error: 'Invalid invoice id.' });
+    if (typeof req.body.isGstExempt !== 'boolean')
+      return res.status(400).json({ error: 'isGstExempt must be true or false.' });
+    const invoice = await service.setGstExempt(id, req.body.isGstExempt);
+    res.json({ invoice });
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ error: err.message });
+    next(err);
+  }
+};
+
 const downloadPdf = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
@@ -120,4 +135,4 @@ const downloadPdf = async (req, res, next) => {
   }
 };
 
-module.exports = { generateDraft, saveInvoice, cancelInvoice, getInvoice, listInvoices, downloadPdf };
+module.exports = { generateDraft, saveInvoice, cancelInvoice, getInvoice, listInvoices, downloadPdf, setGstExempt };

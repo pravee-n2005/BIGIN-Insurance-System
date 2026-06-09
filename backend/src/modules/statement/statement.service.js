@@ -371,6 +371,33 @@ async function generateInvoice(id, createdById) {
   return { statement: updated, invoice };
 }
 
+// ─── Module 4 — Credit Details (INVOICED only) ────────────────────────────────
+// Updates amountCredited / bankReference / bankAccount. These fields capture
+// the actual bank credit; they are decoupled from the financial calculations
+// done at finalize() and never modify the linked invoice.
+
+async function updateCreditDetails(id, body) {
+  const stmt = await prisma.insurerStatement.findUnique({ where: { id } });
+  if (!stmt) throw err(404, 'Statement not found.');
+  if (stmt.status !== 'INVOICED')
+    throw err(409, `Credit details can only be edited when status = INVOICED (currently ${stmt.status}).`);
+
+  const data = {};
+  if ('amountCredited' in body)
+    data.amountCredited = body.amountCredited === null || body.amountCredited === ''
+      ? null : round2(body.amountCredited);
+  if ('bankReference' in body)
+    data.bankReference = body.bankReference?.trim() || null;
+  if ('bankAccount' in body)
+    data.bankAccount = body.bankAccount?.trim() || null;
+
+  return prisma.insurerStatement.update({
+    where: { id },
+    data,
+    include: STATEMENT_INCLUDE,
+  });
+}
+
 // ─── Cancel ───────────────────────────────────────────────────────────────────
 // DRAFT / FINALIZED: free.
 // INVOICED: only if linked Invoice is already CANCELLED (user must cancel
@@ -411,4 +438,5 @@ module.exports = {
   finalize,
   generateInvoice,
   cancel,
+  updateCreditDetails,
 };

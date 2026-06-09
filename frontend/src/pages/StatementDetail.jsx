@@ -5,6 +5,7 @@ import {
   fetchStatement, fetchAvailablePolicies,
   attachPolicies, updateStatementPolicy, detachPolicy,
   finalizeStatement, generateInvoiceFromStatement, cancelStatement,
+  updateCreditDetails,
 } from '../api/statements';
 import { StatementStatusBadge } from './Statements';
 
@@ -282,6 +283,15 @@ export default function StatementDetail() {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Module 4 — Credit Details panel (INVOICED only) */}
+      {isInvoiced && (
+        <CreditDetailsPanel
+          statement={stmt}
+          editable={isAdmin}
+          onSaved={(updated) => setStmt(updated)}
+        />
       )}
 
       {/* Action bar */}
@@ -647,6 +657,145 @@ function AddPoliciesModal({ statement, onClose, onAttached }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ─── Module 4 — Credit Details panel ──────────────────────────────────────────
+// Shown only when status === 'INVOICED'. Captures actual money received in the
+// bank. The suggested value (invoice value minus calculated TDS) is shown as a
+// hint but never auto-saved — admin must enter / confirm the actual amount.
+
+function CreditDetailsPanel({ statement, editable, onSaved }) {
+  // Suggested amount = invoiceValue - (totalTaxableValue × 0.10)
+  // Uses 10% as the default heuristic. Admin sees this as a typing hint only.
+  const taxable      = Number(statement.totalTaxableValue);
+  const invoiceValue = Number(statement.invoiceValue);
+  const suggested    = invoiceValue - taxable * 0.10;
+
+  const [amountCredited, setAmountCredited] = useState(
+    statement.amountCredited !== null && statement.amountCredited !== undefined
+      ? String(statement.amountCredited)
+      : ''
+  );
+  const [bankReference, setBankReference] = useState(statement.bankReference ?? '');
+  const [bankAccount,   setBankAccount]   = useState(statement.bankAccount ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error,  setError]  = useState('');
+  const [success, setSuccess] = useState('');
+
+  const dirty =
+    String(statement.amountCredited ?? '') !== amountCredited ||
+    (statement.bankReference ?? '') !== bankReference ||
+    (statement.bankAccount   ?? '') !== bankAccount;
+
+  async function handleSave() {
+    setError('');
+    setSuccess('');
+    setSaving(true);
+    try {
+      const payload = {
+        amountCredited: amountCredited === '' ? null : Number(amountCredited),
+        bankReference:  bankReference.trim() || null,
+        bankAccount:    bankAccount.trim() || null,
+      };
+      const updated = await updateCreditDetails(statement.id, payload);
+      onSaved(updated);
+      setSuccess('Credit details saved.');
+    } catch (err) {
+      setError(err.response?.data?.error || err.response?.data?.errors?.join(' ') || 'Failed to save.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const variance =
+    amountCredited !== '' && !isNaN(Number(amountCredited))
+      ? Number(amountCredited) - suggested
+      : null;
+
+  return (
+    <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="px-6 py-4 border-b border-gray-100">
+        <h2 className="text-sm font-semibold text-gray-800">Credit Details</h2>
+        <p className="text-xs text-gray-500 mt-0.5">
+          Captured when the brokerage payment hits the bank. Used by the Credits Report.
+        </p>
+      </div>
+
+      <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Amount Credited (₹) {editable && <span className="text-red-500">*</span>}
+          </label>
+          <input
+            type="number" step="0.01" min="0"
+            value={amountCredited}
+            onChange={(e) => setAmountCredited(e.target.value)}
+            disabled={!editable}
+            placeholder="0.00"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
+          />
+          {editable && (
+            <p className="text-xs text-gray-500 mt-1">
+              Suggested: <span className="font-mono">₹{fmt(suggested)}</span>{' '}
+              <button
+                type="button"
+                onClick={() => setAmountCredited(suggested.toFixed(2))}
+                className="text-blue-600 hover:underline ml-1"
+              >
+                Use suggested
+              </button>
+              <span className="text-gray-400"> (invoice value − 10% TDS estimate)</span>
+            </p>
+          )}
+          {variance !== null && Math.abs(variance) > 0.01 && (
+            <p className={`text-xs mt-1 font-medium ${variance < 0 ? 'text-amber-700' : 'text-blue-700'}`}>
+              Variance vs suggested: ₹{fmt(Math.abs(variance))} {variance < 0 ? 'short' : 'over'}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Bank Reference</label>
+          <input
+            type="text"
+            value={bankReference}
+            onChange={(e) => setBankReference(e.target.value)}
+            disabled={!editable}
+            placeholder="e.g. S98019073"
+            maxLength={100}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Bank Account</label>
+          <input
+            type="text"
+            value={bankAccount}
+            onChange={(e) => setBankAccount(e.target.value)}
+            disabled={!editable}
+            placeholder="e.g. Bank-1 (Old)"
+            maxLength={100}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
+          />
+        </div>
+      </div>
+
+      {editable && (
+        <div className="px-6 py-4 border-t border-gray-100 flex items-center gap-3">
+          <button
+            onClick={handleSave}
+            disabled={saving || !dirty}
+            className="px-5 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            {saving ? 'Saving…' : 'Save Credit Details'}
+          </button>
+          {success && <span className="text-sm text-green-700">{success}</span>}
+          {error   && <span className="text-sm text-red-600">{error}</span>}
+        </div>
+      )}
+    </section>
   );
 }
 

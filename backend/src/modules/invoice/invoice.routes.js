@@ -20,7 +20,10 @@ router.get('/',          ownerOrAdmin, c.listInvoices);
 router.get('/:id/pdf',    ownerOrAdmin, c.downloadPdf);
 
 // Cancel invoice (ADMIN only — sets status to CANCELLED, never deletes).
-router.patch('/:id/cancel', adminOnly,  c.cancelInvoice);
+router.patch('/:id/cancel',      adminOnly, c.cancelInvoice);
+
+// Module 4 — toggle GST-exempt classification flag (admin only).
+router.patch('/:id/gst-exempt',  adminOnly, c.setGstExempt);
 
 router.get('/:id',        ownerOrAdmin, c.getInvoice);
 

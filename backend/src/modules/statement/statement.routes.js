@@ -22,6 +22,7 @@ router.delete('/:id/policies/:spId',     adminOnly,    c.detachPolicy);
 
 router.post('/:id/finalize',             adminOnly,    c.finalize);
 router.post('/:id/generate-invoice',     adminOnly,    c.generateInvoice);
+router.patch('/:id/credit-details',      adminOnly,    c.updateCreditDetails);   // Module 4
 router.patch('/:id/cancel',              adminOnly,    c.cancelStatement);
 
 router.patch('/:id',                     adminOnly,    c.updateStatement);

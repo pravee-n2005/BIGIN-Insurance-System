@@ -132,9 +132,26 @@ function validateUpdateStatementPolicy(body) {
   return errors;
 }
 
+// ── Credit details (Module 4) ─────────────────────────────────────────────────
+
+function validateCreditDetails(body) {
+  const errors = [];
+  if ('amountCredited' in body) {
+    if (body.amountCredited !== null && body.amountCredited !== '' &&
+        !isNonNegativeNumber(body.amountCredited))
+      errors.push('amountCredited must be a non-negative number or null.');
+  }
+  if ('bankReference' in body && body.bankReference !== null && trimStr(body.bankReference).length > 100)
+    errors.push('bankReference must not exceed 100 characters.');
+  if ('bankAccount' in body && body.bankAccount !== null && trimStr(body.bankAccount).length > 100)
+    errors.push('bankAccount must not exceed 100 characters.');
+  return errors;
+}
+
 module.exports = {
   validateCreate,
   validateUpdate,
   validateAttachPolicies,
   validateUpdateStatementPolicy,
+  validateCreditDetails,
 };
