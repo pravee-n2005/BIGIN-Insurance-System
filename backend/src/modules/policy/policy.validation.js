@@ -1,6 +1,13 @@
 const INSURANCE_CATEGORIES = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
 const PAYMENT_FREQUENCIES = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
 const POLICY_STATUSES = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
+const CANCELLATION_REASONS = [
+  'CUSTOMER_DECLINED', 'CUSTOMER_REQUESTED_CANCELLATION', 'PREMIUM_TOO_HIGH',
+  'CUSTOMER_PURCHASED_ELSEWHERE', 'CUSTOMER_NOT_REACHABLE', 'POLICY_ISSUED_INCORRECTLY',
+  'WRONG_POLICY_DETAILS', 'KYC_DOCUMENTS_NOT_PROVIDED', 'INSURER_REJECTED_PROPOSAL',
+  'PAYMENT_NOT_RECEIVED', 'PROPOSAL_EXPIRED', 'POLICY_REPLACED', 'RENEWAL_NOT_PROCEEDED',
+  'DUPLICATE_ENTRY', 'DUPLICATE_POLICY_IMPORTED', 'TEST_DUMMY_ENTRY', 'OTHER',
+];
 
 function isPositiveNumber(val) {
   return val !== undefined && val !== null && !isNaN(Number(val)) && Number(val) >= 0;
@@ -71,4 +78,27 @@ function validateUpdate(body) {
   return errors;
 }
 
-module.exports = { validateCreate, validateUpdate };
+function validateCancellation(body, existingStatus) {
+  const errors = [];
+  const transitioningToCancelled = existingStatus !== 'CANCELLED' && body.status === 'CANCELLED';
+
+  if (transitioningToCancelled) {
+    if (!body.cancellationReason) {
+      errors.push('cancellationReason is required when cancelling a policy.');
+    } else if (!CANCELLATION_REASONS.includes(body.cancellationReason)) {
+      errors.push(`cancellationReason must be one of: ${CANCELLATION_REASONS.join(', ')}.`);
+    } else if (body.cancellationReason === 'OTHER' && !body.cancellationReasonOther?.trim()) {
+      errors.push('cancellationReasonOther is required when reason is OTHER.');
+    }
+  } else if (body.cancellationReason !== undefined && !CANCELLATION_REASONS.includes(body.cancellationReason)) {
+    errors.push(`cancellationReason must be one of: ${CANCELLATION_REASONS.join(', ')}.`);
+  }
+
+  if (body.cancellationReasonOther && body.cancellationReasonOther.length > 500) {
+    errors.push('cancellationReasonOther must not exceed 500 characters.');
+  }
+
+  return errors;
+}
+
+module.exports = { validateCreate, validateUpdate, validateCancellation };

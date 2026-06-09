@@ -316,12 +316,35 @@ export default function StatementDetail() {
             </button>
           )}
 
-          <button
-            onClick={() => setConfirmCancel(true)}
-            className="ml-auto px-4 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-md hover:bg-red-50 transition-colors"
-          >
-            Cancel Statement
-          </button>
+          {/* Cancel — blocked for INVOICED statements whose invoice is still active */}
+          {isInvoiced && stmt.invoice && stmt.invoice.status !== 'CANCELLED' ? (
+            <div className="ml-auto flex items-center gap-3">
+              <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 max-w-sm">
+                Invoice{' '}
+                <Link
+                  to={`/invoices/${stmt.invoice.id}`}
+                  className="font-mono font-semibold hover:underline"
+                >
+                  {stmt.invoice.invoiceNumber}
+                </Link>
+                {' '}must be cancelled before this statement can be cancelled.
+              </p>
+              <button
+                disabled
+                className="px-4 py-2 border border-red-200 text-red-300 text-sm font-medium rounded-md cursor-not-allowed"
+                title="Cancel the linked invoice first"
+              >
+                Cancel Statement
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmCancel(true)}
+              className="ml-auto px-4 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-md hover:bg-red-50 transition-colors"
+            >
+              Cancel Statement
+            </button>
+          )}
         </section>
       )}
 
@@ -362,11 +385,7 @@ export default function StatementDetail() {
       {confirmCancel && (
         <ConfirmModal
           title="Cancel Statement"
-          message={
-            isInvoiced
-              ? `This statement has a linked invoice (${stmt.invoice?.invoiceNumber}). You must cancel the invoice first via the Invoices page, then cancel this statement.`
-              : `Cancel ${stmt.statementRefNo}? The record is preserved. Its policies will become available for attachment to other statements.`
-          }
+          message={`Cancel ${stmt.statementRefNo}? The record is preserved. Its policies will become available for attachment to other statements.`}
           confirmLabel="Yes, Cancel Statement"
           confirmStyle="bg-red-600 hover:bg-red-700"
           busy={actionBusy === 'cancel'}

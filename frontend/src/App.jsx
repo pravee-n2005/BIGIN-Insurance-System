@@ -16,6 +16,7 @@ import InvoiceDetail from './pages/InvoiceDetail';
 import Statements from './pages/Statements';
 import StatementNew from './pages/StatementNew';
 import StatementDetail from './pages/StatementDetail';
+import MasterData from './pages/MasterData';
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/policies/new"        element={<AddPolicy />} />
                 <Route path="/policies/:id/edit"   element={<EditPolicy />} />
                 <Route path="/invoice-profiles"    element={<InvoiceProfiles />} />
+                <Route path="/master-data"         element={<MasterData />} />
                 <Route path="/statements/new"      element={<StatementNew />} />
               </Route>
             </Route>

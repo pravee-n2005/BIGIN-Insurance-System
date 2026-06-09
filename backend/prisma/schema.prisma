@@ -58,6 +58,46 @@ enum StatementStatus {
   CANCELLED   // withdrawn — policies become available for re-attachment
 }
 
+// ── Module 5 — Master data + structured cancellation ───────────────────────
+
+enum InsurerType {
+  GENERAL
+  HEALTH
+  LIFE
+}
+
+enum InvoiceCancellationReason {
+  DUPLICATE_INVOICE
+  INCORRECT_TAXABLE_VALUE
+  WRONG_INSURER_SELECTED
+  GST_CALCULATION_ERROR
+  REPLACED_BY_NEW_INVOICE
+  TEST_DUMMY_INVOICE
+  CLIENT_REQUEST
+  PAYMENT_REVERSED
+  OTHER
+}
+
+enum CancellationReason {
+  CUSTOMER_DECLINED
+  CUSTOMER_REQUESTED_CANCELLATION
+  PREMIUM_TOO_HIGH
+  CUSTOMER_PURCHASED_ELSEWHERE
+  CUSTOMER_NOT_REACHABLE
+  POLICY_ISSUED_INCORRECTLY
+  WRONG_POLICY_DETAILS
+  KYC_DOCUMENTS_NOT_PROVIDED
+  INSURER_REJECTED_PROPOSAL
+  PAYMENT_NOT_RECEIVED
+  PROPOSAL_EXPIRED
+  POLICY_REPLACED
+  RENEWAL_NOT_PROCEEDED
+  DUPLICATE_ENTRY
+  DUPLICATE_POLICY_IMPORTED
+  TEST_DUMMY_ENTRY
+  OTHER
+}
+
 // ─── Models ───────────────────────────────────────────────────────────────────
 
 // ── Master Tables (Module 2 — Phase 1) ───────────────────────────────────────
@@ -65,11 +105,14 @@ enum StatementStatus {
 // insurerName / productName / leadSource for backward compatibility.
 
 model Insurer {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  insurerType   InsurerType?                          // Module 5 — General/Health/Life
+  gstin         String?                               // Module 5 — reference metadata (separate from InsurerInvoiceProfile.gstin)
+  state         String?                               // Module 5 — reference metadata
+  active        Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   products        Product[]
   invoiceProfile  InsurerInvoiceProfile?
@@ -80,13 +123,14 @@ model Insurer {
 }
 
 model Product {
-  id        Int      @id @default(autoincrement())
-  name      String
-  insurerId Int
-  insurer   Insurer  @relation(fields: [insurerId], references: [id], onDelete: Cascade)
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int                @id @default(autoincrement())
+  name              String
+  insurerId         Int
+  insurer           Insurer            @relation(fields: [insurerId], references: [id], onDelete: Cascade)
+  insuranceCategory InsuranceCategory?                    // Module 5 — product-level classification
+  active            Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@unique([insurerId, name])
   @@map("products")
@@ -137,9 +181,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  policies   Policy[]
-  invoices   Invoice[]
-  statements InsurerStatement[]
+  policies          Policy[]            @relation("PolicyCreatedBy")
+  cancelledPolicies Policy[]            @relation("PolicyCancelledBy")    // Module 5
+  invoices          Invoice[]
+  cancelledInvoices Invoice[]           @relation("InvoiceCancelledBy")   // Module 5
+  statements        InsurerStatement[]
 
   @@map("users")
 }
@@ -185,12 +231,19 @@ model Policy {
 
   // ── Audit ─────────────────────────────────────────────────────────────────
   createdById Int
-  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdBy   User     @relation("PolicyCreatedBy", fields: [createdById], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // ── Module 3 — GST Statement linkage (junction table) ─────────────────────
   statementPolicies StatementPolicy[]
+
+  // ── Module 5 — Structured cancellation ────────────────────────────────────
+  cancellationReason      CancellationReason?
+  cancellationReasonOther String?
+  cancelledAt             DateTime?
+  cancelledById           Int?
+  cancelledBy             User?               @relation("PolicyCancelledBy", fields: [cancelledById], references: [id])
 
   @@map("policies")
 }
@@ -236,6 +289,13 @@ model Invoice {
   status        InvoiceStatus  @default(DRAFT)
   notes         String?
   isGstExempt   Boolean        @default(false)   // Module 4 — report classification flag
+
+  // ── Module 5 — Structured cancellation ────────────────────────────────────
+  cancellationReason      InvoiceCancellationReason?
+  cancellationReasonOther String?
+  cancelledAt             DateTime?
+  cancelledById           Int?
+  cancelledBy             User?          @relation("InvoiceCancelledBy", fields: [cancelledById], references: [id])
 
   createdById   Int
   createdBy     User           @relation(fields: [createdById], references: [id])

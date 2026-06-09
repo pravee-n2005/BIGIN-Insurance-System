@@ -1,0 +1,22 @@
+-- CreateEnum
+CREATE TYPE "InsurerType" AS ENUM ('GENERAL', 'HEALTH', 'LIFE');
+
+-- CreateEnum
+CREATE TYPE "CancellationReason" AS ENUM ('CUSTOMER_DECLINED', 'CUSTOMER_REQUESTED_CANCELLATION', 'PREMIUM_TOO_HIGH', 'CUSTOMER_PURCHASED_ELSEWHERE', 'CUSTOMER_NOT_REACHABLE', 'POLICY_ISSUED_INCORRECTLY', 'WRONG_POLICY_DETAILS', 'KYC_DOCUMENTS_NOT_PROVIDED', 'INSURER_REJECTED_PROPOSAL', 'PAYMENT_NOT_RECEIVED', 'PROPOSAL_EXPIRED', 'POLICY_REPLACED', 'RENEWAL_NOT_PROCEEDED', 'DUPLICATE_ENTRY', 'DUPLICATE_POLICY_IMPORTED', 'TEST_DUMMY_ENTRY', 'OTHER');
+
+-- AlterTable
+ALTER TABLE "insurers" ADD COLUMN     "gstin" TEXT,
+ADD COLUMN     "insurerType" "InsurerType",
+ADD COLUMN     "state" TEXT;
+
+-- AlterTable
+ALTER TABLE "policies" ADD COLUMN     "cancellationReason" "CancellationReason",
+ADD COLUMN     "cancellationReasonOther" TEXT,
+ADD COLUMN     "cancelledAt" TIMESTAMP(3),
+ADD COLUMN     "cancelledById" INTEGER;
+
+-- AlterTable
+ALTER TABLE "products" ADD COLUMN     "insuranceCategory" "InsuranceCategory";
+
+-- AddForeignKey
+ALTER TABLE "policies" ADD CONSTRAINT "policies_cancelledById_fkey" FOREIGN KEY ("cancelledById") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

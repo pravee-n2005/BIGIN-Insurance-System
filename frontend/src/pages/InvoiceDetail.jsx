@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { fetchInvoice, downloadInvoicePdf, cancelInvoice, setGstExempt } from '../api/invoices';
 import { useAuth } from '../context/AuthContext';
+import { Field, Select, Textarea } from '../components/FormField';
 
 const fmt = (n) =>
   new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(n));
@@ -21,6 +22,22 @@ const monthLabel = (ym) => {
   const [y, m] = ym.split('-');
   return new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
 };
+
+const INVOICE_CANCELLATION_REASONS = [
+  { value: 'DUPLICATE_INVOICE',       label: 'Duplicate Invoice' },
+  { value: 'INCORRECT_TAXABLE_VALUE', label: 'Incorrect Taxable Value' },
+  { value: 'WRONG_INSURER_SELECTED',  label: 'Wrong Insurer Selected' },
+  { value: 'GST_CALCULATION_ERROR',   label: 'GST Calculation Error' },
+  { value: 'REPLACED_BY_NEW_INVOICE', label: 'Replaced by New Invoice' },
+  { value: 'TEST_DUMMY_INVOICE',      label: 'Test / Dummy Invoice' },
+  { value: 'CLIENT_REQUEST',          label: 'Client Request' },
+  { value: 'PAYMENT_REVERSED',        label: 'Payment Reversed' },
+  { value: 'OTHER',                   label: 'Other (specify below)' },
+];
+
+const INVOICE_CANCELLATION_REASON_LABELS = Object.fromEntries(
+  INVOICE_CANCELLATION_REASONS.map(({ value, label }) => [value, label.replace(' (specify below)', '')])
+);
 
 const SUPPLIER = {
   legalName: 'Bigin Insurance Brokers Private Limited',
@@ -42,8 +59,10 @@ export default function InvoiceDetail() {
   const [downloading, setDownloading]   = useState(false);
   const [dlError, setDlError]           = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [cancelling, setCancelling]     = useState(false);
-  const [cancelError, setCancelError]   = useState('');
+  const [cancelling, setCancelling]           = useState(false);
+  const [cancelError, setCancelError]         = useState('');
+  const [cancelReason, setCancelReason]       = useState('');
+  const [cancelReasonOther, setCancelReasonOther] = useState('');
 
   useEffect(() => {
     fetchInvoice(parseInt(id))
@@ -81,13 +100,22 @@ export default function InvoiceDetail() {
     }
   }
 
+  function openCancelModal() {
+    setCancelError('');
+    setCancelReason('');
+    setCancelReasonOther('');
+    setShowCancelModal(true);
+  }
+
   async function handleCancel() {
     setCancelError('');
     setCancelling(true);
     try {
-      await cancelInvoice(invoice.id);
+      await cancelInvoice(invoice.id, {
+        cancellationReason: cancelReason,
+        cancellationReasonOther: cancelReason === 'OTHER' ? cancelReasonOther : undefined,
+      });
       setShowCancelModal(false);
-      // Refresh invoice data to reflect new CANCELLED status
       const updated = await fetchInvoice(invoice.id);
       setInvoice(updated);
     } catch (err) {
@@ -130,7 +158,7 @@ export default function InvoiceDetail() {
           {/* Cancel — admin only, not already cancelled */}
           {isAdmin && invoice.status !== 'CANCELLED' && (
             <button
-              onClick={() => { setCancelError(''); setShowCancelModal(true); }}
+              onClick={openCancelModal}
               className="px-4 py-2 border border-red-300 text-red-600 text-sm font-medium rounded-md hover:bg-red-50 transition-colors"
             >
               Cancel Invoice
@@ -251,6 +279,37 @@ export default function InvoiceDetail() {
           </div>
         </div>
 
+        {/* Cancellation details — shown only for CANCELLED invoices */}
+        {invoice.status === 'CANCELLED' && (
+          <div className="px-6 py-4 border-t border-red-100 bg-red-50/40">
+            <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-3">Cancellation Details</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+              <div>
+                <p className="text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Reason</p>
+                <p className="text-gray-700">
+                  {invoice.cancellationReason
+                    ? INVOICE_CANCELLATION_REASON_LABELS[invoice.cancellationReason] ?? invoice.cancellationReason
+                    : <span className="italic text-gray-400">Not recorded</span>}
+                </p>
+              </div>
+              {invoice.cancellationReason === 'OTHER' && (
+                <div className="col-span-2">
+                  <p className="text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Details</p>
+                  <p className="text-gray-700">{invoice.cancellationReasonOther || '—'}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Cancelled By</p>
+                <p className="text-gray-700">{invoice.cancelledBy?.name || '—'}</p>
+              </div>
+              <div>
+                <p className="text-gray-400 uppercase tracking-wide font-semibold mb-0.5">Cancelled At</p>
+                <p className="text-gray-700">{invoice.cancelledAt ? fmtDateTime(invoice.cancelledAt) : '—'}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Module 4 — GST classification flag (admin only) */}
         {isAdmin && invoice.status !== 'CANCELLED' && (
           <div className="px-6 py-3 border-t border-gray-200 bg-amber-50/40 flex items-center gap-3">
@@ -271,43 +330,90 @@ export default function InvoiceDetail() {
         )}
       </div>
 
-      {/* Cancel confirmation modal */}
+      {/* Cancel invoice modal — requires a reason */}
       {showCancelModal && (
         <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50"
           onClick={() => !cancelling && setShowCancelModal(false)}
         >
           <div
-            className="bg-white rounded-lg shadow-xl w-full max-w-md p-6"
+            className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-base font-semibold text-gray-900 mb-1">Cancel Invoice</h3>
-            <p className="text-sm text-gray-600 mb-1">
-              Cancel <span className="font-mono font-semibold">{invoice.invoiceNumber}</span>?
-            </p>
-            <p className="text-xs text-gray-400 mb-4">
-              The record is never deleted. Status will become CANCELLED and the PDF will no longer be downloadable.
-              A new invoice can be generated for the same insurer and month after cancellation.
-            </p>
-            {cancelError && (
-              <p className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{cancelError}</p>
-            )}
-            <div className="flex gap-3">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-gray-900">Cancel Invoice</h3>
               <button
-                onClick={handleCancel}
-                disabled={cancelling}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 disabled:opacity-50 transition-colors"
-              >
-                {cancelling ? 'Cancelling…' : 'Yes, Cancel Invoice'}
-              </button>
-              <button
-                onClick={() => setShowCancelModal(false)}
-                disabled={cancelling}
-                className="px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Keep Invoice
-              </button>
+                type="button"
+                onClick={() => !cancelling && setShowCancelModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+              >×</button>
             </div>
+
+            {/* Body */}
+            <form
+              onSubmit={(e) => { e.preventDefault(); handleCancel(); }}
+              className="px-6 py-5 space-y-4"
+            >
+              <p className="text-sm text-gray-600">
+                Cancelling <span className="font-mono font-semibold">{invoice.invoiceNumber}</span>.
+                The record is never deleted — status becomes CANCELLED and the PDF will no longer be downloadable.
+                A new invoice can be generated for the same insurer and month after cancellation.
+              </p>
+
+              <Field label="Cancellation Reason" required>
+                <Select
+                  value={cancelReason}
+                  onChange={(e) => {
+                    setCancelReason(e.target.value);
+                    if (e.target.value !== 'OTHER') setCancelReasonOther('');
+                    setCancelError('');
+                  }}
+                  disabled={cancelling}
+                >
+                  <option value="">Select reason…</option>
+                  {INVOICE_CANCELLATION_REASONS.map((r) => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </Select>
+              </Field>
+
+              {cancelReason === 'OTHER' && (
+                <Field label="Reason Details" required>
+                  <Textarea
+                    value={cancelReasonOther}
+                    onChange={(e) => { setCancelReasonOther(e.target.value); setCancelError(''); }}
+                    disabled={cancelling}
+                    rows={3}
+                    maxLength={500}
+                    placeholder="Describe the reason for cancellation…"
+                  />
+                  <p className="mt-1 text-xs text-gray-400 text-right">{cancelReasonOther.length}/500</p>
+                </Field>
+              )}
+
+              {cancelError && (
+                <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{cancelError}</p>
+              )}
+
+              <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+                <button
+                  type="submit"
+                  disabled={cancelling || !cancelReason || (cancelReason === 'OTHER' && !cancelReasonOther.trim())}
+                  className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {cancelling ? 'Cancelling…' : 'Confirm Cancellation'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => !cancelling && setShowCancelModal(false)}
+                  disabled={cancelling}
+                  className="px-4 py-2 border border-gray-300 text-sm font-medium text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors"
+                >
+                  Keep Invoice
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -8,6 +8,26 @@ const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
 const STATUSES       = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const PAYMENT_MODES  = ['ONLINE', 'CARD', 'UPI', 'CHEQUE', 'BNPL', 'FINSALL', 'FIBE', 'CC', 'BIMAPAY'];
 
+const CANCELLATION_REASONS = [
+  { value: 'CUSTOMER_DECLINED',               label: 'Customer Declined' },
+  { value: 'CUSTOMER_REQUESTED_CANCELLATION', label: 'Customer Requested Cancellation' },
+  { value: 'PREMIUM_TOO_HIGH',                label: 'Premium Too High' },
+  { value: 'CUSTOMER_PURCHASED_ELSEWHERE',    label: 'Customer Purchased Elsewhere' },
+  { value: 'CUSTOMER_NOT_REACHABLE',          label: 'Customer Not Reachable' },
+  { value: 'POLICY_ISSUED_INCORRECTLY',       label: 'Policy Issued Incorrectly' },
+  { value: 'WRONG_POLICY_DETAILS',            label: 'Wrong Policy Details' },
+  { value: 'KYC_DOCUMENTS_NOT_PROVIDED',      label: 'KYC Documents Not Provided' },
+  { value: 'INSURER_REJECTED_PROPOSAL',       label: 'Insurer Rejected Proposal' },
+  { value: 'PAYMENT_NOT_RECEIVED',            label: 'Payment Not Received' },
+  { value: 'PROPOSAL_EXPIRED',                label: 'Proposal Expired' },
+  { value: 'POLICY_REPLACED',                 label: 'Policy Replaced' },
+  { value: 'RENEWAL_NOT_PROCEEDED',           label: 'Renewal Not Proceeded' },
+  { value: 'DUPLICATE_ENTRY',                 label: 'Duplicate Entry' },
+  { value: 'DUPLICATE_POLICY_IMPORTED',       label: 'Duplicate Policy (Imported)' },
+  { value: 'TEST_DUMMY_ENTRY',                label: 'Test / Dummy Entry' },
+  { value: 'OTHER',                           label: 'Other (specify below)' },
+];
+
 const EMPTY = {
   insurerName: '',
   insuranceCategory: '',
@@ -30,6 +50,8 @@ const EMPTY = {
   invoiceDate: '',
   creditedDate: '',
   remarks: '',
+  cancellationReason: '',
+  cancellationReasonOther: '',
 };
 
 // Normalise a date coming from the API (ISO string) to yyyy-MM-dd for <input type="date">
@@ -190,6 +212,8 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
       invoiceDate: form.invoiceDate || undefined,
       creditedDate: form.creditedDate || undefined,
       remarks: form.remarks.trim() || undefined,
+      cancellationReason: form.cancellationReason || undefined,
+      cancellationReasonOther: form.cancellationReasonOther.trim() || undefined,
     };
   }
 
@@ -357,12 +381,54 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
         <Field label="Policy Status" error={fieldErrors.status}>
           <Select
             value={form.status}
-            onChange={(e) => set('status', e.target.value)}
+            onChange={(e) => {
+              set('status', e.target.value);
+              // Clear cancellation fields when moving away from CANCELLED
+              if (e.target.value !== 'CANCELLED') {
+                set('cancellationReason', '');
+                set('cancellationReasonOther', '');
+              }
+            }}
             error={fieldErrors.status}
           >
             {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </Select>
         </Field>
+
+        {/* Cancellation fields — shown only when status is CANCELLED */}
+        {form.status === 'CANCELLED' && (
+          <>
+            <Field label="Cancellation Reason" required error={fieldErrors.cancellationReason}>
+              <Select
+                value={form.cancellationReason}
+                onChange={(e) => {
+                  set('cancellationReason', e.target.value);
+                  if (e.target.value !== 'OTHER') set('cancellationReasonOther', '');
+                }}
+                error={fieldErrors.cancellationReason}
+              >
+                <option value="">Select reason…</option>
+                {CANCELLATION_REASONS.map((r) => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </Select>
+            </Field>
+
+            {form.cancellationReason === 'OTHER' && (
+              <Field label="Reason Details" required error={fieldErrors.cancellationReasonOther} className="col-span-full">
+                <textarea
+                  value={form.cancellationReasonOther}
+                  onChange={(e) => set('cancellationReasonOther', e.target.value)}
+                  rows={3}
+                  maxLength={500}
+                  placeholder="Describe the reason for cancellation…"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                />
+                <p className="mt-1 text-xs text-gray-400 text-right">{form.cancellationReasonOther.length}/500</p>
+              </Field>
+            )}
+          </>
+        )}
 
         {/* ── Premium & Financial ────────────────────────────────────────── */}
         <SectionHeading>Premium & Financial</SectionHeading>

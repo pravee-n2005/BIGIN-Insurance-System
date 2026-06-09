@@ -1,4 +1,5 @@
 const prisma = require('../../config/prisma');
+const { validateCancellation } = require('./policy.validation');
 
 // ─── Renewal date calculator ──────────────────────────────────────────────────
 
@@ -94,6 +95,11 @@ async function create(body, userId) {
   return prisma.policy.create({ data, include: { createdBy: { select: { id: true, name: true } } } });
 }
 
+const POLICY_INCLUDE = {
+  createdBy: { select: { id: true, name: true } },
+  cancelledBy: { select: { id: true, name: true } },
+};
+
 async function list({ page, limit, month, insurerName, leadSource, insuranceCategory, status }) {
   const skip = (page - 1) * limit;
   const where = {};
@@ -118,7 +124,7 @@ async function list({ page, limit, month, insurerName, leadSource, insuranceCate
       skip,
       take: limit,
       orderBy: { issueDate: 'desc' },
-      include: { createdBy: { select: { id: true, name: true } } },
+      include: POLICY_INCLUDE,
     }),
     prisma.policy.count({ where }),
   ]);
@@ -129,15 +135,22 @@ async function list({ page, limit, month, insurerName, leadSource, insuranceCate
 async function getById(id) {
   return prisma.policy.findUnique({
     where: { id },
-    include: { createdBy: { select: { id: true, name: true } } },
+    include: POLICY_INCLUDE,
   });
 }
 
-async function update(id, body) {
-  // Recalculate financials for any update that touches financial fields.
-  // Fetch existing to fill in unchanged fields.
+async function update(id, body, userId) {
   const existing = await prisma.policy.findUnique({ where: { id } });
   if (!existing) return null;
+
+  const transitioningToCancelled = existing.status !== 'CANCELLED' && body.status === 'CANCELLED';
+
+  const cancellationErrors = validateCancellation(body, existing.status);
+  if (cancellationErrors.length) {
+    const err = new Error(cancellationErrors.join(' '));
+    err.validationErrors = cancellationErrors;
+    throw err;
+  }
 
   const merged = {
     insurerName: body.insurerName ?? existing.insurerName,
@@ -161,6 +174,8 @@ async function update(id, body) {
     creditedDate: 'creditedDate' in body ? body.creditedDate : existing.creditedDate,
     paymentMode: 'paymentMode' in body ? body.paymentMode : existing.paymentMode,
     remarks: 'remarks' in body ? body.remarks : existing.remarks,
+    cancellationReason: 'cancellationReason' in body ? body.cancellationReason : existing.cancellationReason,
+    cancellationReasonOther: 'cancellationReasonOther' in body ? body.cancellationReasonOther : existing.cancellationReasonOther,
   };
 
   const financials = calcFinancials({
@@ -171,6 +186,10 @@ async function update(id, body) {
   });
 
   const renewalDate = calcRenewalDate(merged.issueDate, merged.paymentFrequency);
+
+  const cancellationData = transitioningToCancelled
+    ? { cancelledAt: new Date(), cancelledById: userId }
+    : {};
 
   return prisma.policy.update({
     where: { id },
@@ -201,8 +220,11 @@ async function update(id, body) {
       creditedDate: merged.creditedDate ? new Date(merged.creditedDate) : null,
       paymentMode: merged.paymentMode || null,
       remarks: merged.remarks || null,
+      cancellationReason: merged.cancellationReason || null,
+      cancellationReasonOther: merged.cancellationReasonOther || null,
+      ...cancellationData,
     },
-    include: { createdBy: { select: { id: true, name: true } } },
+    include: POLICY_INCLUDE,
   });
 }
 

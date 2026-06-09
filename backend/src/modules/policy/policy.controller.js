@@ -49,10 +49,11 @@ const updatePolicy = async (req, res, next) => {
     const errors = validateUpdate(req.body);
     if (errors.length) return res.status(400).json({ errors });
 
-    const policy = await service.update(parseInt(req.params.id), req.body);
+    const policy = await service.update(parseInt(req.params.id), req.body, req.user.id);
     if (!policy) return res.status(404).json({ error: 'Policy not found.' });
     res.json({ policy });
   } catch (err) {
+    if (err.validationErrors) return res.status(400).json({ errors: err.validationErrors });
     if (err.code === 'P2002') return res.status(409).json({ error: 'Policy number already exists.' });
     next(err);
   }

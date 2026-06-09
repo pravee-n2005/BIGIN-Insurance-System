@@ -12,8 +12,8 @@ export const fetchInvoices = (params = {}) =>
 export const fetchInvoice = (id) =>
   api.get(`/invoices/${id}`).then((r) => r.data.invoice);
 
-export const cancelInvoice = (id) =>
-  api.patch(`/invoices/${id}/cancel`).then((r) => r.data.invoice);
+export const cancelInvoice = (id, payload) =>
+  api.patch(`/invoices/${id}/cancel`, payload).then((r) => r.data.invoice);
 
 export const downloadInvoicePdf = (id) =>
   api.get(`/invoices/${id}/pdf`, { responseType: 'blob' }).then((r) => r.data);

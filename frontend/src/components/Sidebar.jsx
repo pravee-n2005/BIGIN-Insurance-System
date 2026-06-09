@@ -7,6 +7,7 @@ const NAV = [
   { to: '/reports',           label: 'Reports',           icon: ChartIcon },
   { to: '/invoices',          label: 'Invoices',          icon: InvoiceIcon },
   { to: '/statements',        label: 'GST Module',        icon: GstIcon },
+  { to: '/master-data',       label: 'Master Data',       icon: MasterDataIcon, adminOnly: true },
   { to: '/invoice-profiles',  label: 'Invoice Profiles',  icon: ReceiptIcon, adminOnly: true },
 ];
 
@@ -119,6 +120,14 @@ function ReceiptIcon({ className }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m4 5l-3-2-3 2-3-2-3 2-3-2-3 2V5a2 2 0 012-2h14a2 2 0 012 2v16z" />
+    </svg>
+  );
+}
+
+function MasterDataIcon({ className }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h7" />
     </svg>
   );
 }

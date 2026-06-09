@@ -30,6 +30,26 @@ function Section({ title, children }) {
   );
 }
 
+const CANCELLATION_REASON_LABELS = {
+  CUSTOMER_DECLINED:               'Customer Declined',
+  CUSTOMER_REQUESTED_CANCELLATION: 'Customer Requested Cancellation',
+  PREMIUM_TOO_HIGH:                'Premium Too High',
+  CUSTOMER_PURCHASED_ELSEWHERE:    'Customer Purchased Elsewhere',
+  CUSTOMER_NOT_REACHABLE:          'Customer Not Reachable',
+  POLICY_ISSUED_INCORRECTLY:       'Policy Issued Incorrectly',
+  WRONG_POLICY_DETAILS:            'Wrong Policy Details',
+  KYC_DOCUMENTS_NOT_PROVIDED:      'KYC Documents Not Provided',
+  INSURER_REJECTED_PROPOSAL:       'Insurer Rejected Proposal',
+  PAYMENT_NOT_RECEIVED:            'Payment Not Received',
+  PROPOSAL_EXPIRED:                'Proposal Expired',
+  POLICY_REPLACED:                 'Policy Replaced',
+  RENEWAL_NOT_PROCEEDED:           'Renewal Not Proceeded',
+  DUPLICATE_ENTRY:                 'Duplicate Entry',
+  DUPLICATE_POLICY_IMPORTED:       'Duplicate Policy (Imported)',
+  TEST_DUMMY_ENTRY:                'Test / Dummy Entry',
+  OTHER:                           'Other',
+};
+
 const STATUS_COLORS = {
   ACTIVE:    'bg-green-50 text-green-700',
   PENDING:   'bg-yellow-50 text-yellow-700',
@@ -149,6 +169,27 @@ export default function PolicyDetail() {
           <Row label="Created By" value={policy.createdBy?.name} />
           <Row label="Created At" value={fmtDate(policy.createdAt)} />
         </Section>
+
+        {/* Cancellation — shown for CANCELLED policies */}
+        {policy.status === 'CANCELLED' && (
+          <Section title="Cancellation Details">
+            {policy.cancellationReason ? (
+              <>
+                <Row
+                  label="Reason"
+                  value={CANCELLATION_REASON_LABELS[policy.cancellationReason] ?? policy.cancellationReason}
+                />
+                {policy.cancellationReason === 'OTHER' && (
+                  <Row label="Reason Details" value={policy.cancellationReasonOther} />
+                )}
+              </>
+            ) : (
+              <Row label="Reason" value={<span className="italic text-gray-400">Legacy cancellation — no reason recorded</span>} />
+            )}
+            <Row label="Cancelled By" value={policy.cancelledBy?.name ?? '—'} />
+            <Row label="Cancelled At" value={fmtDate(policy.cancelledAt)} />
+          </Section>
+        )}
       </div>
     </div>
   );

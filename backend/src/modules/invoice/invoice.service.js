@@ -354,9 +354,15 @@ async function saveInvoice({ insurerId, billingMonth, createdById }) {
 }
 
 // ─── Cancel invoice ───────────────────────────────────────────────────────────
-// Sets status → CANCELLED. Never deletes the record.
+// Sets status → CANCELLED with a mandatory reason. Never deletes the record.
 
-async function cancelInvoice(id) {
+const INVOICE_CANCELLATION_REASONS = [
+  'DUPLICATE_INVOICE', 'INCORRECT_TAXABLE_VALUE', 'WRONG_INSURER_SELECTED',
+  'GST_CALCULATION_ERROR', 'REPLACED_BY_NEW_INVOICE', 'TEST_DUMMY_INVOICE',
+  'CLIENT_REQUEST', 'PAYMENT_REVERSED', 'OTHER',
+];
+
+async function cancelInvoice(id, body, userId) {
   const invoice = await prisma.invoice.findUnique({ where: { id } });
   if (!invoice) {
     throw Object.assign(new Error('Invoice not found.'), { status: 404 });
@@ -364,12 +370,37 @@ async function cancelInvoice(id) {
   if (invoice.status === 'CANCELLED') {
     throw Object.assign(new Error('Invoice is already cancelled.'), { status: 409 });
   }
+
+  const reason = body?.cancellationReason;
+  if (!reason) {
+    throw Object.assign(new Error('cancellationReason is required.'), { status: 400 });
+  }
+  if (!INVOICE_CANCELLATION_REASONS.includes(reason)) {
+    throw Object.assign(
+      new Error(`cancellationReason must be one of: ${INVOICE_CANCELLATION_REASONS.join(', ')}.`),
+      { status: 400 }
+    );
+  }
+  if (reason === 'OTHER' && !body?.cancellationReasonOther?.trim()) {
+    throw Object.assign(new Error('cancellationReasonOther is required when reason is OTHER.'), { status: 400 });
+  }
+  if (body?.cancellationReasonOther && body.cancellationReasonOther.length > 500) {
+    throw Object.assign(new Error('cancellationReasonOther must not exceed 500 characters.'), { status: 400 });
+  }
+
   return prisma.invoice.update({
     where: { id },
-    data:  { status: 'CANCELLED' },
+    data: {
+      status:                 'CANCELLED',
+      cancellationReason:     reason,
+      cancellationReasonOther: reason === 'OTHER' ? body.cancellationReasonOther.trim() : null,
+      cancelledAt:            new Date(),
+      cancelledById:          userId,
+    },
     include: {
-      insurer:   { select: { id: true, name: true } },
-      createdBy: { select: { id: true, name: true } },
+      insurer:     { select: { id: true, name: true } },
+      createdBy:   { select: { id: true, name: true } },
+      cancelledBy: { select: { id: true, name: true } },
     },
   });
 }
@@ -499,8 +530,9 @@ async function getInvoice(id) {
   const invoice = await prisma.invoice.findUnique({
     where: { id },
     include: {
-      insurer:   { select: { id: true, name: true } },
-      createdBy: { select: { id: true, name: true } },
+      insurer:     { select: { id: true, name: true } },
+      createdBy:   { select: { id: true, name: true } },
+      cancelledBy: { select: { id: true, name: true } },
     },
   });
   if (!invoice) {

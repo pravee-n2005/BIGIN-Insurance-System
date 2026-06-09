@@ -81,7 +81,7 @@ const cancelInvoice = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ error: 'Invalid invoice id.' });
-    const invoice = await service.cancelInvoice(id);
+    const invoice = await service.cancelInvoice(id, req.body, req.user.id);
     res.json({ invoice });
   } catch (err) {
     if (err.status) return res.status(err.status).json({ error: err.message });
