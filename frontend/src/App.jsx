@@ -13,6 +13,9 @@ import Reports from './pages/Reports';
 import InvoiceProfiles from './pages/InvoiceProfiles';
 import Invoices from './pages/Invoices';
 import InvoiceDetail from './pages/InvoiceDetail';
+import Statements from './pages/Statements';
+import StatementNew from './pages/StatementNew';
+import StatementDetail from './pages/StatementDetail';
 
 export default function App() {
   return (
@@ -33,11 +36,16 @@ export default function App() {
               <Route path="/invoices"     element={<Invoices />} />
               <Route path="/invoices/:id" element={<InvoiceDetail />} />
 
+              {/* GST Module (statements) — list + detail readable by both, write actions gated inside */}
+              <Route path="/statements"     element={<Statements />} />
+              <Route path="/statements/:id" element={<StatementDetail />} />
+
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>
                 <Route path="/policies/new"        element={<AddPolicy />} />
                 <Route path="/policies/:id/edit"   element={<EditPolicy />} />
                 <Route path="/invoice-profiles"    element={<InvoiceProfiles />} />
+                <Route path="/statements/new"      element={<StatementNew />} />
               </Route>
             </Route>
           </Route>
