@@ -764,7 +764,7 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
               >
                 Use suggested
               </button>
-              <span className="text-gray-400"> (invoice value − 10% TDS estimate)</span>
+              <span className="text-gray-400"> (invoice value less 10% TDS on taxable value)</span>
             </p>
           )}
           {variance !== null && Math.abs(variance) > 0.01 && (
