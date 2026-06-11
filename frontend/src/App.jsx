@@ -17,6 +17,7 @@ import Statements from './pages/Statements';
 import StatementNew from './pages/StatementNew';
 import StatementDetail from './pages/StatementDetail';
 import MasterData from './pages/MasterData';
+import Incentives from './pages/Incentives';
 
 export default function App() {
   return (
@@ -40,6 +41,9 @@ export default function App() {
               {/* GST Module (statements) — list + detail readable by both, write actions gated inside */}
               <Route path="/statements"     element={<Statements />} />
               <Route path="/statements/:id" element={<StatementDetail />} />
+
+              {/* Incentives — read for both roles, create/edit/delete gated inside the page */}
+              <Route path="/incentives" element={<Incentives />} />
 
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>

@@ -144,7 +144,37 @@ model LeadMember {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  incentives Incentive[]
+
   @@map("lead_members")
+}
+
+// ── Lead Executive Incentives ────────────────────────────────────────────────
+// Manually entered monthly point totals for Lead Executives. Standalone module —
+// no relation to Policy, commission, or invoice data.
+
+model Incentive {
+  id Int @id @default(autoincrement())
+
+  leadMemberId Int
+  leadMember   LeadMember @relation(fields: [leadMemberId], references: [id])
+
+  month String // "YYYY-MM"
+
+  points          Decimal @db.Decimal(10, 2)
+  pointValue      Decimal @db.Decimal(10, 2) @default(0.50)
+  incentiveAmount Decimal @db.Decimal(18, 2)
+
+  remarks String?
+
+  createdById Int
+  createdBy   User @relation("IncentiveCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([leadMemberId, month])
+  @@map("incentives")
 }
 
 // ── Invoice Phase 1 ─────────────────────────────────────────────────────────
@@ -186,6 +216,7 @@ model User {
   invoices          Invoice[]
   cancelledInvoices Invoice[]           @relation("InvoiceCancelledBy")   // Module 5
   statements        InsurerStatement[]
+  incentives        Incentive[]         @relation("IncentiveCreatedBy")
 
   @@map("users")
 }

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Field, Input, Select, Textarea, SectionHeading } from './FormField';
-import { fetchInsurers, fetchProductsByInsurer, fetchLeadMembers } from '../api/masters';
+import { fetchAllInsurers, fetchAllProductsByInsurer, fetchLeadMembers } from '../api/masters';
 
 const CATEGORIES     = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
 const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
@@ -27,6 +27,11 @@ const CANCELLATION_REASONS = [
   { value: 'TEST_DUMMY_ENTRY',                label: 'Test / Dummy Entry' },
   { value: 'OTHER',                           label: 'Other (specify below)' },
 ];
+
+// Synthetic dropdown option used when a policy's stored insurerName/productName
+// doesn't match any (active or inactive) master record — keeps the field's
+// current value visible instead of showing a blank "Select…" placeholder.
+const CUSTOM_OPTION_VALUE = '__custom__';
 
 const EMPTY = {
   insurerName: '',
@@ -60,6 +65,36 @@ function toDateInput(val) {
   return val.slice(0, 10);
 }
 
+// Decimal-safe rounding to 2 places — mirrors round2() in policy.service.js
+function round2(n) {
+  return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+}
+
+// Blank Commission %/TDS % is treated as 0% — mirrors normalizePercent() in policy.service.js
+function normalizePercent(val) {
+  if (val === '' || val === null || val === undefined) return 0;
+  return Number(val);
+}
+
+const fmtMoney = (n) =>
+  '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// Mirrors calcFinancials() in policy.service.js — same formula, same rounding,
+// so the live preview always matches what the server will persist.
+function calcFinancials({ netPremium, gstPercent, commissionPercent, tdsPercent }) {
+  const net = Number(netPremium) || 0;
+  const gstPct = normalizePercent(gstPercent);
+  const commPct = normalizePercent(commissionPercent);
+  const tdsPct = normalizePercent(tdsPercent);
+
+  const gstAmount = round2(net * gstPct / 100);
+  const commissionAmount = round2(net * commPct / 100);
+  const tdsAmount = round2(commissionAmount * tdsPct / 100);
+  const finalReceivable = round2(commissionAmount - tdsAmount);
+
+  return { gstAmount, commissionAmount, tdsAmount, finalReceivable };
+}
+
 export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save Policy' }) {
   const navigate = useNavigate();
 
@@ -91,30 +126,47 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
   const [selectedLeadType, setSelectedLeadType]   = useState('POSP');
   const [selectedLeadMemberId, setSelectedLeadMemberId] = useState('');
 
-  // Load insurers on mount
+  // Load insurers on mount. Fetch active + inactive so that policies created
+  // against an insurer that has since been deactivated still pre-select and
+  // display correctly when edited.
   useEffect(() => {
-    fetchInsurers()
+    fetchAllInsurers()
       .then((list) => {
         setInsurers(list);
         // Pre-select insurer if editing
         if (form.insurerName) {
           const match = list.find((i) => i.name === form.insurerName);
-          if (match) setSelectedInsurerId(String(match.id));
+          // No master record matches this policy's insurerName (e.g. legacy
+          // imported data) — fall back to a synthetic "current value" option
+          // so the dropdown still shows it instead of appearing blank.
+          setSelectedInsurerId(match ? String(match.id) : CUSTOM_OPTION_VALUE);
         }
       })
       .catch(() => {/* silent — falls back to free-text */});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load products when insurer changes
+  // Load products when insurer changes. Fetch active + inactive for the same
+  // reason as insurers above — an existing policy's product may have been
+  // deactivated since it was created.
   useEffect(() => {
     if (!selectedInsurerId) { setProducts([]); return; }
-    fetchProductsByInsurer(selectedInsurerId)
+    if (selectedInsurerId === CUSTOM_OPTION_VALUE) {
+      // Insurer itself isn't a master record, so there's nothing to fetch
+      // products against — just show the policy's existing product as-is.
+      setProducts([]);
+      if (form.productName) setSelectedProductId(CUSTOM_OPTION_VALUE);
+      return;
+    }
+    fetchAllProductsByInsurer(selectedInsurerId)
       .then((list) => {
         setProducts(list);
         if (form.productName) {
           const match = list.find((p) => p.name === form.productName);
-          if (match) setSelectedProductId(String(match.id));
+          // No product master record matches this policy's productName under
+          // the matched insurer (very common for legacy imported policies) —
+          // fall back to a synthetic "current value" option.
+          setSelectedProductId(match ? String(match.id) : CUSTOM_OPTION_VALUE);
         }
       })
       .catch(() => setProducts([]));
@@ -158,6 +210,10 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
 
   // ── Dropdown handlers: write through to form's string fields ─────────────
   function handleInsurerChange(idStr) {
+    // The "current value" placeholder is only ever shown as the already-
+    // selected option — re-selecting it is a no-op so we never wipe out the
+    // policy's existing insurerName/productName.
+    if (idStr === CUSTOM_OPTION_VALUE) return;
     setSelectedInsurerId(idStr);
     setSelectedProductId('');                              // reset cascade
     const insurer = insurers.find((i) => String(i.id) === idStr);
@@ -165,6 +221,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
   }
 
   function handleProductChange(idStr) {
+    if (idStr === CUSTOM_OPTION_VALUE) return;
     setSelectedProductId(idStr);
     const product = products.find((p) => String(p.id) === idStr);
     setForm((f) => ({ ...f, productName: product?.name ?? '' }));
@@ -181,6 +238,17 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
     const member = leadMembers.find((m) => String(m.id) === idStr);
     setForm((f) => ({ ...f, leadSource: member?.name ?? '' }));
   }
+
+  // Live financial preview — recalculates on every change to the inputs below.
+  const preview = useMemo(
+    () => calcFinancials({
+      netPremium: form.netPremium,
+      gstPercent: form.gstPercent,
+      commissionPercent: form.commissionPercent,
+      tdsPercent: form.tdsPercent,
+    }),
+    [form.netPremium, form.gstPercent, form.commissionPercent, form.tdsPercent]
+  );
 
   function set(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -277,9 +345,16 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             error={fieldErrors.insurerName}
           >
             <option value="">Select insurer…</option>
-            {insurers.map((i) => (
-              <option key={i.id} value={i.id}>{i.name}</option>
-            ))}
+            {selectedInsurerId === CUSTOM_OPTION_VALUE && form.insurerName && (
+              <option value={CUSTOM_OPTION_VALUE}>{form.insurerName}</option>
+            )}
+            {insurers
+              .filter((i) => i.active || i.name === form.insurerName)
+              .map((i) => (
+                <option key={i.id} value={i.id}>
+                  {i.name}{!i.active ? ' (Inactive)' : ''}
+                </option>
+              ))}
           </Select>
         </Field>
 
@@ -306,9 +381,16 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             <option value="">
               {!selectedInsurerId ? 'Select insurer first' : 'Select product…'}
             </option>
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>{p.name}</option>
-            ))}
+            {selectedProductId === CUSTOM_OPTION_VALUE && form.productName && (
+              <option value={CUSTOM_OPTION_VALUE}>{form.productName}</option>
+            )}
+            {products
+              .filter((p) => p.active || p.name === form.productName)
+              .map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}{!p.active ? ' (Inactive)' : ''}
+                </option>
+              ))}
           </Select>
         </Field>
 
@@ -435,7 +517,8 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
 
         <div className="col-span-full bg-blue-50 border border-blue-200 rounded-md px-4 py-2 text-xs text-blue-700">
           Enter percentages only. GST amount, commission amount, TDS amount and net receivable are
-          calculated automatically by the server.
+          calculated automatically and shown below as you type. Commission % and TDS % are optional —
+          leave blank to treat as 0%.
         </div>
 
         <Field label="Gross Premium (₹)" required error={fieldErrors.grossPremium}>
@@ -478,7 +561,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           />
         </Field>
 
-        <Field label="Commission %" required error={fieldErrors.commissionPercent}>
+        <Field label="Commission %" error={fieldErrors.commissionPercent}>
           <Input
             type="number"
             min="0"
@@ -486,13 +569,12 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             step="0.0001"
             value={form.commissionPercent}
             onChange={(e) => set('commissionPercent', e.target.value)}
-            placeholder="e.g. 29.66"
-            required
+            placeholder="Optional — leave blank for 0%"
             error={fieldErrors.commissionPercent}
           />
         </Field>
 
-        <Field label="TDS %" required error={fieldErrors.tdsPercent}>
+        <Field label="TDS %" error={fieldErrors.tdsPercent}>
           <Input
             type="number"
             min="0"
@@ -500,11 +582,30 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             step="0.01"
             value={form.tdsPercent}
             onChange={(e) => set('tdsPercent', e.target.value)}
-            placeholder="10"
-            required
+            placeholder="Optional — leave blank for 0%"
             error={fieldErrors.tdsPercent}
           />
         </Field>
+
+        {/* ── Live calculation preview ─────────────────────────────────── */}
+        <div className="col-span-full grid grid-cols-2 md:grid-cols-4 gap-3 bg-gray-50 border border-gray-200 rounded-md px-4 py-3">
+          <div>
+            <p className="text-xs text-gray-500">GST Amount</p>
+            <p className="text-sm font-semibold text-gray-900">{fmtMoney(preview.gstAmount)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Commission Amount</p>
+            <p className="text-sm font-semibold text-gray-900">{fmtMoney(preview.commissionAmount)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">TDS Amount</p>
+            <p className="text-sm font-semibold text-gray-900">{fmtMoney(preview.tdsAmount)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500">Net Receivable</p>
+            <p className="text-sm font-semibold text-gray-900">{fmtMoney(preview.finalReceivable)}</p>
+          </div>
+        </div>
 
         {/* ── Business & Tracking ───────────────────────────────────────── */}
         <SectionHeading>Business & Tracking</SectionHeading>

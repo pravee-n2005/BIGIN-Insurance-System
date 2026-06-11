@@ -18,13 +18,20 @@ function calcRenewalDate(issueDate, paymentFrequency) {
 }
 
 // ─── Financial calculator ─────────────────────────────────────────────────────
-// All inputs are plain numbers. Returns rounded Decimal-safe strings.
+// All inputs are plain numbers (or numeric strings). Returns rounded Decimal-safe numbers.
+
+// Commission % and TDS % are optional on the form — blank/null/undefined is
+// treated as 0% so the calculation always produces a consistent result.
+function normalizePercent(val) {
+  if (val === '' || val === null || val === undefined) return 0;
+  return Number(val);
+}
 
 function calcFinancials({ netPremium, gstPercent, commissionPercent, tdsPercent }) {
   const net = Number(netPremium);
-  const gstPct = Number(gstPercent);
-  const commPct = Number(commissionPercent);
-  const tdsPct = Number(tdsPercent);
+  const gstPct = normalizePercent(gstPercent);
+  const commPct = normalizePercent(commissionPercent);
+  const tdsPct = normalizePercent(tdsPercent);
 
   const gstAmount = round2(net * gstPct / 100);
   const commissionAmount = round2(net * commPct / 100);
@@ -35,7 +42,7 @@ function calcFinancials({ netPremium, gstPercent, commissionPercent, tdsPercent 
 }
 
 function round2(n) {
-  return Math.round((n + Number.EPSILON) * 100) / 100;
+  return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 }
 
 // ─── Build Prisma-ready data from a validated request body ───────────────────
@@ -71,11 +78,11 @@ function buildPolicyData(body, userId) {
     status: status || 'ACTIVE',
     grossPremium: Number(grossPremium),
     netPremium: Number(netPremium),
-    gstPercent: Number(gstPercent),
+    gstPercent: normalizePercent(gstPercent),
     gstAmount: financials.gstAmount,
-    commissionPercent: Number(commissionPercent),
+    commissionPercent: normalizePercent(commissionPercent),
     commissionAmount: financials.commissionAmount,
-    tdsPercent: Number(tdsPercent),
+    tdsPercent: normalizePercent(tdsPercent),
     tdsAmount: financials.tdsAmount,
     finalReceivable: financials.finalReceivable,
     leadSource,
@@ -165,9 +172,9 @@ async function update(id, body, userId) {
     status: body.status ?? existing.status,
     grossPremium: body.grossPremium ?? existing.grossPremium,
     netPremium: body.netPremium ?? existing.netPremium,
-    gstPercent: body.gstPercent ?? existing.gstPercent,
-    commissionPercent: body.commissionPercent ?? existing.commissionPercent,
-    tdsPercent: body.tdsPercent ?? existing.tdsPercent,
+    gstPercent: 'gstPercent' in body ? normalizePercent(body.gstPercent) : existing.gstPercent,
+    commissionPercent: 'commissionPercent' in body ? normalizePercent(body.commissionPercent) : existing.commissionPercent,
+    tdsPercent: 'tdsPercent' in body ? normalizePercent(body.tdsPercent) : existing.tdsPercent,
     leadSource: body.leadSource ?? existing.leadSource,
     invoiceNumber: 'invoiceNumber' in body ? body.invoiceNumber : existing.invoiceNumber,
     invoiceDate: 'invoiceDate' in body ? body.invoiceDate : existing.invoiceDate,
@@ -228,4 +235,4 @@ async function update(id, body, userId) {
   });
 }
 
-module.exports = { create, list, getById, update };
+module.exports = { create, list, getById, update, calcFinancials, normalizePercent, round2, calcRenewalDate };

@@ -13,6 +13,18 @@ function isPositiveNumber(val) {
   return val !== undefined && val !== null && !isNaN(Number(val)) && Number(val) >= 0;
 }
 
+// Required percent: must be a number between 0 and 100 inclusive.
+function isPercent(val) {
+  return isPositiveNumber(val) && Number(val) <= 100;
+}
+
+// Optional percent: blank/undefined/null is allowed (treated as 0%); if
+// provided, must be a number between 0 and 100 inclusive.
+function isOptionalPercent(val) {
+  if (val === undefined || val === null || val === '') return true;
+  return isPercent(val);
+}
+
 function isValidDate(val) {
   if (!val) return false;
   const d = new Date(val);
@@ -33,9 +45,9 @@ function validateCreate(body) {
     errors.push(`paymentFrequency must be one of: ${PAYMENT_FREQUENCIES.join(', ')}.`);
   if (!isPositiveNumber(body.grossPremium)) errors.push('grossPremium must be a non-negative number.');
   if (!isPositiveNumber(body.netPremium)) errors.push('netPremium must be a non-negative number.');
-  if (!isPositiveNumber(body.gstPercent)) errors.push('gstPercent must be a non-negative number.');
-  if (!isPositiveNumber(body.commissionPercent)) errors.push('commissionPercent must be a non-negative number.');
-  if (!isPositiveNumber(body.tdsPercent)) errors.push('tdsPercent must be a non-negative number.');
+  if (!isPercent(body.gstPercent)) errors.push('gstPercent must be a number between 0 and 100.');
+  if (!isOptionalPercent(body.commissionPercent)) errors.push('commissionPercent must be a number between 0 and 100.');
+  if (!isOptionalPercent(body.tdsPercent)) errors.push('tdsPercent must be a number between 0 and 100.');
   if (!body.leadSource?.trim()) errors.push('leadSource is required.');
 
   if (body.status && !POLICY_STATUSES.includes(body.status))
@@ -62,12 +74,14 @@ function validateUpdate(body) {
     errors.push('grossPremium must be a non-negative number.');
   if (body.netPremium !== undefined && !isPositiveNumber(body.netPremium))
     errors.push('netPremium must be a non-negative number.');
-  if (body.gstPercent !== undefined && !isPositiveNumber(body.gstPercent))
-    errors.push('gstPercent must be a non-negative number.');
-  if (body.commissionPercent !== undefined && !isPositiveNumber(body.commissionPercent))
-    errors.push('commissionPercent must be a non-negative number.');
-  if (body.tdsPercent !== undefined && !isPositiveNumber(body.tdsPercent))
-    errors.push('tdsPercent must be a non-negative number.');
+  if (body.gstPercent !== undefined && !isPercent(body.gstPercent))
+    errors.push('gstPercent must be a number between 0 and 100.');
+  if (body.commissionPercent !== undefined && !isOptionalPercent(body.commissionPercent))
+    errors.push('commissionPercent must be a number between 0 and 100.');
+  if (body.tdsPercent !== undefined && !isOptionalPercent(body.tdsPercent))
+    errors.push('tdsPercent must be a number between 0 and 100.');
+  if (body.leadSource !== undefined && !body.leadSource?.trim())
+    errors.push('leadSource is required and cannot be empty.');
   if (body.issueDate !== undefined && !isValidDate(body.issueDate))
     errors.push('issueDate must be a valid date.');
   if (body.invoiceDate !== undefined && body.invoiceDate !== null && !isValidDate(body.invoiceDate))
@@ -101,4 +115,4 @@ function validateCancellation(body, existingStatus) {
   return errors;
 }
 
-module.exports = { validateCreate, validateUpdate, validateCancellation };
+module.exports = { validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isPercent, isOptionalPercent };

@@ -25,6 +25,9 @@ export const deactivateInsurer = (id) =>
 export const fetchProductsByInsurer = (insurerId) =>
   api.get('/masters/products', { params: { insurerId } }).then((r) => r.data.data);
 
+export const fetchAllProductsByInsurer = (insurerId) =>
+  api.get('/masters/products', { params: { insurerId, all: 'true' } }).then((r) => r.data.data);
+
 export const fetchAllProducts = () =>
   api.get('/masters/products', { params: { all: 'true' } }).then((r) => r.data.data);
 

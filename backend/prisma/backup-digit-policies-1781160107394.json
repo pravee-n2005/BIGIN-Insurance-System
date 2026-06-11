@@ -1,0 +1,42 @@
+[
+  {
+    "id": 90,
+    "policyNumber": "D250918681",
+    "insurerName": "Digit General",
+    "issueDate": "2026-02-05T00:00:00.000Z",
+    "status": "ACTIVE",
+    "commissionAmount": "8097.18"
+  },
+  {
+    "id": 124,
+    "policyNumber": "D257237704",
+    "insurerName": "Digit General",
+    "issueDate": "2026-03-20T00:00:00.000Z",
+    "status": "ACTIVE",
+    "commissionAmount": "464.02"
+  },
+  {
+    "id": 141,
+    "policyNumber": "D260162035",
+    "insurerName": "Digit General",
+    "issueDate": "2026-04-04T00:00:00.000Z",
+    "status": "ACTIVE",
+    "commissionAmount": "0"
+  },
+  {
+    "id": 160,
+    "policyNumber": "L020376289",
+    "insurerName": "Digit Life",
+    "issueDate": "2026-05-11T00:00:00.000Z",
+    "status": "ACTIVE",
+    "commissionAmount": "0"
+  },
+  {
+    "id": 161,
+    "policyNumber": "D266760817",
+    "insurerName": "Digit General",
+    "issueDate": "2026-05-18T00:00:00.000Z",
+    "status": "ACTIVE",
+    "commissionAmount": "0"
+  }
+]

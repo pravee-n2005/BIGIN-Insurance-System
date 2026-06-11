@@ -9,6 +9,7 @@ const mastersRouter = require('./modules/masters/masters.routes');
 const invoiceProfileRouter = require('./modules/invoice-profile/invoice-profile.routes');
 const invoiceRouter = require('./modules/invoice/invoice.routes');
 const statementRouter = require('./modules/statement/statement.routes');
+const incentiveRouter = require('./modules/incentive/incentive.routes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/masters', mastersRouter);
 app.use('/api/invoice-profiles', invoiceProfileRouter);
 app.use('/api/invoices', invoiceRouter);
 app.use('/api/statements', statementRouter);
+app.use('/api/incentives', incentiveRouter);
 
 app.use(errorHandler);
 
