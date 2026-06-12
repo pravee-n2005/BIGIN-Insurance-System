@@ -15,6 +15,12 @@ export const updateIncentive = (id, payload) =>
 export const deleteIncentive = (id) =>
   api.delete(`/incentives/${id}`).then((r) => r.data.incentive);
 
+export const fetchDeletedIncentives = (params = {}) =>
+  api.get('/incentives/deleted', { params }).then((r) => r.data);
+
+export const restoreIncentive = (id) =>
+  api.post(`/incentives/${id}/restore`).then((r) => r.data.incentive);
+
 export const fetchExecutiveWiseReport = (params = {}) =>
   api.get('/incentives/reports/executive-wise', { params }).then((r) => r.data.data);
 

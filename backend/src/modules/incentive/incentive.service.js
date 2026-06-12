@@ -24,6 +24,11 @@ const INCENTIVE_INCLUDE = {
   createdBy: { select: { id: true, name: true } },
 };
 
+const DELETED_INCENTIVE_INCLUDE = {
+  ...INCENTIVE_INCLUDE,
+  deletedBy: { select: { id: true, name: true } },
+};
+
 async function assertLeadExecutive(leadMemberId) {
   const leadMember = await prisma.leadMember.findUnique({ where: { id: Number(leadMemberId) } });
   if (!leadMember) {
@@ -64,7 +69,7 @@ async function create(body, userId) {
 }
 
 async function list({ leadMemberId, month, year, page = 1, limit = 20 } = {}) {
-  const where = {};
+  const where = { isDeleted: false };
 
   if (leadMemberId) where.leadMemberId = Number(leadMemberId);
   if (month) where.month = month;
@@ -87,12 +92,14 @@ async function list({ leadMemberId, month, year, page = 1, limit = 20 } = {}) {
 }
 
 async function getById(id) {
-  return prisma.incentive.findUnique({ where: { id }, include: INCENTIVE_INCLUDE });
+  const incentive = await prisma.incentive.findUnique({ where: { id }, include: INCENTIVE_INCLUDE });
+  if (!incentive || incentive.isDeleted) return null;
+  return incentive;
 }
 
 async function update(id, body, userId) {
   const existing = await prisma.incentive.findUnique({ where: { id } });
-  if (!existing) return null;
+  if (!existing || existing.isDeleted) return null;
 
   const leadMemberId = body.leadMemberId !== undefined ? Number(body.leadMemberId) : existing.leadMemberId;
   if (body.leadMemberId !== undefined) await assertLeadExecutive(leadMemberId);
@@ -116,17 +123,63 @@ async function update(id, body, userId) {
   });
 }
 
-async function remove(id) {
+async function remove(id, userId) {
   const existing = await prisma.incentive.findUnique({ where: { id } });
-  if (!existing) return null;
-  await prisma.incentive.delete({ where: { id } });
-  return existing;
+  if (!existing || existing.isDeleted) return null;
+
+  return prisma.incentive.update({
+    where: { id },
+    data: {
+      isDeleted: true,
+      deletedAt: new Date(),
+      deletedById: userId,
+    },
+    include: INCENTIVE_INCLUDE,
+  });
+}
+
+async function listDeleted({ leadMemberId, month, year, page = 1, limit = 20 } = {}) {
+  const where = { isDeleted: true };
+
+  if (leadMemberId) where.leadMemberId = Number(leadMemberId);
+  if (month) where.month = month;
+  else if (year) where.month = { startsWith: `${year}-` };
+
+  const skip = (page - 1) * limit;
+
+  const [incentives, total] = await Promise.all([
+    prisma.incentive.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: [{ deletedAt: 'desc' }],
+      include: DELETED_INCENTIVE_INCLUDE,
+    }),
+    prisma.incentive.count({ where }),
+  ]);
+
+  return { incentives, total };
+}
+
+async function restore(id) {
+  const existing = await prisma.incentive.findUnique({ where: { id } });
+  if (!existing || !existing.isDeleted) return null;
+
+  return prisma.incentive.update({
+    where: { id },
+    data: {
+      isDeleted: false,
+      deletedAt: null,
+      deletedById: null,
+    },
+    include: INCENTIVE_INCLUDE,
+  });
 }
 
 // ─── Reports ────────────────────────────────────────────────────────────────
 
 async function executiveWiseReport({ year, leadMemberId } = {}) {
-  const where = {};
+  const where = { isDeleted: false };
   if (leadMemberId) where.leadMemberId = Number(leadMemberId);
   if (year) where.month = { startsWith: `${year}-` };
 
@@ -164,7 +217,7 @@ async function executiveWiseReport({ year, leadMemberId } = {}) {
 }
 
 async function monthWiseReport({ year, leadMemberId } = {}) {
-  const where = {};
+  const where = { isDeleted: false };
   if (leadMemberId) where.leadMemberId = Number(leadMemberId);
   if (year) where.month = { startsWith: `${year}-` };
 
@@ -201,7 +254,7 @@ async function monthWiseReport({ year, leadMemberId } = {}) {
 }
 
 module.exports = {
-  create, list, getById, update, remove,
+  create, list, getById, update, remove, listDeleted, restore,
   executiveWiseReport, monthWiseReport,
   calcIncentiveAmount, normalizePointValue, round2, DEFAULT_POINT_VALUE,
 };

@@ -18,6 +18,7 @@ import StatementNew from './pages/StatementNew';
 import StatementDetail from './pages/StatementDetail';
 import MasterData from './pages/MasterData';
 import Incentives from './pages/Incentives';
+import DataHealthDashboard from './pages/DataHealthDashboard';
 
 export default function App() {
   return (
@@ -52,6 +53,7 @@ export default function App() {
                 <Route path="/invoice-profiles"    element={<InvoiceProfiles />} />
                 <Route path="/master-data"         element={<MasterData />} />
                 <Route path="/statements/new"      element={<StatementNew />} />
+                <Route path="/data-health"         element={<DataHealthDashboard />} />
               </Route>
             </Route>
           </Route>

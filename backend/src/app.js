@@ -10,6 +10,7 @@ const invoiceProfileRouter = require('./modules/invoice-profile/invoice-profile.
 const invoiceRouter = require('./modules/invoice/invoice.routes');
 const statementRouter = require('./modules/statement/statement.routes');
 const incentiveRouter = require('./modules/incentive/incentive.routes');
+const dataHealthRouter = require('./modules/data-health/data-health.routes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/api/invoice-profiles', invoiceProfileRouter);
 app.use('/api/invoices', invoiceRouter);
 app.use('/api/statements', statementRouter);
 app.use('/api/incentives', incentiveRouter);
+app.use('/api/data-health', dataHealthRouter);
 
 app.use(errorHandler);
 

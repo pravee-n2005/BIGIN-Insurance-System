@@ -170,6 +170,11 @@ model Incentive {
   createdById Int
   createdBy   User @relation("IncentiveCreatedBy", fields: [createdById], references: [id])
 
+  isDeleted  Boolean   @default(false)
+  deletedAt  DateTime?
+  deletedById Int?
+  deletedBy   User?    @relation("IncentiveDeletedBy", fields: [deletedById], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -217,6 +222,7 @@ model User {
   cancelledInvoices Invoice[]           @relation("InvoiceCancelledBy")   // Module 5
   statements        InsurerStatement[]
   incentives        Incentive[]         @relation("IncentiveCreatedBy")
+  deletedIncentives Incentive[]         @relation("IncentiveDeletedBy")
 
   @@map("users")
 }

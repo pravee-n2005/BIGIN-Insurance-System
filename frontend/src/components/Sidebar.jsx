@@ -10,6 +10,7 @@ const NAV = [
   { to: '/incentives',        label: 'Incentives',        icon: IncentiveIcon },
   { to: '/master-data',       label: 'Master Data',       icon: MasterDataIcon, adminOnly: true },
   { to: '/invoice-profiles',  label: 'Invoice Profiles',  icon: ReceiptIcon, adminOnly: true },
+  { to: '/data-health',       label: 'Data Health',       icon: DataHealthIcon, adminOnly: true },
 ];
 
 export default function Sidebar() {
@@ -137,6 +138,14 @@ function MasterDataIcon({ className }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h7" />
+    </svg>
+  );
+}
+
+function DataHealthIcon({ className }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
   );
 }

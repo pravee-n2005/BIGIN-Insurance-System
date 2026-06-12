@@ -1,5 +1,6 @@
 const service = require('./incentive.service');
 const { validateCreate, validateUpdate } = require('./incentive.validation');
+const { generateExecutivePDF } = require('./incentive.pdf');
 
 const createIncentive = async (req, res, next) => {
   try {
@@ -61,10 +62,38 @@ const updateIncentive = async (req, res, next) => {
 
 const deleteIncentive = async (req, res, next) => {
   try {
-    const incentive = await service.remove(parseInt(req.params.id));
+    const incentive = await service.remove(parseInt(req.params.id), req.user.id);
     if (!incentive) return res.status(404).json({ error: 'Incentive not found.' });
     res.json({ incentive });
   } catch (err) {
+    next(err);
+  }
+};
+
+const listDeletedIncentives = async (req, res, next) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const { leadMemberId, month, year } = req.query;
+
+    const { incentives, total } = await service.listDeleted({ leadMemberId, month, year, page, limit });
+
+    res.json({
+      data: incentives,
+      meta: { total, page, limit, pages: Math.ceil(total / limit) },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const restoreIncentive = async (req, res, next) => {
+  try {
+    const incentive = await service.restore(parseInt(req.params.id));
+    if (!incentive) return res.status(404).json({ error: 'Deleted incentive not found.' });
+    res.json({ incentive });
+  } catch (err) {
+    if (err.code === 'P2002') return res.status(409).json({ error: 'Cannot restore — an active incentive entry already exists for this Lead Executive and month.' });
     next(err);
   }
 };
@@ -89,7 +118,21 @@ const monthWiseReport = async (req, res, next) => {
   }
 };
 
+const executiveWiseReportPDF = async (req, res, next) => {
+  try {
+    const { year, leadMemberId } = req.query;
+    if (!year || !leadMemberId) {
+      return res.status(400).json({ error: 'year and leadMemberId are required.' });
+    }
+
+    await generateExecutivePDF(res, { year: Number(year), leadMemberId: Number(leadMemberId) });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   createIncentive, listIncentives, getIncentive, updateIncentive, deleteIncentive,
-  executiveWiseReport, monthWiseReport,
+  listDeletedIncentives, restoreIncentive,
+  executiveWiseReport, monthWiseReport, executiveWiseReportPDF,
 };

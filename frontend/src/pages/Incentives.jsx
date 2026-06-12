@@ -4,6 +4,7 @@ import { Field, Input, Select } from '../components/FormField';
 import { fetchAllLeadMembers } from '../api/masters';
 import {
   fetchIncentives, createIncentive, updateIncentive, deleteIncentive,
+  fetchDeletedIncentives, restoreIncentive,
   fetchExecutiveWiseReport, fetchMonthWiseReport,
 } from '../api/incentives';
 
@@ -16,10 +17,14 @@ const monthLabel = (ym) => {
   return new Date(Number(y), Number(m) - 1, 1).toLocaleString('en-US', { month: 'short', year: 'numeric' });
 };
 
+const fmtDateTime = (d) =>
+  d ? new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+
 const TABS = [
   { key: 'entries',    label: 'Entries' },
   { key: 'executive',  label: 'Executive-wise Report' },
   { key: 'month',      label: 'Month-wise Report' },
+  { key: 'deleted',    label: 'Deleted Entries', adminOnly: true },
 ];
 
 export default function Incentives() {
@@ -44,7 +49,7 @@ export default function Incentives() {
 
       {/* Tabs */}
       <div className="border-b border-gray-200 flex gap-6">
-        {TABS.map((t) => (
+        {TABS.filter((t) => !t.adminOnly || isAdmin).map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
@@ -62,6 +67,7 @@ export default function Incentives() {
       {tab === 'entries' && <EntriesTab executives={executives} isAdmin={isAdmin} />}
       {tab === 'executive' && <ExecutiveWiseReport executives={executives} />}
       {tab === 'month' && <MonthWiseReport executives={executives} />}
+      {tab === 'deleted' && isAdmin && <DeletedEntriesTab executives={executives} />}
     </div>
   );
 }
@@ -80,6 +86,7 @@ function EntriesTab({ executives, isAdmin }) {
   const [filterYear, setFilterYear] = useState('');
 
   const [editing, setEditing] = useState(null); // null | 'NEW' | { ...incentive }
+  const [confirmDelete, setConfirmDelete] = useState(null); // incentive pending deletion
   const [deleting, setDeleting] = useState(null);
 
   const load = useCallback((p = 1) => {
@@ -102,11 +109,13 @@ function EntriesTab({ executives, isAdmin }) {
     load(p);
   }
 
-  async function handleDelete(incentive) {
-    if (!window.confirm(`Delete incentive entry for ${incentive.leadMember?.name} — ${monthLabel(incentive.month)}?`)) return;
+  async function confirmAndDelete() {
+    const incentive = confirmDelete;
+    if (!incentive) return;
     setDeleting(incentive.id);
     try {
       await deleteIncentive(incentive.id);
+      setConfirmDelete(null);
       load(page);
     } catch {
       setError('Failed to delete incentive entry.');
@@ -203,7 +212,7 @@ function EntriesTab({ executives, isAdmin }) {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDelete(inc)}
+                            onClick={() => setConfirmDelete(inc)}
                             disabled={deleting === inc.id}
                             className="px-3 py-1.5 text-xs font-medium border border-red-300 text-red-600 rounded-md hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
@@ -249,6 +258,17 @@ function EntriesTab({ executives, isAdmin }) {
           onSaved={handleSaved}
         />
       )}
+
+      {confirmDelete && (
+        <ConfirmModal
+          title="Delete Incentive Entry"
+          message={`Are you sure you want to delete the incentive entry for "${confirmDelete.leadMember?.name}" — ${monthLabel(confirmDelete.month)}? It can be restored later from the Deleted Entries tab.`}
+          confirmLabel={deleting === confirmDelete.id ? 'Deleting…' : 'Delete'}
+          confirming={deleting === confirmDelete.id}
+          onConfirm={confirmAndDelete}
+          onCancel={() => setConfirmDelete(null)}
+        />
+      )}
     </>
   );
 }
@@ -268,6 +288,34 @@ function Modal({ title, onClose, children }) {
         {children}
       </div>
     </div>
+  );
+}
+
+function ConfirmModal({ title, message, confirmLabel = 'Confirm', confirming = false, onConfirm, onCancel }) {
+  return (
+    <Modal title={title} onClose={onCancel}>
+      <div className="px-6 py-5 space-y-4">
+        <p className="text-sm text-gray-600">{message}</p>
+        <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={confirming}
+            className="px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {confirmLabel}
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={confirming}
+            className="px-5 py-2 border border-gray-300 text-sm text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -398,6 +446,7 @@ function ExecutiveWiseReport({ executives }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expanded, setExpanded] = useState(null);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -412,6 +461,32 @@ function ExecutiveWiseReport({ executives }) {
   }, [year, filterExecutive]);
 
   useEffect(() => { load(); }, [load]);
+
+  async function generatePdf() {
+    setError('');
+    setGeneratingPdf(true);
+    try {
+      const params = new URLSearchParams({ year, leadMemberId: filterExecutive });
+      const token = localStorage.getItem('bigin_token');
+      const res = await fetch(`/api/incentives/reports/executive-wise/pdf?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `incentive-report-${year}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch {
+      setError('PDF export failed.');
+    } finally {
+      setGeneratingPdf(false);
+    }
+  }
 
   return (
     <>
@@ -432,6 +507,14 @@ function ExecutiveWiseReport({ executives }) {
             Clear filters
           </button>
         )}
+        <button
+          onClick={generatePdf}
+          disabled={!year || !filterExecutive || generatingPdf}
+          title={!year || !filterExecutive ? 'Select a Lead Executive and Year to generate a PDF' : ''}
+          className="ml-auto px-4 py-2 border border-gray-300 text-sm font-medium rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {generatingPdf ? 'Generating…' : 'Generate PDF'}
+        </button>
       </section>
 
       <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -615,6 +698,159 @@ function MonthWiseReport({ executives }) {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
+
+// ─── Deleted Entries Tab ────────────────────────────────────────────────────
+
+function DeletedEntriesTab({ executives }) {
+  const [incentives, setIncentives] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const [page, setPage] = useState(1);
+  const [filterExecutive, setFilterExecutive] = useState('');
+  const [filterMonth, setFilterMonth] = useState('');
+  const [filterYear, setFilterYear] = useState('');
+
+  const [restoring, setRestoring] = useState(null);
+
+  const load = useCallback((p = 1) => {
+    setLoading(true);
+    setError('');
+    const params = { page: p, limit: 20 };
+    if (filterExecutive) params.leadMemberId = filterExecutive;
+    if (filterMonth) params.month = filterMonth;
+    else if (filterYear) params.year = filterYear;
+    fetchDeletedIncentives(params)
+      .then((res) => { setIncentives(res.data); setMeta(res.meta); })
+      .catch(() => setError('Failed to load deleted incentives.'))
+      .finally(() => setLoading(false));
+  }, [filterExecutive, filterMonth, filterYear]);
+
+  useEffect(() => { load(1); setPage(1); }, [load]);
+
+  function handlePageChange(p) {
+    setPage(p);
+    load(p);
+  }
+
+  async function handleRestore(incentive) {
+    setRestoring(incentive.id);
+    setError('');
+    try {
+      await restoreIncentive(incentive.id);
+      load(page);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to restore incentive entry.');
+    } finally {
+      setRestoring(null);
+    }
+  }
+
+  return (
+    <>
+      {/* Filters */}
+      <section className="bg-white rounded-lg border border-gray-200 shadow-sm px-5 py-4 flex flex-wrap items-end gap-3">
+        <div className="flex flex-col gap-1 min-w-[200px]">
+          <label className="text-xs font-medium text-gray-600">Lead Executive</label>
+          <Select value={filterExecutive} onChange={(e) => setFilterExecutive(e.target.value)}>
+            <option value="">All executives</option>
+            {executives.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}
+          </Select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-gray-600">Month</label>
+          <Input type="month" value={filterMonth} onChange={(e) => { setFilterMonth(e.target.value); setFilterYear(''); }} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium text-gray-600">Year</label>
+          <Input
+            type="number"
+            placeholder="e.g. 2026"
+            value={filterYear}
+            onChange={(e) => { setFilterYear(e.target.value); setFilterMonth(''); }}
+          />
+        </div>
+        {(filterExecutive || filterMonth || filterYear) && (
+          <button
+            onClick={() => { setFilterExecutive(''); setFilterMonth(''); setFilterYear(''); }}
+            className="text-xs text-blue-600 hover:underline"
+          >
+            Clear filters
+          </button>
+        )}
+      </section>
+
+      {/* List */}
+      <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
+        {error && <div className="px-6 py-4 text-sm text-red-600">{error}</div>}
+
+        {loading ? (
+          <div className="px-6 py-12 text-sm text-gray-400">Loading…</div>
+        ) : incentives.length === 0 ? (
+          <div className="px-6 py-12 text-center text-sm text-gray-400">No deleted incentive entries.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  {['Lead Executive', 'Month', 'Points', 'Point Value', 'Incentive Amount', 'Deleted At', 'Deleted By', 'Actions'].map((h) => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {incentives.map((inc) => (
+                  <tr key={inc.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-4 py-3 text-gray-800 font-medium">{inc.leadMember?.name}</td>
+                    <td className="px-4 py-3 text-gray-600">{monthLabel(inc.month)}</td>
+                    <td className="px-4 py-3 text-gray-600">{Number(inc.points)}</td>
+                    <td className="px-4 py-3 text-gray-600">{Number(inc.pointValue).toFixed(2)}</td>
+                    <td className="px-4 py-3 text-gray-900 font-mono font-medium">{fmt(inc.incentiveAmount)}</td>
+                    <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{fmtDateTime(inc.deletedAt)}</td>
+                    <td className="px-4 py-3 text-gray-500">{inc.deletedBy?.name || '—'}</td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleRestore(inc)}
+                        disabled={restoring === inc.id}
+                        className="px-3 py-1.5 text-xs font-medium border border-green-300 text-green-700 rounded-md hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {restoring === inc.id ? '…' : 'Restore'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {meta && meta.pages > 1 && (
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center gap-2 text-sm text-gray-500">
+            <span>{meta.total} total</span>
+            <div className="ml-auto flex gap-1">
+              {Array.from({ length: meta.pages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => handlePageChange(p)}
+                  className={`px-3 py-1 rounded text-xs font-medium border transition-colors ${
+                    p === page
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </section>
