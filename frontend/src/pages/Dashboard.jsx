@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
+import { fetchDashboardStats } from '../api/dashboard';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -25,6 +26,95 @@ function StatCard({ label, value, sub }) {
       <p className="text-sm font-medium text-gray-500">{label}</p>
       <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+    </div>
+  );
+}
+
+// ─── Dashboard Statistics section ──────────────────────────────────────────────
+
+function StatGroup({ title, cards }) {
+  return (
+    <div>
+      <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{title}</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {cards.map((card) => (
+          <StatCard key={card.label} label={card.label} value={card.value} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DashboardStatistics() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchDashboardStats()
+      .then(setStats)
+      .catch(() => setError('Could not load dashboard statistics.'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(6)].map((_, i) => (
+          <div key={i} className="bg-white rounded-lg border border-gray-200 p-6 h-24 animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-4 py-3">{error}</div>
+    );
+  }
+
+  if (!stats || stats.policies?.total === 0) {
+    return (
+      <div className="bg-white rounded-lg border border-gray-200 p-10 text-center text-sm text-gray-400">
+        No policy data available yet.
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <StatGroup
+        title="Policy Statistics"
+        cards={[
+          { label: 'Total Policies', value: stats.policies.total },
+          { label: 'Policies Added This Month', value: stats.policies.addedThisMonth },
+          { label: 'Policies Added This Year', value: stats.policies.addedThisYear },
+        ]}
+      />
+      <StatGroup
+        title="Premium Statistics"
+        cards={[
+          { label: 'Total Premium Amount', value: fmt(stats.premium.total) },
+          { label: 'Premium This Month', value: fmt(stats.premium.thisMonth) },
+          { label: 'Premium This Year', value: fmt(stats.premium.thisYear) },
+        ]}
+      />
+      <StatGroup
+        title="Commission Statistics"
+        cards={[
+          { label: 'Total Commission Amount', value: fmt(stats.commission.total) },
+          { label: 'Commission This Month', value: fmt(stats.commission.thisMonth) },
+          { label: 'Commission This Year', value: fmt(stats.commission.thisYear) },
+        ]}
+      />
+      <StatGroup
+        title="Renewal Statistics"
+        cards={[
+          { label: 'Policies Expiring Within 30 Days', value: stats.renewals.within30Days },
+          { label: 'Policies Expiring Within 60 Days', value: stats.renewals.within60Days },
+          { label: 'Policies Expiring Within 90 Days', value: stats.renewals.within90Days },
+        ]}
+      />
     </div>
   );
 }
@@ -146,6 +236,12 @@ export default function Dashboard() {
           {error}
         </div>
       )}
+
+      {/* Dashboard Statistics */}
+      <div className="mb-8">
+        <h2 className="text-base font-semibold text-gray-800 mb-3">Dashboard Statistics</h2>
+        <DashboardStatistics />
+      </div>
 
       <div className="flex flex-col xl:flex-row gap-6">
         {/* Left: month picker */}
