@@ -20,6 +20,56 @@ const monthLabel = (ym) => {
 const fmtDateTime = (d) =>
   d ? new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
 
+// Standard point values used by the owner for incentive calculations — display only.
+const POINTS_REFERENCE = [
+  { activity: 'Appointment Fixed (Face-to-Face)', points: 25 },
+  { activity: 'Conversion to Life Insurance', points: 400 },
+  { activity: 'Conversion to Health Insurance', points: 200 },
+  { activity: 'Life Insurance Premium < ₹10,000', points: 1000 },
+  { activity: 'Life Insurance Premium ≥ ₹10,000', points: 2000 },
+  { activity: 'Health Insurance Premium < ₹20,000', points: 1000 },
+  { activity: 'Health Insurance Premium ≥ ₹20,000', points: 2000 },
+];
+
+function PointsReferenceCard() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left"
+      >
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">Points Reference</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Standard point values used for incentive calculations.</p>
+        </div>
+        <span className="text-gray-400 text-sm">{open ? 'Hide ▲' : 'Show ▼'}</span>
+      </button>
+      {open && (
+        <div className="overflow-x-auto border-t border-gray-100">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Activity / Criteria</th>
+                <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Points</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {POINTS_REFERENCE.map((row) => (
+                <tr key={row.activity}>
+                  <td className="px-4 py-2 text-gray-700">{row.activity}</td>
+                  <td className="px-4 py-2 text-right text-gray-900 font-mono">{row.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 const TABS = [
   { key: 'entries',    label: 'Entries' },
   { key: 'executive',  label: 'Executive-wise Report' },
@@ -46,6 +96,8 @@ export default function Incentives() {
         <h1 className="text-xl font-bold text-gray-900">Lead Executive Incentives</h1>
         <p className="text-sm text-gray-500 mt-1">Monthly incentive points and auto-calculated amounts for Lead Executives.</p>
       </div>
+
+      <PointsReferenceCard />
 
       {/* Tabs */}
       <div className="border-b border-gray-200 flex gap-6">

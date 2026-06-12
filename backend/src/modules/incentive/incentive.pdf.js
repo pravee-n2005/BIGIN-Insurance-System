@@ -17,6 +17,32 @@ const ROW_HEIGHT = 22;
 const HEADER_HEIGHT = 26;
 const USABLE_WIDTH = PAGE_WIDTH - MARGIN * 2;
 
+// ─── Points Reference Table (display only — does not affect calculations) ────
+
+const POINTS_REFERENCE = [
+  { activity: 'Appointment Fixed (Face-to-Face)', points: '25' },
+  { activity: 'Conversion to Life Insurance', points: '400' },
+  { activity: 'Conversion to Health Insurance', points: '200' },
+  { activity: 'Life Insurance Premium < ₹10,000', points: '1000' },
+  { activity: 'Life Insurance Premium ≥ ₹10,000', points: '2000' },
+  { activity: 'Health Insurance Premium < ₹20,000', points: '1000' },
+  { activity: 'Health Insurance Premium ≥ ₹20,000', points: '2000' },
+];
+
+const REF_COL_WIDTHS = [USABLE_WIDTH - 100, 100]; // activity | points
+const REF_TABLE_COLS = ['Activity / Criteria', 'Points'];
+
+// Compact layout constants for the reference note (smaller than the main table)
+const REF_FONT_SIZE = 7;
+const REF_ROW_HEIGHT = 14;
+const REF_HEADER_HEIGHT = 16;
+const REF_TITLE_HEIGHT = 12;
+const REF_NOTE_HEIGHT = 10;
+const REF_TOP_GAP = 8;
+const REF_BLOCK_HEIGHT =
+  REF_TITLE_HEIGHT + REF_NOTE_HEIGHT + REF_HEADER_HEIGHT + POINTS_REFERENCE.length * REF_ROW_HEIGHT;
+const FOOTER_RESERVE = 20;
+
 function fmt(n) {
   return '₹' + Number(n ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
@@ -90,6 +116,69 @@ function drawTotalsRow(doc, totalPoints, totalIncentiveAmount, y) {
   return y + ROW_HEIGHT;
 }
 
+function drawRefTableHeader(doc, y) {
+  doc.rect(MARGIN, y, USABLE_WIDTH, REF_HEADER_HEIGHT).fill('#1a1a2e');
+
+  let x = MARGIN;
+  REF_TABLE_COLS.forEach((col, i) => {
+    doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(REF_FONT_SIZE)
+      .text(col, x + 5, y + 4, { width: REF_COL_WIDTHS[i] - 10, align: i === 0 ? 'left' : 'right' });
+    x += REF_COL_WIDTHS[i];
+  });
+  return y + REF_HEADER_HEIGHT;
+}
+
+function drawRefTableRow(doc, row, y, isEven) {
+  if (isEven) {
+    doc.rect(MARGIN, y, USABLE_WIDTH, REF_ROW_HEIGHT).fill('#f5f7fa');
+  }
+
+  const cells = [row.activity, row.points];
+
+  let x = MARGIN;
+  cells.forEach((cell, i) => {
+    doc.fillColor('#111111').font('Helvetica').fontSize(REF_FONT_SIZE)
+      .text(cell, x + 5, y + 3, { width: REF_COL_WIDTHS[i] - 10, align: i === 0 ? 'left' : 'right' });
+    x += REF_COL_WIDTHS[i];
+  });
+
+  doc.moveTo(MARGIN, y + REF_ROW_HEIGHT)
+    .lineTo(PAGE_WIDTH - MARGIN, y + REF_ROW_HEIGHT)
+    .strokeColor('#e0e0e0').lineWidth(0.3).stroke();
+
+  return y + REF_ROW_HEIGHT;
+}
+
+// Renders the compact Points Reference note. If the current page does not
+// have enough remaining space, starts a new page first. Returns the new y.
+function drawPointsReferenceNote(doc, y, continuationLabel) {
+  if (y + REF_TOP_GAP + REF_BLOCK_HEIGHT > PAGE_HEIGHT - MARGIN - FOOTER_RESERVE) {
+    doc.addPage({ size: 'A4', margin: MARGIN });
+
+    doc.rect(0, 0, PAGE_WIDTH, 30).fill('#1a1a2e');
+    doc.fillColor('#a0aec0').font('Helvetica').fontSize(8)
+      .text(continuationLabel, MARGIN, 10);
+
+    y = 44;
+  } else {
+    y += REF_TOP_GAP;
+  }
+
+  doc.fillColor('#1a1a2e').font('Helvetica-Bold').fontSize(8)
+    .text('Points Reference', MARGIN, y);
+  y += REF_TITLE_HEIGHT;
+  doc.fillColor('#999999').font('Helvetica').fontSize(6.5)
+    .text('Standard point values used by the owner for incentive calculations. For reference only.', MARGIN, y);
+  y += REF_NOTE_HEIGHT;
+
+  y = drawRefTableHeader(doc, y);
+  POINTS_REFERENCE.forEach((row, idx) => {
+    y = drawRefTableRow(doc, row, y, idx % 2 === 1);
+  });
+
+  return y;
+}
+
 // ─── Main export function ─────────────────────────────────────────────────────
 
 async function generateExecutivePDF(res, { leadMemberId, year }) {
@@ -156,6 +245,8 @@ async function generateExecutivePDF(res, { leadMemberId, year }) {
   if (months.length === 0) {
     doc.fillColor('#888888').font('Helvetica').fontSize(10)
       .text('No incentive entries found for this Lead Executive and year.', MARGIN, y);
+    y += 24;
+    drawPointsReferenceNote(doc, y, `BIGIN Insurance – ${executiveRow?.leadMemberName ?? ''} – ${year} (continued)`);
     doc.end();
     return;
   }
@@ -178,6 +269,9 @@ async function generateExecutivePDF(res, { leadMemberId, year }) {
   });
 
   y = drawTotalsRow(doc, executiveRow.totalPoints, executiveRow.totalIncentiveAmount, y);
+
+  // ── Points Reference note ───────────────────────────────────────────────────
+  drawPointsReferenceNote(doc, y, `BIGIN Insurance – ${executiveRow.leadMemberName} – ${year} (continued)`);
 
   // ── Footer on every page ───────────────────────────────────────────────────
   const range = doc.bufferedPageRange();
