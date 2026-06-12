@@ -9,7 +9,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "test": "node --test src/modules/policy/policy.calculations.test.js src/modules/policy/policy.leadmember.test.js src/modules/incentive/incentive.test.js src/modules/incentive/incentive.softdelete.test.js src/modules/data-health/data-health.test.js src/modules/dashboard/dashboard.test.js"
+    "test": "node --test src/modules/policy/policy.calculations.test.js src/modules/policy/policy.leadmember.test.js src/modules/incentive/incentive.test.js src/modules/incentive/incentive.softdelete.test.js src/modules/data-health/data-health.test.js src/modules/dashboard/dashboard.test.js src/modules/renewals/renewal.test.js"
   },
   "keywords": [],
   "author": "",

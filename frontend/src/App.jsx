@@ -19,6 +19,7 @@ import StatementDetail from './pages/StatementDetail';
 import MasterData from './pages/MasterData';
 import Incentives from './pages/Incentives';
 import DataHealthDashboard from './pages/DataHealthDashboard';
+import Renewals from './pages/Renewals';
 
 export default function App() {
   return (
@@ -45,6 +46,9 @@ export default function App() {
 
               {/* Incentives — read for both roles, create/edit/delete gated inside the page */}
               <Route path="/incentives" element={<Incentives />} />
+
+              {/* Renewals — read-only operational worklist for both roles */}
+              <Route path="/renewals" element={<Renewals />} />
 
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>

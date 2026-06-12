@@ -8,11 +8,13 @@ let stats;
 let now;
 let monthStart;
 let yearStart;
+let today;
 
 test('getStats() returns a well-formed payload', async () => {
   now = new Date();
   monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
   yearStart = new Date(now.getFullYear(), 0, 1);
+  today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   stats = await service.getStats();
 
@@ -56,20 +58,20 @@ test('commission totals match aggregate sums of commissionAmount', async () => {
 });
 
 test('renewal counts match non-cancelled policies renewing within the window', async () => {
-  function daysFromNow(days) {
-    const d = new Date(now);
+  function daysFromToday(days) {
+    const d = new Date(today);
     d.setDate(d.getDate() + days);
     return d;
   }
 
   const within30 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: now, lte: daysFromNow(30) } },
+    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(30) } },
   });
   const within60 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: now, lte: daysFromNow(60) } },
+    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(60) } },
   });
   const within90 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: now, lte: daysFromNow(90) } },
+    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(90) } },
   });
 
   assert.strictEqual(stats.renewals.within30Days, within30);

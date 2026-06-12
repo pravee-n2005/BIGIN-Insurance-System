@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { fetchDashboardStats } from '../api/dashboard';
 
@@ -20,9 +21,15 @@ function monthDisplay(ym) {
 
 // ─── Stat card ────────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, sub }) {
+function StatCard({ label, value, sub, onClick }) {
+  const clickable = typeof onClick === 'function';
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
+    <div
+      onClick={onClick}
+      className={`bg-white rounded-lg border border-gray-200 shadow-sm p-6 ${
+        clickable ? 'cursor-pointer hover:border-blue-300 hover:shadow-md transition-shadow' : ''
+      }`}
+    >
       <p className="text-sm font-medium text-gray-500">{label}</p>
       <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
@@ -38,7 +45,7 @@ function StatGroup({ title, cards }) {
       <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{title}</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card) => (
-          <StatCard key={card.label} label={card.label} value={card.value} />
+          <StatCard key={card.label} label={card.label} value={card.value} onClick={card.onClick} />
         ))}
       </div>
     </div>
@@ -46,6 +53,7 @@ function StatGroup({ title, cards }) {
 }
 
 function DashboardStatistics() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -110,9 +118,9 @@ function DashboardStatistics() {
       <StatGroup
         title="Renewal Statistics"
         cards={[
-          { label: 'Policies Expiring Within 30 Days', value: stats.renewals.within30Days },
-          { label: 'Policies Expiring Within 60 Days', value: stats.renewals.within60Days },
-          { label: 'Policies Expiring Within 90 Days', value: stats.renewals.within90Days },
+          { label: 'Policies Expiring Within 30 Days', value: stats.renewals.within30Days, onClick: () => navigate('/renewals?window=30') },
+          { label: 'Policies Expiring Within 60 Days', value: stats.renewals.within60Days, onClick: () => navigate('/renewals?window=60') },
+          { label: 'Policies Expiring Within 90 Days', value: stats.renewals.within90Days, onClick: () => navigate('/renewals?window=90') },
         ]}
       />
     </div>

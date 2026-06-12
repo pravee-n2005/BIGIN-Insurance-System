@@ -19,6 +19,10 @@ function startOfYear(now) {
   return new Date(now.getFullYear(), 0, 1);
 }
 
+function startOfDay(now) {
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
 function daysFromNow(now, days) {
   const d = new Date(now);
   d.setDate(d.getDate() + days);
@@ -29,6 +33,7 @@ async function getStats() {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const yearStart = startOfYear(now);
+  const today = startOfDay(now);
 
   const [
     allTime,
@@ -52,19 +57,19 @@ async function getStats() {
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
-        renewalDate: { gte: now, lte: daysFromNow(now, 30) },
+        renewalDate: { gte: today, lte: daysFromNow(today, 30) },
       },
     }),
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
-        renewalDate: { gte: now, lte: daysFromNow(now, 60) },
+        renewalDate: { gte: today, lte: daysFromNow(today, 60) },
       },
     }),
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
-        renewalDate: { gte: now, lte: daysFromNow(now, 90) },
+        renewalDate: { gte: today, lte: daysFromNow(today, 90) },
       },
     }),
   ]);
