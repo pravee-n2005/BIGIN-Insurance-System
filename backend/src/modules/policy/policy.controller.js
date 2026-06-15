@@ -19,10 +19,10 @@ const listPolicies = async (req, res, next) => {
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
 
-    const { month, insurerName, leadSource, insuranceCategory, status } = req.query;
+    const { month, insurerName, leadSource, insuranceCategory, status, invoiceStatus } = req.query;
 
     const { policies, total } = await service.list({
-      page, limit, month, insurerName, leadSource, insuranceCategory, status,
+      page, limit, month, insurerName, leadSource, insuranceCategory, status, invoiceStatus,
     });
 
     res.json({

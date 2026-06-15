@@ -6,6 +6,10 @@ function parseDecimal(val) {
   return Number(val ?? 0);
 }
 
+function round2(n) {
+  return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+}
+
 // Build a Prisma `where` clause from optional from/to date strings.
 function dateRange(from, to) {
   if (!from && !to) return undefined;
@@ -284,6 +288,51 @@ async function credits({ from, to, bankAccount }) {
   return { period: { from, to }, rows, totals };
 }
 
+// ─── Phase 5 — Monthly GST Report ─────────────────────────────────────────────
+// One row per InsurerStatement credited within the given month, showing:
+//   Credited Date, Bank Reference, Nature of Transaction, Debit (Deposits), Credit (Payments).
+// Deposit entries (amountCredited) populate Debit. Credit is reserved for a future
+// payment-tracking workflow and remains 0 until that data exists.
+
+async function monthlyGst({ month }) {
+  if (!month || !/^\d{4}-\d{2}$/.test(month))
+    throw Object.assign(new Error('month is required and must be in YYYY-MM format.'), { status: 400 });
+
+  const [year, mon] = month.split('-').map(Number);
+  const from = new Date(year, mon - 1, 1);
+  const to   = new Date(year, mon, 1);
+
+  const statements = await prisma.insurerStatement.findMany({
+    where: {
+      creditDate: { gte: from, lt: to },
+      status:     { not: 'CANCELLED' },
+    },
+    include: {
+      insurer: { select: { id: true, name: true } },
+    },
+    orderBy: { creditDate: 'asc' },
+  });
+
+  const rows = statements.map((s) => ({
+    statementId:         s.id,
+    creditedDate:        s.creditDate,
+    bankReference:       s.bankReference ?? '',
+    natureOfTransaction: s.natureOfTransaction ?? '',
+    debit:               Number(s.amountCredited ?? 0),
+    credit:              0,
+    insurerName:         s.insurer?.name ?? '—',
+    statementRefNo:      s.statementRefNo,
+  }));
+
+  const totals = {
+    debit:  round2(rows.reduce((sum, r) => sum + r.debit, 0)),
+    credit: round2(rows.reduce((sum, r) => sum + r.credit, 0)),
+    count:  rows.length,
+  };
+
+  return { period: month, rows, totals };
+}
+
 // ─── Available months ─────────────────────────────────────────────────────────
 // Returns distinct YYYY-MM strings for every month that has at least one policy.
 // Used by the Dashboard month picker so users only see months with real data.
@@ -300,5 +349,5 @@ async function availableMonths() {
 
 module.exports = {
   monthly, byInsurer, byLeadSource, byCategory, availableMonths,
-  gstSales, credits,
+  gstSales, credits, monthlyGst,
 };

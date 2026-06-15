@@ -372,9 +372,9 @@ async function generateInvoice(id, createdById) {
 }
 
 // ─── Module 4 — Credit Details (INVOICED only) ────────────────────────────────
-// Updates amountCredited / bankReference / bankAccount. These fields capture
-// the actual bank credit; they are decoupled from the financial calculations
-// done at finalize() and never modify the linked invoice.
+// Updates amountCredited / bankReference / bankAccount / natureOfTransaction.
+// These fields capture the actual bank credit; they are decoupled from the
+// financial calculations done at finalize() and never modify the linked invoice.
 
 async function updateCreditDetails(id, body) {
   const stmt = await prisma.insurerStatement.findUnique({ where: { id } });
@@ -390,6 +390,8 @@ async function updateCreditDetails(id, body) {
     data.bankReference = body.bankReference?.trim() || null;
   if ('bankAccount' in body)
     data.bankAccount = body.bankAccount?.trim() || null;
+  if ('natureOfTransaction' in body)
+    data.natureOfTransaction = body.natureOfTransaction?.trim() || null;
 
   return prisma.insurerStatement.update({
     where: { id },

@@ -41,21 +41,21 @@ test('worklist() returns a well-formed payload', async () => {
 
 test('worklist excludes CANCELLED policies', async () => {
   const cancelledCount = await prisma.policy.count({ where: { status: 'CANCELLED' } });
-  const nonCancelledCount = await prisma.policy.count({ where: { status: { not: 'CANCELLED' } } });
+  const nonCancelledCount = await prisma.policy.count({
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' } },
+  });
 
   assert.strictEqual(result.policies.length, nonCancelledCount);
   for (const row of result.policies) {
     assert.notStrictEqual(row.status, 'CANCELLED');
   }
-  // Sanity: every returned policy is accounted for (cancelled + non-cancelled = total)
-  const total = await prisma.policy.count();
-  assert.strictEqual(cancelledCount + nonCancelledCount, total);
 });
 
 test('dueToday count matches policies renewing today', async () => {
   const expected = await prisma.policy.count({
     where: {
       status: { not: 'CANCELLED' },
+      insuranceCategory: { not: 'TRAVEL' },
       renewalDate: { gte: today, lt: tomorrow },
     },
   });
@@ -66,6 +66,7 @@ test('overdue count matches policies with renewalDate before today', async () =>
   const expected = await prisma.policy.count({
     where: {
       status: { not: 'CANCELLED' },
+      insuranceCategory: { not: 'TRAVEL' },
       renewalDate: { lt: today },
     },
   });
@@ -74,19 +75,19 @@ test('overdue count matches policies with renewalDate before today', async () =>
 
 test('dueIn7/15/30/60/90 counts match window queries and are non-decreasing', async () => {
   const within7 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: in7Days } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: in7Days } },
   });
   const within15 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: in15Days } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: in15Days } },
   });
   const within30 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: in30Days } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: in30Days } },
   });
   const within60 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: in60Days } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: in60Days } },
   });
   const within90 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: in90Days } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: in90Days } },
   });
 
   assert.strictEqual(result.summary.dueIn7Days, within7);

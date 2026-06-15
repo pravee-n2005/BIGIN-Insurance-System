@@ -19,6 +19,24 @@ function monthDisplay(ym) {
   return `${MONTH_NAMES[Number(m) - 1]} ${y}`;
 }
 
+// ─── Financial Year helpers ────────────────────────────────────────────────
+// Indian FY runs April → March. "2025-26" = Apr 2025 – Mar 2026.
+
+function fyOfMonth(ym) {
+  const [y, m] = ym.split('-').map(Number);
+  const startYear = m >= 4 ? y : y - 1;
+  return `${startYear}-${String((startYear + 1) % 100).padStart(2, '0')}`;
+}
+
+function currentFY() {
+  const now = new Date();
+  return fyOfMonth(`${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
+}
+
+function fyLabel(fy) {
+  return fy ? `FY ${fy}` : '';
+}
+
 // ─── Stat card ────────────────────────────────────────────────────────────────
 
 function StatCard({ label, value, sub, onClick }) {
@@ -52,18 +70,19 @@ function StatGroup({ title, cards }) {
   );
 }
 
-function DashboardStatistics() {
+function DashboardStatistics({ fy }) {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchDashboardStats()
+    setLoading(true);
+    fetchDashboardStats(fy)
       .then(setStats)
       .catch(() => setError('Could not load dashboard statistics.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [fy]);
 
   if (loading) {
     return (
@@ -123,6 +142,25 @@ function DashboardStatistics() {
           { label: 'Policies Expiring Within 90 Days', value: stats.renewals.within90Days, onClick: () => navigate('/renewals?window=90') },
         ]}
       />
+      {stats.invoiceTracking && (
+        <StatGroup
+          title="Invoice Tracking"
+          cards={[
+            { label: 'Invoiced Policies', value: stats.invoiceTracking.invoiced, onClick: () => navigate('/policies?invoiceStatus=INVOICED') },
+            { label: 'Pending Invoice Policies', value: stats.invoiceTracking.pending, onClick: () => navigate('/policies?invoiceStatus=PENDING') },
+          ]}
+        />
+      )}
+      {stats.fy && (
+        <StatGroup
+          title={`${fyLabel(stats.fy.label)} Summary`}
+          cards={[
+            { label: 'Policies', value: stats.fy.policies },
+            { label: 'Premium', value: fmt(stats.fy.premium) },
+            { label: 'Commission', value: fmt(stats.fy.commission) },
+          ]}
+        />
+      )}
     </div>
   );
 }
@@ -195,6 +233,7 @@ function MonthPicker({ availableMonths, selected, onChange }) {
 export default function Dashboard() {
   const [availableMonths, setAvailableMonths] = useState([]);
   const [selectedMonth,   setSelectedMonth]   = useState('');
+  const [selectedFY,      setSelectedFY]      = useState(currentFY());
   const [data,            setData]            = useState(null);
   const [loading,         setLoading]         = useState(false);
   const [error,           setError]           = useState('');
@@ -208,6 +247,7 @@ export default function Dashboard() {
         // Default: most recent month with data (last in sorted array)
         if (months.length > 0) {
           setSelectedMonth(months[months.length - 1]);
+          setSelectedFY(fyOfMonth(months[months.length - 1]));
         }
       })
       .catch(() => {
@@ -227,16 +267,46 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, [selectedMonth]);
 
+  // Months within the selected FY (Apr → Mar)
+  const fyMonths = availableMonths.filter((ym) => fyOfMonth(ym) === selectedFY);
+
+  // FY options: every FY present in the data, plus the current FY
+  const fyOptions = Array.from(
+    new Set([...availableMonths.map(fyOfMonth), currentFY()])
+  ).sort((a, b) => b.localeCompare(a));
+
+  function handleFYChange(fy) {
+    setSelectedFY(fy);
+    const monthsInFY = availableMonths.filter((ym) => fyOfMonth(ym) === fy);
+    if (monthsInFY.length > 0) {
+      setSelectedMonth(monthsInFY[monthsInFY.length - 1]);
+    }
+  }
+
   return (
     <div className="p-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {selectedMonth
-            ? `Monthly summary — ${monthDisplay(selectedMonth)}`
-            : 'Monthly summary'}
-        </p>
+      <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {selectedMonth
+              ? `Monthly summary — ${monthDisplay(selectedMonth)}`
+              : 'Monthly summary'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-xs font-medium text-gray-600">Financial Year</label>
+          <select
+            value={selectedFY}
+            onChange={(e) => handleFYChange(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {fyOptions.map((fy) => (
+              <option key={fy} value={fy}>{fyLabel(fy)}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {error && (
@@ -248,14 +318,14 @@ export default function Dashboard() {
       {/* Dashboard Statistics */}
       <div className="mb-8">
         <h2 className="text-base font-semibold text-gray-800 mb-3">Dashboard Statistics</h2>
-        <DashboardStatistics />
+        <DashboardStatistics fy={selectedFY} />
       </div>
 
       <div className="flex flex-col xl:flex-row gap-6">
         {/* Left: month picker */}
         <div className="xl:w-64 flex-shrink-0">
           <MonthPicker
-            availableMonths={availableMonths}
+            availableMonths={fyMonths}
             selected={selectedMonth}
             onChange={setSelectedMonth}
           />

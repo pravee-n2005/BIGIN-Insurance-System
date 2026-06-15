@@ -29,11 +29,26 @@ function daysFromNow(now, days) {
   return d;
 }
 
-async function getStats() {
+// ─── Phase 2 — Financial Year helpers ──────────────────────────────────────
+// Indian FY runs April → March. `fy` is a string like "2025-26" meaning
+// 1 Apr 2025 – 31 Mar 2026 (exclusive upper bound 1 Apr 2026).
+
+function fyRange(fy) {
+  if (!fy || !/^\d{4}-\d{2}$/.test(fy)) return null;
+  const startYear = Number(fy.slice(0, 4));
+  return {
+    from: new Date(startYear, 3, 1),
+    to:   new Date(startYear + 1, 3, 1),
+  };
+}
+
+async function getStats(fy) {
   const now = new Date();
   const monthStart = startOfMonth(now);
   const yearStart = startOfYear(now);
   const today = startOfDay(now);
+
+  const fyDates = fyRange(fy);
 
   const [
     allTime,
@@ -42,6 +57,9 @@ async function getStats() {
     expiring30,
     expiring60,
     expiring90,
+    invoicedCount,
+    pendingCount,
+    fyAgg,
   ] = await Promise.all([
     prisma.policy.aggregate({ _count: { id: true }, _sum: SUM_FIELDS }),
     prisma.policy.aggregate({
@@ -54,24 +72,44 @@ async function getStats() {
       _count: { id: true },
       _sum: SUM_FIELDS,
     }),
+    // Phase 3b — Travel insurance excluded from renewal stats (no meaningful
+    // renewal cycle, per client requirement).
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
+        insuranceCategory: { not: 'TRAVEL' },
         renewalDate: { gte: today, lte: daysFromNow(today, 30) },
       },
     }),
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
+        insuranceCategory: { not: 'TRAVEL' },
         renewalDate: { gte: today, lte: daysFromNow(today, 60) },
       },
     }),
     prisma.policy.count({
       where: {
         status: { not: 'CANCELLED' },
+        insuranceCategory: { not: 'TRAVEL' },
         renewalDate: { gte: today, lte: daysFromNow(today, 90) },
       },
     }),
+    // Phase 1 — Invoice Raised Tracking counts (excluding cancelled policies)
+    prisma.policy.count({
+      where: { status: { not: 'CANCELLED' }, invoiceRaised: true },
+    }),
+    prisma.policy.count({
+      where: { status: { not: 'CANCELLED' }, invoiceRaised: false },
+    }),
+    // Phase 2 — Financial Year aggregate (null if no/invalid fy given)
+    fyDates
+      ? prisma.policy.aggregate({
+          where: { issueDate: { gte: fyDates.from, lt: fyDates.to } },
+          _count: { id: true },
+          _sum: SUM_FIELDS,
+        })
+      : Promise.resolve(null),
   ]);
 
   return {
@@ -95,6 +133,16 @@ async function getStats() {
       within60Days: expiring60,
       within90Days: expiring90,
     },
+    invoiceTracking: {
+      invoiced: invoicedCount,
+      pending: pendingCount,
+    },
+    fy: fyDates ? {
+      label: fy,
+      policies: fyAgg._count.id,
+      premium: num(fyAgg._sum.grossPremium),
+      commission: num(fyAgg._sum.commissionAmount),
+    } : null,
   };
 }
 

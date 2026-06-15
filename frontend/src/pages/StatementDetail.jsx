@@ -698,6 +698,7 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
   );
   const [bankReference, setBankReference] = useState(statement.bankReference ?? '');
   const [bankAccount,   setBankAccount]   = useState(statement.bankAccount ?? '');
+  const [natureOfTransaction, setNatureOfTransaction] = useState(statement.natureOfTransaction ?? '');
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState('');
   const [success, setSuccess] = useState('');
@@ -705,7 +706,8 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
   const dirty =
     String(statement.amountCredited ?? '') !== amountCredited ||
     (statement.bankReference ?? '') !== bankReference ||
-    (statement.bankAccount   ?? '') !== bankAccount;
+    (statement.bankAccount   ?? '') !== bankAccount ||
+    (statement.natureOfTransaction ?? '') !== natureOfTransaction;
 
   async function handleSave() {
     setError('');
@@ -716,6 +718,7 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
         amountCredited: amountCredited === '' ? null : Number(amountCredited),
         bankReference:  bankReference.trim() || null,
         bankAccount:    bankAccount.trim() || null,
+        natureOfTransaction: natureOfTransaction.trim() || null,
       };
       const updated = await updateCreditDetails(statement.id, payload);
       onSaved(updated);
@@ -741,7 +744,7 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
         </p>
       </div>
 
-      <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+      <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
         <div>
           <label className="block text-xs font-medium text-gray-600 mb-1">
             Amount Credited (₹) {editable && <span className="text-red-500">*</span>}
@@ -796,6 +799,19 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
             disabled={!editable}
             placeholder="e.g. Bank-1 (Old)"
             maxLength={100}
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Nature of Transaction</label>
+          <input
+            type="text"
+            value={natureOfTransaction}
+            onChange={(e) => setNatureOfTransaction(e.target.value)}
+            disabled={!editable}
+            placeholder="e.g. Brokerage Credit"
+            maxLength={200}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50"
           />
         </div>

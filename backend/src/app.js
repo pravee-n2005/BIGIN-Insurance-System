@@ -10,6 +10,7 @@ const invoiceProfileRouter = require('./modules/invoice-profile/invoice-profile.
 const invoiceRouter = require('./modules/invoice/invoice.routes');
 const statementRouter = require('./modules/statement/statement.routes');
 const incentiveRouter = require('./modules/incentive/incentive.routes');
+const dailyIncentiveRouter = require('./modules/daily-incentive/daily-incentive.routes');
 const dataHealthRouter = require('./modules/data-health/data-health.routes');
 const dashboardRouter = require('./modules/dashboard/dashboard.routes');
 const renewalRouter = require('./modules/renewals/renewal.routes');
@@ -31,6 +32,7 @@ app.use('/api/invoice-profiles', invoiceProfileRouter);
 app.use('/api/invoices', invoiceRouter);
 app.use('/api/statements', statementRouter);
 app.use('/api/incentives', incentiveRouter);
+app.use('/api/daily-incentives', dailyIncentiveRouter);
 app.use('/api/data-health', dataHealthRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/renewals', renewalRouter);

@@ -1,5 +1,5 @@
 const INSURANCE_CATEGORIES = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
-const PAYMENT_FREQUENCIES = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
+const PAYMENT_FREQUENCIES = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY', 'TWO_YEAR', 'THREE_YEAR'];
 const POLICY_STATUSES = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const CANCELLATION_REASONS = [
   'CUSTOMER_DECLINED', 'CUSTOMER_REQUESTED_CANCELLATION', 'PREMIUM_TOO_HIGH',
@@ -115,4 +115,7 @@ function validateCancellation(body, existingStatus) {
   return errors;
 }
 
-module.exports = { validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isPercent, isOptionalPercent };
+module.exports = {
+  validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isPercent, isOptionalPercent,
+  INSURANCE_CATEGORIES, PAYMENT_FREQUENCIES, POLICY_STATUSES,
+};

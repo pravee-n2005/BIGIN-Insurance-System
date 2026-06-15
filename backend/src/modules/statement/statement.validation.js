@@ -145,6 +145,8 @@ function validateCreditDetails(body) {
     errors.push('bankReference must not exceed 100 characters.');
   if ('bankAccount' in body && body.bankAccount !== null && trimStr(body.bankAccount).length > 100)
     errors.push('bankAccount must not exceed 100 characters.');
+  if ('natureOfTransaction' in body && body.natureOfTransaction !== null && trimStr(body.natureOfTransaction).length > 200)
+    errors.push('natureOfTransaction must not exceed 200 characters.');
   return errors;
 }
 

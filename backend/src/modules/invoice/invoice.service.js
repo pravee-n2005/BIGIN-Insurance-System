@@ -243,6 +243,7 @@ async function generateDraft({ insurerId, billingMonth }) {
 
     // Debugging aid for admin review
     matchedInsurerNames: names,
+    policyIds: policies.map((p) => p.id),
     policySamples: policies.slice(0, 5).map((p) => ({
       policyNumber: p.policyNumber,
       customerName: p.customerName,
@@ -304,7 +305,7 @@ async function saveInvoice({ insurerId, billingMonth, createdById }) {
         );
       }
 
-      return tx.invoice.create({
+      const created = await tx.invoice.create({
         data: {
           invoiceNumber:      draft.invoiceNumber,
           invoiceDate:        new Date(draft.invoiceDate),
@@ -337,6 +338,16 @@ async function saveInvoice({ insurerId, billingMonth, createdById }) {
           createdBy: { select: { id: true, name: true } },
         },
       });
+
+      // Phase 1 — Invoice Raised Tracking: mark the aggregated policies as invoiced.
+      if (draft.policyIds.length) {
+        await tx.policy.updateMany({
+          where: { id: { in: draft.policyIds } },
+          data:  { invoiceRaised: true, invoiceRaisedAt: new Date() },
+        });
+      }
+
+      return created;
     });
 
     return saved;
@@ -388,20 +399,55 @@ async function cancelInvoice(id, body, userId) {
     throw Object.assign(new Error('cancellationReasonOther must not exceed 500 characters.'), { status: 400 });
   }
 
-  return prisma.invoice.update({
-    where: { id },
-    data: {
-      status:                 'CANCELLED',
-      cancellationReason:     reason,
-      cancellationReasonOther: reason === 'OTHER' ? body.cancellationReasonOther.trim() : null,
-      cancelledAt:            new Date(),
-      cancelledById:          userId,
-    },
-    include: {
-      insurer:     { select: { id: true, name: true } },
-      createdBy:   { select: { id: true, name: true } },
-      cancelledBy: { select: { id: true, name: true } },
-    },
+  // Phase 1 — Invoice Raised Tracking: un-mark the policies this invoice covered
+  // so they become eligible for re-invoicing. For statement-based invoices, use
+  // the linked StatementPolicy rows (exact set). Otherwise, fall back to the same
+  // insurer + billing-month match used by generateDraft().
+  const linkedStatement = await prisma.insurerStatement.findUnique({
+    where: { invoiceId: id },
+    include: { policies: { select: { policyId: true } } },
+  });
+
+  let policyIds;
+  if (linkedStatement) {
+    policyIds = linkedStatement.policies.map((sp) => sp.policyId);
+  } else {
+    const { from, to } = monthRange(invoice.billingMonth);
+    const names = matchingInsurerNames(invoice.insurerName ?? '');
+    const policies = await prisma.policy.findMany({
+      where: {
+        insurerName: { in: names },
+        issueDate:   { gte: from, lt: to },
+        invoiceRaised: true,
+      },
+      select: { id: true },
+    });
+    policyIds = policies.map((p) => p.id);
+  }
+
+  return prisma.$transaction(async (tx) => {
+    if (policyIds.length) {
+      await tx.policy.updateMany({
+        where: { id: { in: policyIds } },
+        data:  { invoiceRaised: false, invoiceRaisedAt: null },
+      });
+    }
+
+    return tx.invoice.update({
+      where: { id },
+      data: {
+        status:                 'CANCELLED',
+        cancellationReason:     reason,
+        cancellationReasonOther: reason === 'OTHER' ? body.cancellationReasonOther.trim() : null,
+        cancelledAt:            new Date(),
+        cancelledById:          userId,
+      },
+      include: {
+        insurer:     { select: { id: true, name: true } },
+        createdBy:   { select: { id: true, name: true } },
+        cancelledBy: { select: { id: true, name: true } },
+      },
+    });
   });
 }
 
@@ -488,6 +534,15 @@ async function saveInvoiceFromStatement({ statementId, createdById }) {
         where: { id: statementId },
         data:  { invoiceId: invoice.id, status: 'INVOICED' },
       });
+
+      // Phase 1 — Invoice Raised Tracking: mark the attached policies as invoiced.
+      const policyIds = stmt.policies.map((sp) => sp.policyId);
+      if (policyIds.length) {
+        await tx.policy.updateMany({
+          where: { id: { in: policyIds } },
+          data:  { invoiceRaised: true, invoiceRaisedAt: new Date() },
+        });
+      }
 
       return invoice;
     });

@@ -52,6 +52,29 @@ const WINDOW_PARAM_TO_FILTER = {
   90: '90',
 };
 
+// ─── Renewal Month/Year filter options ──────────────────────────────────────
+
+const MONTH_OPTIONS = [
+  { value: '1', label: 'January' }, { value: '2', label: 'February' },
+  { value: '3', label: 'March' }, { value: '4', label: 'April' },
+  { value: '5', label: 'May' }, { value: '6', label: 'June' },
+  { value: '7', label: 'July' }, { value: '8', label: 'August' },
+  { value: '9', label: 'September' }, { value: '10', label: 'October' },
+  { value: '11', label: 'November' }, { value: '12', label: 'December' },
+];
+
+const FREQUENCY_LABELS = {
+  MONTHLY: 'Monthly', QUARTERLY: 'Quarterly', HALF_YEARLY: 'Half Yearly', YEARLY: 'Yearly',
+  TWO_YEAR: '2 Year', THREE_YEAR: '3 Year',
+};
+
+function yearOptions() {
+  const current = new Date().getFullYear();
+  const years = [];
+  for (let y = current - 2; y <= current + 2; y++) years.push(String(y));
+  return years;
+}
+
 function matchesQuickFilter(row, quickFilter) {
   switch (quickFilter) {
     case 'TODAY':
@@ -94,13 +117,16 @@ export default function Renewals() {
   const [searchMobile, setSearchMobile] = useState('');
   const [searchInsurer, setSearchInsurer] = useState('');
   const [searchLeadExecutive, setSearchLeadExecutive] = useState('');
+  const [selectedMonth, setSelectedMonth] = useState(''); // '' | '1'..'12'
+  const [selectedYear, setSelectedYear] = useState('');   // '' | 'YYYY'
 
   useEffect(() => {
-    fetchRenewalWorklist()
+    setLoading(true);
+    fetchRenewalWorklist({ month: selectedMonth, year: selectedYear })
       .then(setData)
       .catch(() => setError('Failed to load renewal worklist.'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedMonth, selectedYear]);
 
   const filters = {
     policyNumber: searchPolicyNumber.trim().toLowerCase(),
@@ -111,7 +137,8 @@ export default function Renewals() {
   };
 
   const hasFilters =
-    filters.policyNumber || filters.customerName || filters.mobile || filters.insurer || filters.leadExecutive;
+    filters.policyNumber || filters.customerName || filters.mobile || filters.insurer || filters.leadExecutive ||
+    selectedMonth || selectedYear;
 
   const rows = useMemo(() => {
     if (!data?.policies) return [];
@@ -135,6 +162,8 @@ export default function Renewals() {
     setSearchMobile('');
     setSearchInsurer('');
     setSearchLeadExecutive('');
+    setSelectedMonth('');
+    setSelectedYear('');
   }
 
   return (
@@ -190,6 +219,32 @@ export default function Renewals() {
 
           {/* Search filters */}
           <section className="bg-white rounded-lg border border-gray-200 shadow-sm px-5 py-4 flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1 min-w-[160px]">
+              <label className="text-xs font-medium text-gray-600">Renewal Month</label>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All months</option>
+                {MONTH_OPTIONS.map((m) => (
+                  <option key={m.value} value={m.value}>{m.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1 min-w-[120px]">
+              <label className="text-xs font-medium text-gray-600">Renewal Year</label>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">All years</option>
+                {yearOptions().map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
             <div className="flex flex-col gap-1 min-w-[180px]">
               <label className="text-xs font-medium text-gray-600">Policy Number</label>
               <Input
@@ -253,7 +308,7 @@ export default function Renewals() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 border-b border-gray-200">
                     <tr>
-                      {['Renewal Date', 'Policy Number', 'Customer Name', 'Insurer', 'Mobile Number', 'Lead Executive', 'Policy Status', ''].map((h) => (
+                      {['Renewal Date', 'Policy Number', 'Customer Name', 'Insurer', 'Frequency', 'Mobile Number', 'Lead Executive', 'Policy Status', ''].map((h) => (
                         <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                           {h}
                         </th>
@@ -269,6 +324,7 @@ export default function Renewals() {
                         <td className="px-4 py-3 text-gray-800 font-medium whitespace-nowrap">{row.policyNumber}</td>
                         <td className="px-4 py-3 text-gray-700">{row.customerName}</td>
                         <td className="px-4 py-3 text-gray-600">{row.insurerName}</td>
+                        <td className="px-4 py-3 text-gray-600">{FREQUENCY_LABELS[row.paymentFrequency] ?? row.paymentFrequency ?? '—'}</td>
                         <td className="px-4 py-3 text-gray-600">{row.customerPhone || '—'}</td>
                         <td className="px-4 py-3 text-gray-600">{row.leadSource || '—'}</td>
                         <td className="px-4 py-3">

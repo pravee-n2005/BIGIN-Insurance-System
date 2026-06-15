@@ -65,13 +65,13 @@ test('renewal counts match non-cancelled policies renewing within the window', a
   }
 
   const within30 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(30) } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: daysFromToday(30) } },
   });
   const within60 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(60) } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: daysFromToday(60) } },
   });
   const within90 = await prisma.policy.count({
-    where: { status: { not: 'CANCELLED' }, renewalDate: { gte: today, lte: daysFromToday(90) } },
+    where: { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' }, renewalDate: { gte: today, lte: daysFromToday(90) } },
   });
 
   assert.strictEqual(stats.renewals.within30Days, within30);

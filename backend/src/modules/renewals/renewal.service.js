@@ -13,6 +13,7 @@ const POLICY_SELECT = {
   insurerName: true,
   leadSource: true,
   renewalDate: true,
+  paymentFrequency: true,
   status: true,
 };
 
@@ -26,9 +27,35 @@ function addDays(date, days) {
   return result;
 }
 
-async function worklist() {
+// ─── Phase 1 — Renewal Month Filter ────────────────────────────────────────
+// `month` is 1-12 (calendar month). `year` defaults to the current year when
+// only `month` is given. Both optional — omitting both preserves prior
+// behavior (all non-cancelled policies).
+
+function renewalDateRange(month, year) {
+  if (!month && !year) return null;
+
+  const now = new Date();
+  const y = year ? Number(year) : now.getFullYear();
+
+  if (month) {
+    const m = Number(month);
+    return { gte: new Date(y, m - 1, 1), lt: new Date(y, m, 1) };
+  }
+
+  // Year only — whole calendar year
+  return { gte: new Date(y, 0, 1), lt: new Date(y + 1, 0, 1) };
+}
+
+async function worklist({ month, year } = {}) {
+  // Phase 3b — Travel insurance is excluded from renewal reminders/reports per
+  // client requirement (it does not have a meaningful renewal cycle here).
+  const where = { status: { not: 'CANCELLED' }, insuranceCategory: { not: 'TRAVEL' } };
+  const renewalDateFilter = renewalDateRange(month, year);
+  if (renewalDateFilter) where.renewalDate = renewalDateFilter;
+
   const policies = await prisma.policy.findMany({
-    where: { status: { not: 'CANCELLED' } },
+    where,
     select: POLICY_SELECT,
     orderBy: { renewalDate: 'asc' },
   });
@@ -77,6 +104,7 @@ async function worklist() {
       customerPhone: p.customerPhone,
       insurerName: p.insurerName,
       leadSource: p.leadSource,
+      paymentFrequency: p.paymentFrequency,
       status: p.status,
       isOverdue,
       isToday,

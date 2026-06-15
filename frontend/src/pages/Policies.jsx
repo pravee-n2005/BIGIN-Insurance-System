@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -9,10 +9,12 @@ function fmt(n) {
 
 const CATEGORIES = ['', 'LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
 const STATUSES   = ['', 'ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
+const INVOICE_STATUSES = ['', 'INVOICED', 'PENDING'];
 
 export default function Policies() {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [policies, setPolicies] = useState([]);
   const [meta, setMeta] = useState({ total: 0, page: 1, pages: 1 });
@@ -22,6 +24,7 @@ export default function Policies() {
   const [filters, setFilters] = useState({
     page: 1, limit: 20,
     month: '', insurerName: '', leadSource: '', insuranceCategory: '', status: '',
+    invoiceStatus: searchParams.get('invoiceStatus') || '',
   });
 
   useEffect(() => {
@@ -60,12 +63,20 @@ export default function Policies() {
           <p className="text-sm text-gray-500 mt-1">{meta.total} records found</p>
         </div>
         {isAdmin && (
-          <button
-            onClick={() => navigate('/policies/new')}
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
-          >
-            + Add Policy
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate('/policies/import')}
+              className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors"
+            >
+              Import Policies
+            </button>
+            <button
+              onClick={() => navigate('/policies/new')}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            >
+              + Add Policy
+            </button>
+          </div>
         )}
       </div>
 
@@ -108,6 +119,16 @@ export default function Policies() {
           <option value="">All statuses</option>
           {STATUSES.filter(Boolean).map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
+        <select
+          value={filters.invoiceStatus}
+          onChange={(e) => setFilter('invoiceStatus', e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All invoice statuses</option>
+          {INVOICE_STATUSES.filter(Boolean).map((s) => (
+            <option key={s} value={s}>{s === 'INVOICED' ? 'Invoiced' : 'Pending Invoice'}</option>
+          ))}
+        </select>
       </div>
 
       {error && (
@@ -122,7 +143,7 @@ export default function Policies() {
           <table className="min-w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                {['Policy #', 'Customer', 'Insurer', 'Category', 'Product', 'Issue Date', 'Renewal Date', 'Premium', 'Lead Source', 'Status'].map((h) => (
+                {['Policy #', 'Customer', 'Insurer', 'Category', 'Product', 'Issue Date', 'Renewal Date', 'Premium', 'Lead Source', 'Status', 'Invoice'].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}
                   </th>
@@ -134,7 +155,7 @@ export default function Policies() {
               {loading ? (
                 [...Array(5)].map((_, i) => (
                   <tr key={i}>
-                    {[...Array(11)].map((__, j) => (
+                    {[...Array(12)].map((__, j) => (
                       <td key={j} className="px-4 py-3">
                         <div className="h-4 bg-gray-100 rounded animate-pulse" />
                       </td>
@@ -143,7 +164,7 @@ export default function Policies() {
                 ))
               ) : policies.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="px-4 py-10 text-center text-gray-400">
+                  <td colSpan={12} className="px-4 py-10 text-center text-gray-400">
                     No policies found.
                   </td>
                 </tr>
@@ -169,6 +190,9 @@ export default function Policies() {
                     <td className="px-4 py-3 text-gray-600">{p.leadSource}</td>
                     <td className="px-4 py-3">
                       <StatusBadge status={p.status} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <InvoiceBadge invoiceRaised={p.invoiceRaised} />
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="flex items-center gap-3">
@@ -234,6 +258,16 @@ function StatusBadge({ status }) {
   return (
     <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${map[status] ?? 'bg-gray-100 text-gray-500'}`}>
       {status}
+    </span>
+  );
+}
+
+function InvoiceBadge({ invoiceRaised }) {
+  return (
+    <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${
+      invoiceRaised ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'
+    }`}>
+      {invoiceRaised ? 'Invoiced' : 'Pending'}
     </span>
   );
 }

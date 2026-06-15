@@ -4,7 +4,11 @@ import { Field, Input, Select, Textarea, SectionHeading } from './FormField';
 import { fetchAllInsurers, fetchAllProductsByInsurer, fetchLeadMembers } from '../api/masters';
 
 const CATEGORIES     = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
-const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
+const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY', 'TWO_YEAR', 'THREE_YEAR'];
+const FREQUENCY_LABELS = {
+  MONTHLY: 'MONTHLY', QUARTERLY: 'QUARTERLY', HALF_YEARLY: 'HALF YEARLY', YEARLY: 'YEARLY',
+  TWO_YEAR: '2 YEAR', THREE_YEAR: '3 YEAR',
+};
 const STATUSES       = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const PAYMENT_MODES  = ['ONLINE', 'CARD', 'UPI', 'CHEQUE', 'BNPL', 'FINSALL', 'FIBE', 'CC', 'BIMAPAY'];
 
@@ -456,7 +460,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             onChange={(e) => set('paymentFrequency', e.target.value)}
             error={fieldErrors.paymentFrequency}
           >
-            {FREQUENCIES.map((f) => <option key={f} value={f}>{f.replace('_', ' ')}</option>)}
+            {FREQUENCIES.map((f) => <option key={f} value={f}>{FREQUENCY_LABELS[f]}</option>)}
           </Select>
         </Field>
 

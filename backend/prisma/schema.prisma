@@ -29,6 +29,8 @@ enum PaymentFrequency {
   QUARTERLY
   HALF_YEARLY
   YEARLY
+  TWO_YEAR
+  THREE_YEAR
 }
 
 enum PolicyStatus {
@@ -145,8 +147,64 @@ model LeadMember {
   updatedAt DateTime @updatedAt
 
   incentives Incentive[]
+  dailyIncentiveEntries IncentiveEntry[]
 
   @@map("lead_members")
+}
+
+// ── Phase 4 — Daily Incentive Tracking ───────────────────────────────────────
+// Configurable point values used to calculate daily incentive entries.
+// Singleton row (id = 1). All values default to 0 — no business rules are
+// hardcoded; Admin must configure these before calculations produce non-zero
+// results.
+
+model IncentiveSetting {
+  id Int @id @default(autoincrement())
+
+  touchBasePoints  Decimal @db.Decimal(10, 2) @default(0)
+  interestedPoints Decimal @db.Decimal(10, 2) @default(0)
+  followUpPoints   Decimal @db.Decimal(10, 2) @default(0)
+  conversionPoints Decimal @db.Decimal(10, 2) @default(0)
+  amountPerPoint   Decimal @db.Decimal(10, 2) @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("incentive_settings")
+}
+
+// One row per employee per day. calculatedPoints/calculatedAmount are frozen
+// at create/update time using the IncentiveSetting values in effect then —
+// future setting changes do not retroactively alter saved entries.
+
+model IncentiveEntry {
+  id Int @id @default(autoincrement())
+
+  employeeId Int
+  employee   LeadMember @relation(fields: [employeeId], references: [id])
+
+  date DateTime
+
+  totalCalls Int @default(0)
+  touchBase  Int @default(0)
+  interested Int @default(0)
+  followUp   Int @default(0)
+  conversion Int @default(0)
+
+  calculatedPoints Decimal @db.Decimal(10, 2)
+  calculatedAmount Decimal @db.Decimal(18, 2)
+
+  remarks String?
+
+  createdById Int
+  createdBy   User @relation(fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([employeeId, date])
+  @@index([date])
+  @@map("incentive_entries")
 }
 
 // ── Lead Executive Incentives ────────────────────────────────────────────────
@@ -223,6 +281,7 @@ model User {
   statements        InsurerStatement[]
   incentives        Incentive[]         @relation("IncentiveCreatedBy")
   deletedIncentives Incentive[]         @relation("IncentiveDeletedBy")
+  dailyIncentiveEntries IncentiveEntry[]
 
   @@map("users")
 }
@@ -244,6 +303,7 @@ model Policy {
   policyNumber     String           @unique
   issueDate        DateTime
   renewalDate      DateTime
+  nextDueDate      DateTime?
   paymentFrequency PaymentFrequency
   status           PolicyStatus     @default(ACTIVE)
 
@@ -265,6 +325,10 @@ model Policy {
   creditedDate  DateTime?
   paymentMode   String?
   remarks       String?
+
+  // ── Phase 1 — Invoice Raised Tracking ─────────────────────────────────────
+  invoiceRaised   Boolean   @default(false)
+  invoiceRaisedAt DateTime?
 
   // ── Audit ─────────────────────────────────────────────────────────────────
   createdById Int
@@ -369,6 +433,7 @@ model InsurerStatement {
   amountCredited     Decimal?  @db.Decimal(18, 2)
   bankReference      String?   // e.g. "S98019073" or "CMS5587231631"
   bankAccount        String?   // e.g. "Bank-1 (Old)" / "Bank-2 (New)" — free text
+  natureOfTransaction String?  // e.g. "Brokerage Credit", "TDS Reversal" — for Monthly GST Report
 
   // ── Frozen totals — populated by finalize(); zero while DRAFT ────────────
   totalTaxableValue  Decimal   @db.Decimal(18, 2) @default(0)

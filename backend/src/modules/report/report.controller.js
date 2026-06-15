@@ -1,6 +1,7 @@
 const service = require('./report.service');
-const { generateGstSalesXlsx } = require('./gst.report.xlsx');
-const { generateCreditsXlsx }  = require('./credits.report.xlsx');
+const { generateGstSalesXlsx }   = require('./gst.report.xlsx');
+const { generateCreditsXlsx }    = require('./credits.report.xlsx');
+const { generateMonthlyGstXlsx } = require('./monthly-gst.report.xlsx');
 
 const MONTH_RE = /^\d{4}-\d{2}$/;
 const DATE_RE  = /^\d{4}-\d{2}-\d{2}$/;
@@ -128,7 +129,44 @@ const creditsExport = async (req, res, next) => {
   }
 };
 
+// ─── Phase 5 — Monthly GST Report ─────────────────────────────────────────────
+
+const monthlyGstReport = async (req, res, next) => {
+  try {
+    const { month } = req.query;
+    if (!month || !MONTH_RE.test(month))
+      return res.status(400).json({ error: 'month query parameter (YYYY-MM) is required.' });
+    const data = await service.monthlyGst({ month });
+    res.json(data);
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ error: err.message });
+    next(err);
+  }
+};
+
+const monthlyGstExport = async (req, res, next) => {
+  try {
+    const { month } = req.query;
+    if (!month || !MONTH_RE.test(month))
+      return res.status(400).json({ error: 'month query parameter (YYYY-MM) is required.' });
+    const data = await service.monthlyGst({ month });
+    const buf  = await generateMonthlyGstXlsx({ month, rows: data.rows });
+    const filename = `Monthly_GST_${month}.xlsx`;
+    res.set({
+      'Content-Type':        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length':      buf.length,
+      'Cache-Control':       'no-store',
+    });
+    res.send(Buffer.from(buf));
+  } catch (err) {
+    if (err.status) return res.status(err.status).json({ error: err.message });
+    next(err);
+  }
+};
+
 module.exports = {
   availableMonthsReport, monthlyReport, insurerReport, leadSourceReport, categoryReport,
   gstSalesReport, gstSalesExport, creditsReport, creditsExport,
+  monthlyGstReport, monthlyGstExport,
 };

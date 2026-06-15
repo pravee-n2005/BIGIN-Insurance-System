@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import api from '../api/axios';
 import {
-  fetchGstSalesReport, fetchCreditsReport,
-  downloadGstSalesXlsx, downloadCreditsXlsx,
+  fetchGstSalesReport, fetchCreditsReport, fetchMonthlyGstReport,
+  downloadGstSalesXlsx, downloadCreditsXlsx, downloadMonthlyGstXlsx,
 } from '../api/reports';
 
 function fmt(n) {
@@ -16,6 +16,7 @@ const REPORT_TABS = [
   { key: 'category',    label: 'By Category' },
   { key: 'gst-sales',   label: 'GST Sales' },
   { key: 'credits',     label: 'Credits' },
+  { key: 'monthly-gst', label: 'Monthly GST Report' },
 ];
 
 // Filename-safe blob download helper
@@ -44,6 +45,8 @@ export default function Reports() {
       let res;
       if (tab === 'gst-sales') {
         res = await fetchGstSalesReport(month);
+      } else if (tab === 'monthly-gst') {
+        res = await fetchMonthlyGstReport(month);
       } else if (tab === 'credits') {
         if (!from || !to) throw new Error('From and To dates are required.');
         res = await fetchCreditsReport({ from, to });
@@ -69,6 +72,9 @@ export default function Reports() {
       if (tab === 'gst-sales') {
         const blob = await downloadGstSalesXlsx(month);
         downloadBlob(blob, `GST_Sales_${month}.xlsx`);
+      } else if (tab === 'monthly-gst') {
+        const blob = await downloadMonthlyGstXlsx(month);
+        downloadBlob(blob, `Monthly_GST_${month}.xlsx`);
       } else if (tab === 'credits') {
         if (!from || !to) throw new Error('From and To dates are required.');
         const blob = await downloadCreditsXlsx({ from, to });
@@ -114,7 +120,7 @@ export default function Reports() {
             Export PDF
           </button>
         )}
-        {(tab === 'gst-sales' || tab === 'credits') && (
+        {(tab === 'gst-sales' || tab === 'credits' || tab === 'monthly-gst') && (
           <button
             onClick={exportReport}
             className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
@@ -143,7 +149,7 @@ export default function Reports() {
 
       {/* Filter controls */}
       <div className="flex flex-wrap items-end gap-3 mb-6">
-        {(tab === 'monthly' || tab === 'gst-sales') ? (
+        {(tab === 'monthly' || tab === 'gst-sales' || tab === 'monthly-gst') ? (
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1">Month</label>
             <input
@@ -185,10 +191,11 @@ export default function Reports() {
       {/* Results */}
       {data && (
         <>
-          {tab === 'monthly'   && <MonthlyResult data={data} />}
-          {tab === 'gst-sales' && <GstSalesResult data={data} />}
-          {tab === 'credits'   && <CreditsResult data={data} />}
-          {!['monthly','gst-sales','credits'].includes(tab) && <GroupedResult data={data.data} tab={tab} />}
+          {tab === 'monthly'    && <MonthlyResult data={data} />}
+          {tab === 'gst-sales'  && <GstSalesResult data={data} />}
+          {tab === 'credits'    && <CreditsResult data={data} />}
+          {tab === 'monthly-gst' && <MonthlyGstResult data={data} />}
+          {!['monthly','gst-sales','credits','monthly-gst'].includes(tab) && <GroupedResult data={data.data} tab={tab} />}
         </>
       )}
     </div>
@@ -295,6 +302,63 @@ function CreditsResult({ data }) {
                 </tr>
               ))}
             </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── Monthly GST Report preview ────────────────────────────────────────────────
+
+function MonthlyGstResult({ data }) {
+  if (!data.rows || data.rows.length === 0) {
+    return <p className="text-sm text-gray-400 text-center py-12">No credited statements in the selected month.</p>;
+  }
+  return (
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <p className="text-xs font-medium text-gray-500">Entries</p>
+          <p className="text-lg font-bold text-gray-900 mt-1">{data.totals.count}</p>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <p className="text-xs font-medium text-gray-500">Total Debit (Deposits)</p>
+          <p className="text-lg font-bold text-gray-900 mt-1">{fmt(data.totals.debit)}</p>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <p className="text-xs font-medium text-gray-500">Total Credit (Payments)</p>
+          <p className="text-lg font-bold text-gray-900 mt-1">{fmt(data.totals.credit)}</p>
+        </div>
+      </div>
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                {['Credited Date', 'Bank Reference', 'Nature of Transaction', 'Debit (Deposits)', 'Credit (Payments)'].map((h) => (
+                  <th key={h} className="px-3 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {data.rows.map((r, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                  <td className="px-3 py-2 text-gray-600 text-xs whitespace-nowrap">{r.creditedDate ? new Date(r.creditedDate).toLocaleDateString('en-IN') : '—'}</td>
+                  <td className="px-3 py-2 font-mono text-xs text-gray-600">{r.bankReference || '—'}</td>
+                  <td className="px-3 py-2 text-gray-800">{r.natureOfTransaction || '—'}</td>
+                  <td className="px-3 py-2 font-mono font-semibold">{fmt(r.debit)}</td>
+                  <td className="px-3 py-2 font-mono text-xs">{r.credit ? fmt(r.credit) : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="bg-gray-50 font-semibold">
+                <td className="px-3 py-2" colSpan={3}>TOTAL</td>
+                <td className="px-3 py-2 font-mono">{fmt(data.totals.debit)}</td>
+                <td className="px-3 py-2 font-mono">{fmt(data.totals.credit)}</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>

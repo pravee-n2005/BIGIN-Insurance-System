@@ -18,7 +18,9 @@ import StatementNew from './pages/StatementNew';
 import StatementDetail from './pages/StatementDetail';
 import MasterData from './pages/MasterData';
 import Incentives from './pages/Incentives';
+import DailyIncentives from './pages/DailyIncentives';
 import DataHealthDashboard from './pages/DataHealthDashboard';
+import PolicyImport from './pages/PolicyImport';
 import Renewals from './pages/Renewals';
 
 export default function App() {
@@ -47,11 +49,15 @@ export default function App() {
               {/* Incentives — read for both roles, create/edit/delete gated inside the page */}
               <Route path="/incentives" element={<Incentives />} />
 
+              {/* Daily Incentive Tracking — read for both roles, create/edit/delete/settings gated inside the page */}
+              <Route path="/daily-incentives" element={<DailyIncentives />} />
+
               {/* Renewals — read-only operational worklist for both roles */}
               <Route path="/renewals" element={<Renewals />} />
 
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>
+                <Route path="/policies/import"     element={<PolicyImport />} />
                 <Route path="/policies/new"        element={<AddPolicy />} />
                 <Route path="/policies/:id/edit"   element={<EditPolicy />} />
                 <Route path="/invoice-profiles"    element={<InvoiceProfiles />} />

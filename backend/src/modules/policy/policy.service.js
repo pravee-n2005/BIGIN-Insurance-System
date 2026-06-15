@@ -8,6 +8,8 @@ const FREQUENCY_MONTHS = {
   QUARTERLY: 3,
   HALF_YEARLY: 6,
   YEARLY: 12,
+  TWO_YEAR: 24,
+  THREE_YEAR: 36,
 };
 
 function calcRenewalDate(issueDate, paymentFrequency) {
@@ -74,6 +76,7 @@ function buildPolicyData(body, userId) {
     policyNumber,
     issueDate: new Date(issueDate),
     renewalDate,
+    nextDueDate: renewalDate,
     paymentFrequency,
     status: status || 'ACTIVE',
     grossPremium: Number(grossPremium),
@@ -107,12 +110,16 @@ const POLICY_INCLUDE = {
   cancelledBy: { select: { id: true, name: true } },
 };
 
-async function list({ page, limit, month, insurerName, leadSource, insuranceCategory, status }) {
+async function list({ page, limit, month, insurerName, leadSource, insuranceCategory, status, invoiceStatus }) {
   const skip = (page - 1) * limit;
   const where = {};
 
   if (insuranceCategory) where.insuranceCategory = insuranceCategory;
   if (status) where.status = status;
+
+  // Phase 1 — Invoice Raised Tracking filter
+  if (invoiceStatus === 'INVOICED') where.invoiceRaised = true;
+  if (invoiceStatus === 'PENDING') where.invoiceRaised = false;
 
   if (insurerName) where.insurerName = { contains: insurerName, mode: 'insensitive' };
   if (leadSource) where.leadSource = { contains: leadSource, mode: 'insensitive' };
@@ -210,6 +217,7 @@ async function update(id, body, userId) {
       policyNumber: merged.policyNumber,
       issueDate: new Date(merged.issueDate),
       renewalDate,
+      nextDueDate: renewalDate,
       paymentFrequency: merged.paymentFrequency,
       status: merged.status,
       grossPremium: Number(merged.grossPremium),

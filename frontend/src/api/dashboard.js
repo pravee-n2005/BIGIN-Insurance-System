@@ -1,4 +1,4 @@
 import api from './axios';
 
-export const fetchDashboardStats = () =>
-  api.get('/dashboard/stats').then((r) => r.data);
+export const fetchDashboardStats = (fy) =>
+  api.get('/dashboard/stats', { params: fy ? { fy } : {} }).then((r) => r.data);
