@@ -29,3 +29,6 @@ export const deleteDailyIncentive = (id) =>
 
 export const fetchWeeklyIncentiveReport = (params = {}) =>
   api.get('/daily-incentives/reports/weekly', { params }).then((r) => r.data.data);
+
+export const downloadWeeklyIncentiveXlsx = (params = {}) =>
+  api.get('/daily-incentives/reports/weekly/export', { params, responseType: 'blob' }).then((r) => r.data);

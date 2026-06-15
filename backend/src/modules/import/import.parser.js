@@ -27,7 +27,8 @@ async function parseWorkbook(buffer) {
   const headerRow = ws.getRow(1);
   const colIndexByKey = {};
   headerRow.eachCell({ includeEmpty: false }, (cell, colNumber) => {
-    const text = String(cellValue(cell) ?? '').trim();
+    // Strip the " *" suffix the template generator appends to required-column headers.
+    const text = String(cellValue(cell) ?? '').replace(/\s*\*\s*$/, '').trim();
     const col = COLUMNS.find((c) => c.header.toLowerCase() === text.toLowerCase());
     if (col) colIndexByKey[col.key] = colNumber;
   });

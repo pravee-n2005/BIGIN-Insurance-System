@@ -1,6 +1,7 @@
 const prisma = require('../../config/prisma');
 const service = require('./daily-incentive.service');
 const { validateCreate, validateUpdate, validateSettings, validateWeeklyReportQuery } = require('./daily-incentive.validation');
+const { generateWeeklyIncentiveXlsx } = require('./weekly-incentive.report.xlsx');
 
 const getSettings = async (req, res, next) => {
   try {
@@ -106,8 +107,29 @@ const weeklyReport = async (req, res, next) => {
   }
 };
 
+const weeklyReportExport = async (req, res, next) => {
+  try {
+    const errors = validateWeeklyReportQuery(req.query);
+    if (errors.length) return res.status(400).json({ errors });
+
+    const { weekStart, weekEnd, employeeId } = req.query;
+    const data = await service.weeklyReport({ weekStart, weekEnd, employeeId });
+    const buf = await generateWeeklyIncentiveXlsx(data);
+    const filename = `Weekly_Incentive_Report_${weekStart}_to_${weekEnd}.xlsx`;
+    res.set({
+      'Content-Type':        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length':      buf.length,
+      'Cache-Control':       'no-store',
+    });
+    res.send(Buffer.from(buf));
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getSettings, updateSettings,
   createEntry, listEntries, getEntry, updateEntry, deleteEntry,
-  weeklyReport,
+  weeklyReport, weeklyReportExport,
 };

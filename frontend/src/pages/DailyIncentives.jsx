@@ -5,8 +5,17 @@ import { fetchAllLeadMembers } from '../api/masters';
 import {
   fetchIncentiveSettings, updateIncentiveSettings,
   fetchDailyIncentives, createDailyIncentive, updateDailyIncentive, deleteDailyIncentive,
-  fetchWeeklyIncentiveReport,
+  fetchWeeklyIncentiveReport, downloadWeeklyIncentiveXlsx,
 } from '../api/dailyIncentives';
+
+// Filename-safe blob download helper
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(new Blob([blob], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 const fmt = (n) =>
   '₹' + new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(n ?? 0));
@@ -501,6 +510,7 @@ function WeeklyReportTab({ employees }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [exporting, setExporting] = useState(false);
 
   const load = useCallback(() => {
     if (!weekStart || !weekEnd) return;
@@ -515,6 +525,22 @@ function WeeklyReportTab({ employees }) {
   }, [weekStart, weekEnd, filterEmployee]);
 
   useEffect(() => { load(); }, [load]);
+
+  async function exportXlsx() {
+    if (!weekStart || !weekEnd) return;
+    setExporting(true);
+    setError('');
+    try {
+      const params = { weekStart, weekEnd };
+      if (filterEmployee) params.employeeId = filterEmployee;
+      const blob = await downloadWeeklyIncentiveXlsx(params);
+      downloadBlob(blob, `Weekly_Incentive_Report_${weekStart}_to_${weekEnd}.xlsx`);
+    } catch {
+      setError('Failed to export weekly report.');
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <>
@@ -539,6 +565,13 @@ function WeeklyReportTab({ employees }) {
             Clear filter
           </button>
         )}
+        <button
+          onClick={exportXlsx}
+          disabled={exporting || !weekStart || !weekEnd}
+          className="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {exporting ? 'Exporting…' : 'Download Excel'}
+        </button>
       </section>
 
       <section className="bg-white rounded-lg border border-gray-200 shadow-sm">

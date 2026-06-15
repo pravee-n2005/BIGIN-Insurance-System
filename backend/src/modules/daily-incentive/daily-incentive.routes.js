@@ -13,6 +13,7 @@ router.put('/settings', adminOnly, c.updateSettings);
 
 // ─── Reports (must be declared before /:id) ──────────────────────────────────
 router.get('/reports/weekly', ownerOrAdmin, c.weeklyReport);
+router.get('/reports/weekly/export', ownerOrAdmin, c.weeklyReportExport);
 
 // ─── CRUD ─────────────────────────────────────────────────────────────────────
 router.get('/', ownerOrAdmin, c.listEntries);
