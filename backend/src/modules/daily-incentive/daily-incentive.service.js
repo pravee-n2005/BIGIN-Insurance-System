@@ -26,6 +26,8 @@ async function getSettings() {
       interestedPoints: 0,
       followUpPoints: 0,
       conversionPoints: 0,
+      lifeConversionPoints: 0,
+      healthConversionPoints: 0,
       amountPerPoint: 0,
     },
   });
@@ -37,8 +39,8 @@ async function updateSettings(body) {
   const data = {
     touchBasePoints: body.touchBasePoints !== undefined ? Number(body.touchBasePoints) : current.touchBasePoints,
     interestedPoints: body.interestedPoints !== undefined ? Number(body.interestedPoints) : current.interestedPoints,
-    followUpPoints: body.followUpPoints !== undefined ? Number(body.followUpPoints) : current.followUpPoints,
-    conversionPoints: body.conversionPoints !== undefined ? Number(body.conversionPoints) : current.conversionPoints,
+    lifeConversionPoints: body.lifeConversionPoints !== undefined ? Number(body.lifeConversionPoints) : current.lifeConversionPoints,
+    healthConversionPoints: body.healthConversionPoints !== undefined ? Number(body.healthConversionPoints) : current.healthConversionPoints,
     amountPerPoint: body.amountPerPoint !== undefined ? Number(body.amountPerPoint) : current.amountPerPoint,
   };
 
@@ -51,12 +53,17 @@ async function updateSettings(body) {
 
 // ─── Calculation ────────────────────────────────────────────────────────────
 
-function calcPointsAndAmount({ touchBase, interested, followUp, conversion }, settings) {
+function calcPointsAndAmount({ touchBase, interested, conversionType }, settings) {
+  const conversionPts = conversionType === 'LIFE'
+    ? Number(settings.lifeConversionPoints)
+    : conversionType === 'HEALTH'
+      ? Number(settings.healthConversionPoints)
+      : 0;
+
   const points = round2(
     Number(touchBase) * Number(settings.touchBasePoints) +
     Number(interested) * Number(settings.interestedPoints) +
-    Number(followUp) * Number(settings.followUpPoints) +
-    Number(conversion) * Number(settings.conversionPoints)
+    conversionPts
   );
   const amount = round2(points * Number(settings.amountPerPoint));
   return { points, amount };
@@ -75,8 +82,9 @@ async function create(body, userId) {
       totalCalls: Number(body.totalCalls),
       touchBase: Number(body.touchBase),
       interested: Number(body.interested),
-      followUp: Number(body.followUp),
-      conversion: Number(body.conversion),
+      followUp: 0,
+      conversion: 1,
+      conversionType: body.conversionType || null,
       calculatedPoints: points,
       calculatedAmount: amount,
       remarks: body.remarks?.trim() || null,
@@ -125,8 +133,7 @@ async function update(id, body, userId) {
     totalCalls: body.totalCalls !== undefined ? Number(body.totalCalls) : existing.totalCalls,
     touchBase: body.touchBase !== undefined ? Number(body.touchBase) : existing.touchBase,
     interested: body.interested !== undefined ? Number(body.interested) : existing.interested,
-    followUp: body.followUp !== undefined ? Number(body.followUp) : existing.followUp,
-    conversion: body.conversion !== undefined ? Number(body.conversion) : existing.conversion,
+    conversionType: body.conversionType !== undefined ? body.conversionType : existing.conversionType,
     remarks: 'remarks' in body ? (body.remarks?.trim() || null) : existing.remarks,
   };
 
@@ -141,8 +148,7 @@ async function update(id, body, userId) {
       totalCalls: merged.totalCalls,
       touchBase: merged.touchBase,
       interested: merged.interested,
-      followUp: merged.followUp,
-      conversion: merged.conversion,
+      conversionType: merged.conversionType,
       calculatedPoints: points,
       calculatedAmount: amount,
       remarks: merged.remarks,
@@ -188,8 +194,8 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
         totalCalls: 0,
         touchBase: 0,
         interested: 0,
-        followUp: 0,
-        conversion: 0,
+        lifeConversions: 0,
+        healthConversions: 0,
         totalPoints: 0,
         totalIncentiveAmount: 0,
         entries: [],
@@ -199,8 +205,8 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
     row.totalCalls += e.totalCalls;
     row.touchBase += e.touchBase;
     row.interested += e.interested;
-    row.followUp += e.followUp;
-    row.conversion += e.conversion;
+    if (e.conversionType === 'LIFE') row.lifeConversions += 1;
+    else if (e.conversionType === 'HEALTH') row.healthConversions += 1;
     row.totalPoints = round2(row.totalPoints + Number(e.calculatedPoints));
     row.totalIncentiveAmount = round2(row.totalIncentiveAmount + Number(e.calculatedAmount));
     row.entries.push({
@@ -209,8 +215,7 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
       totalCalls: e.totalCalls,
       touchBase: e.touchBase,
       interested: e.interested,
-      followUp: e.followUp,
-      conversion: e.conversion,
+      conversionType: e.conversionType,
       calculatedPoints: Number(e.calculatedPoints),
       calculatedAmount: Number(e.calculatedAmount),
       remarks: e.remarks,
@@ -223,11 +228,11 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
     totalCalls: acc.totalCalls + r.totalCalls,
     touchBase: acc.touchBase + r.touchBase,
     interested: acc.interested + r.interested,
-    followUp: acc.followUp + r.followUp,
-    conversion: acc.conversion + r.conversion,
+    lifeConversions: acc.lifeConversions + r.lifeConversions,
+    healthConversions: acc.healthConversions + r.healthConversions,
     totalPoints: round2(acc.totalPoints + r.totalPoints),
     totalIncentiveAmount: round2(acc.totalIncentiveAmount + r.totalIncentiveAmount),
-  }), { totalCalls: 0, touchBase: 0, interested: 0, followUp: 0, conversion: 0, totalPoints: 0, totalIncentiveAmount: 0 });
+  }), { totalCalls: 0, touchBase: 0, interested: 0, lifeConversions: 0, healthConversions: 0, totalPoints: 0, totalIncentiveAmount: 0 });
 
   return { weekStart, weekEnd, employees: rows, overall };
 }

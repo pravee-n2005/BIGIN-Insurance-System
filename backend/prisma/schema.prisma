@@ -161,11 +161,13 @@ model LeadMember {
 model IncentiveSetting {
   id Int @id @default(autoincrement())
 
-  touchBasePoints  Decimal @db.Decimal(10, 2) @default(0)
-  interestedPoints Decimal @db.Decimal(10, 2) @default(0)
-  followUpPoints   Decimal @db.Decimal(10, 2) @default(0)
-  conversionPoints Decimal @db.Decimal(10, 2) @default(0)
-  amountPerPoint   Decimal @db.Decimal(10, 2) @default(0)
+  touchBasePoints       Decimal @db.Decimal(10, 2) @default(0)
+  interestedPoints      Decimal @db.Decimal(10, 2) @default(0)
+  followUpPoints        Decimal @db.Decimal(10, 2) @default(0)
+  conversionPoints      Decimal @db.Decimal(10, 2) @default(0)
+  lifeConversionPoints  Decimal @db.Decimal(10, 2) @default(0)
+  healthConversionPoints Decimal @db.Decimal(10, 2) @default(0)
+  amountPerPoint        Decimal @db.Decimal(10, 2) @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -185,11 +187,12 @@ model IncentiveEntry {
 
   date DateTime
 
-  totalCalls Int @default(0)
-  touchBase  Int @default(0)
-  interested Int @default(0)
-  followUp   Int @default(0)
-  conversion Int @default(0)
+  totalCalls      Int     @default(0)
+  touchBase       Int     @default(0)
+  interested      Int     @default(0)
+  followUp        Int     @default(0)
+  conversion      Int     @default(0)
+  conversionType  String?
 
   calculatedPoints Decimal @db.Decimal(10, 2)
   calculatedAmount Decimal @db.Decimal(18, 2)
@@ -282,8 +285,104 @@ model User {
   incentives        Incentive[]         @relation("IncentiveCreatedBy")
   deletedIncentives Incentive[]         @relation("IncentiveDeletedBy")
   dailyIncentiveEntries IncentiveEntry[]
+  pospMembersCreated    POSPMember[]              @relation("POSPMemberCreatedBy")
+  pospOverrides         POSPCommissionOverride[]  @relation("POSPOverrideCreatedBy")
+  pospEntriesCreated    POSPIncentiveEntry[]      @relation("POSPEntryCreatedBy")
 
   @@map("users")
+}
+
+// ── POSP Module ───────────────────────────────────────────────────────────────
+
+model POSPMember {
+  id          Int       @id @default(autoincrement())
+  name        String
+  code        String    @unique
+  mobile      String?
+  email       String?
+  joiningDate DateTime?
+  status      String    @default("ACTIVE")
+  remarks     String?
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
+  commissionOverrides POSPCommissionOverride[]
+  incentiveEntries    POSPIncentiveEntry[]
+
+  createdById Int
+  createdBy   User @relation("POSPMemberCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("posp_members")
+}
+
+model POSPCommissionOverride {
+  id             Int        @id @default(autoincrement())
+  pospMemberId   Int
+  pospMember     POSPMember @relation(fields: [pospMemberId], references: [id])
+  policyId       Int
+  commissionRate Decimal    @db.Decimal(8, 4)
+  brokerageAmount Decimal   @db.Decimal(18, 2)
+
+  createdById Int
+  createdBy   User @relation("POSPOverrideCreatedBy", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([pospMemberId, policyId])
+  @@map("posp_commission_overrides")
+}
+
+// One row per policy assigned to a POSP member for payout tracking.
+// policyId is optional — null means a manual entry not linked to the Policy module.
+model POSPIncentiveEntry {
+  id             Int        @id @default(autoincrement())
+  pospMemberId   Int
+  pospMember     POSPMember @relation(fields: [pospMemberId], references: [id])
+
+  // Optional link to existing Policy record
+  policyId       Int?       // null = manual entry
+  isManual       Boolean    @default(false)
+  isImported     Boolean    @default(false)   // true = row came from Excel import
+
+  // Policy register fields (copied from Policy when linked, or entered manually)
+  entryDate      DateTime
+  policyNumber   String
+  customerName   String
+  policyType     String?    // free-text: Motor, Health, Life, etc.
+
+  // Financial fields — all calculations done in service layer only
+  premium        Decimal    @db.Decimal(18, 2)
+  commissionRate Decimal    @db.Decimal(6, 2)   // e.g. 12.00 = 12%
+  pospShare      Decimal    @db.Decimal(6, 2)   // e.g. 65.00 = 65%
+  brokerage      Decimal    @db.Decimal(18, 2)  // premium × commissionRate / 100
+  pospCommission Decimal    @db.Decimal(18, 2)  // brokerage × pospShare / 100
+  orgCommission  Decimal    @db.Decimal(18, 2)  // brokerage − pospCommission
+
+  // Payment tracking
+  paymentStatus  String     @default("PENDING") // PENDING | PAID | PARTIALLY_PAID
+
+  // Invoice tracking
+  invoiceReference String?
+  invoiceDate      DateTime?
+  remarks          String?
+
+  // Audit
+  createdById    Int
+  createdBy      User       @relation("POSPEntryCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  // Soft delete
+  isDeleted      Boolean    @default(false)
+  deletedAt      DateTime?
+
+  @@index([pospMemberId])
+  @@index([entryDate])
+  @@map("posp_incentive_entries")
 }
 
 model Policy {

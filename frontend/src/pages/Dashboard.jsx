@@ -152,14 +152,26 @@ function DashboardStatistics({ fy }) {
         />
       )}
       {stats.fy && (
-        <StatGroup
-          title={`${fyLabel(stats.fy.label)} Summary`}
-          cards={[
-            { label: 'Policies', value: stats.fy.policies },
-            { label: 'Premium', value: fmt(stats.fy.premium) },
-            { label: 'Commission', value: fmt(stats.fy.commission) },
-          ]}
-        />
+        <div className="rounded-xl border-2 border-blue-300 bg-blue-50 p-5 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-600 text-white uppercase tracking-wide">
+              {fyLabel(stats.fy.label)}
+            </span>
+            <h3 className="text-sm font-bold text-blue-900 uppercase tracking-wide">Financial Year Summary</h3>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { label: 'Policies', value: stats.fy.policies },
+              { label: 'Premium', value: fmt(stats.fy.premium) },
+              { label: 'Commission', value: fmt(stats.fy.commission) },
+            ].map((card) => (
+              <div key={card.label} className="bg-white rounded-lg border border-blue-200 p-5 shadow-sm">
+                <p className="text-sm font-medium text-blue-700">{card.label}</p>
+                <p className="text-2xl font-bold text-blue-900 mt-1">{card.value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );

@@ -2,7 +2,10 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' },
+  // Do NOT set Content-Type here — axios sets it automatically:
+  //   application/json  for plain objects
+  //   multipart/form-data (with boundary) for FormData
+  // A hardcoded default breaks file uploads because it overrides the boundary header.
 });
 
 // Attach JWT on every request

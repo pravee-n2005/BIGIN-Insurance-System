@@ -38,14 +38,14 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
   });
 
   ws.columns = [
-    { key: 'employee',  width: 24 },
-    { key: 'totalCalls', width: 14 },
-    { key: 'touchBase', width: 14 },
-    { key: 'interested', width: 14 },
-    { key: 'followUp',  width: 14 },
-    { key: 'conversion', width: 14 },
-    { key: 'points',    width: 12 },
-    { key: 'amount',    width: 16 },
+    { key: 'employee',         width: 24 },
+    { key: 'totalCalls',       width: 14 },
+    { key: 'touchBase',        width: 14 },
+    { key: 'interested',       width: 14 },
+    { key: 'lifeConversions',  width: 16 },
+    { key: 'healthConversions', width: 18 },
+    { key: 'points',           width: 12 },
+    { key: 'amount',           width: 16 },
   ];
 
   // ── Row 1 — Title ────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
   ws.getRow(2).height = 20;
 
   // ── Row 3 — Headers ──────────────────────────────────────────────────────
-  const headers = ['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Follow Up', 'Conversion', 'Points', 'Amount'];
+  const headers = ['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Points', 'Amount'];
   const headerRow = ws.getRow(3);
   headers.forEach((h, idx) => { headerRow.getCell(idx + 1).value = h; });
   headerRow.eachCell((cell) => {
@@ -89,8 +89,8 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
     row.getCell(2).value = e.totalCalls;
     row.getCell(3).value = e.touchBase;
     row.getCell(4).value = e.interested;
-    row.getCell(5).value = e.followUp;
-    row.getCell(6).value = e.conversion;
+    row.getCell(5).value = e.lifeConversions;
+    row.getCell(6).value = e.healthConversions;
     row.getCell(7).value = Number(e.totalPoints);
     row.getCell(8).value = Number(e.totalIncentiveAmount);
 

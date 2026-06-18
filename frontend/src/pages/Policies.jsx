@@ -126,7 +126,7 @@ export default function Policies() {
         >
           <option value="">All invoice statuses</option>
           {INVOICE_STATUSES.filter(Boolean).map((s) => (
-            <option key={s} value={s}>{s === 'INVOICED' ? 'Invoiced' : 'Pending Invoice'}</option>
+            <option key={s} value={s}>{s === 'INVOICED' ? 'Invoiced' : 'Not Invoiced'}</option>
           ))}
         </select>
       </div>
@@ -267,7 +267,7 @@ function InvoiceBadge({ invoiceRaised }) {
     <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded ${
       invoiceRaised ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'
     }`}>
-      {invoiceRaised ? 'Invoiced' : 'Pending'}
+      {invoiceRaised ? 'Invoiced' : 'Not Invoiced'}
     </span>
   );
 }

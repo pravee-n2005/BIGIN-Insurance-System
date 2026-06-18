@@ -771,9 +771,13 @@ function CreditDetailsPanel({ statement, editable, onSaved }) {
             </p>
           )}
           {variance !== null && Math.abs(variance) > 0.01 && (
-            <p className={`text-xs mt-1 font-medium ${variance < 0 ? 'text-amber-700' : 'text-blue-700'}`}>
-              Variance vs suggested: ₹{fmt(Math.abs(variance))} {variance < 0 ? 'short' : 'over'}
-            </p>
+            <div className="mt-2 px-3 py-2 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-800 space-y-0.5">
+              <p className="font-semibold">⚠ Amount credited does not match the suggested amount.</p>
+              <p>Suggested Amount: <span className="font-mono">₹{fmt(suggested)}</span></p>
+              <p>Entered Amount: <span className="font-mono">₹{fmt(Number(amountCredited))}</span></p>
+              <p>Difference: <span className="font-mono">₹{fmt(Math.abs(variance))}</span> {variance < 0 ? 'short' : 'over'}</p>
+              <p className="text-amber-700 pt-0.5">You may still save because actual credits may be received later.</p>
+            </div>
           )}
         </div>
 

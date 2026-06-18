@@ -22,6 +22,9 @@ import DailyIncentives from './pages/DailyIncentives';
 import DataHealthDashboard from './pages/DataHealthDashboard';
 import PolicyImport from './pages/PolicyImport';
 import Renewals from './pages/Renewals';
+import POSPMembers from './pages/POSPMembers';
+import POSPIncentives from './pages/POSPIncentives';
+import POSPReports from './pages/POSPReports';
 
 export default function App() {
   return (
@@ -54,6 +57,11 @@ export default function App() {
 
               {/* Renewals — read-only operational worklist for both roles */}
               <Route path="/renewals" element={<Renewals />} />
+
+              {/* POSP Module — all accessible by both roles, write actions gated inside */}
+              <Route path="/posp/members"    element={<POSPMembers />} />
+              <Route path="/posp/incentives" element={<POSPIncentives />} />
+              <Route path="/posp/reports"    element={<POSPReports />} />
 
               {/* Admin-only write routes */}
               <Route element={<AdminRoute />}>

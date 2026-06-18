@@ -22,8 +22,6 @@ const fmt = (n) =>
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
 
-// Local-calendar-date helpers (avoid toISOString(), which shifts to UTC and
-// can land on the wrong calendar day for timezones ahead of UTC, e.g. IST).
 function toLocalISODate(d) {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -45,8 +43,60 @@ function round2(n) {
 const TABS = [
   { key: 'entries', label: 'Daily Entries' },
   { key: 'weekly', label: 'Weekly Report' },
-  { key: 'settings', label: 'Settings', adminOnly: true },
+  { key: 'settings', label: 'Incentive Slab', adminOnly: true },
 ];
+
+// ─── Points Reference Card ──────────────────────────────────────────────────
+// Matches the Monthly Incentives module design exactly.
+
+const POINTS_REFERENCE = [
+  { activity: 'Appointment Fixed (Face-to-Face)', points: 25 },
+  { activity: 'Conversion to Life Insurance', points: 400 },
+  { activity: 'Conversion to Health Insurance', points: 200 },
+  { activity: 'Life Insurance Premium < ₹10,000', points: 1000 },
+  { activity: 'Life Insurance Premium ≥ ₹10,000', points: 2000 },
+  { activity: 'Health Insurance Premium < ₹20,000', points: 1000 },
+  { activity: 'Health Insurance Premium ≥ ₹20,000', points: 2000 },
+];
+
+function PointsReferenceCard() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left"
+      >
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">Points Reference</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Standard point values used for incentive calculations.</p>
+        </div>
+        <span className="text-gray-400 text-sm">{open ? 'Hide ▲' : 'Show ▼'}</span>
+      </button>
+      {open && (
+        <div className="overflow-x-auto border-t border-gray-100">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Activity / Criteria</th>
+                <th className="px-4 py-2 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Points</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {POINTS_REFERENCE.map((row) => (
+                <tr key={row.activity}>
+                  <td className="px-4 py-2 text-gray-700">{row.activity}</td>
+                  <td className="px-4 py-2 text-right text-gray-900 font-mono">{row.points}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
 
 export default function DailyIncentives() {
   const { user } = useAuth();
@@ -75,6 +125,9 @@ export default function DailyIncentives() {
           Daily call activity tracking and configurable points-based incentive calculation.
         </p>
       </div>
+
+      {/* Points Reference Card */}
+      <PointsReferenceCard />
 
       {/* Tabs */}
       <div className="border-b border-gray-200 flex gap-6">
@@ -207,7 +260,7 @@ function EntriesTab({ employees, isAdmin, settings }) {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Date', 'Employee', 'Total Calls', 'Touch Base', 'Interested', 'Follow Up', 'Conversion', 'Points', 'Amount', 'Remarks', isAdmin ? 'Actions' : null]
+                  {['Date', 'Employee', 'Total Calls', 'Touch Base', 'Interested', 'Conversion Type', 'Points', 'Amount', 'Remarks', isAdmin ? 'Actions' : null]
                     .filter(Boolean)
                     .map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
@@ -224,8 +277,17 @@ function EntriesTab({ employees, isAdmin, settings }) {
                     <td className="px-4 py-3 text-gray-600">{en.totalCalls}</td>
                     <td className="px-4 py-3 text-gray-600">{en.touchBase}</td>
                     <td className="px-4 py-3 text-gray-600">{en.interested}</td>
-                    <td className="px-4 py-3 text-gray-600">{en.followUp}</td>
-                    <td className="px-4 py-3 text-gray-600">{en.conversion}</td>
+                    <td className="px-4 py-3">
+                      {en.conversionType ? (
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                          en.conversionType === 'LIFE'
+                            ? 'bg-blue-50 text-blue-700'
+                            : 'bg-green-50 text-green-700'
+                        }`}>
+                          {en.conversionType === 'LIFE' ? 'Life' : 'Health'}
+                        </span>
+                      ) : '—'}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{Number(en.calculatedPoints)}</td>
                     <td className="px-4 py-3 text-gray-900 font-mono font-medium">{fmt(en.calculatedAmount)}</td>
                     <td className="px-4 py-3 text-gray-500 max-w-xs truncate">{en.remarks || '—'}</td>
@@ -350,14 +412,13 @@ function ConfirmModal({ title, message, confirmLabel = 'Confirm', confirming = f
 function EntryModal({ entry, employees, settings, onClose, onSaved }) {
   const isNew = !entry;
   const [form, setForm] = useState({
-    employeeId: entry?.employeeId ? String(entry.employeeId) : '',
-    date:       entry?.date ? entry.date.slice(0, 10) : todayISO(),
-    totalCalls: entry ? String(entry.totalCalls) : '',
-    touchBase:  entry ? String(entry.touchBase) : '',
-    interested: entry ? String(entry.interested) : '',
-    followUp:   entry ? String(entry.followUp) : '',
-    conversion: entry ? String(entry.conversion) : '',
-    remarks:    entry?.remarks ?? '',
+    employeeId:     entry?.employeeId ? String(entry.employeeId) : '',
+    date:           entry?.date ? entry.date.slice(0, 10) : todayISO(),
+    totalCalls:     entry ? String(entry.totalCalls) : '',
+    touchBase:      entry ? String(entry.touchBase) : '',
+    interested:     entry ? String(entry.interested) : '',
+    conversionType: entry?.conversionType ?? '',
+    remarks:        entry?.remarks ?? '',
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -365,11 +426,19 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
   function set(key, value) { setForm((f) => ({ ...f, [key]: value })); }
 
   const n = (v) => Number(v) || 0;
+
+  const conversionPts = settings
+    ? (form.conversionType === 'LIFE'
+        ? Number(settings.lifeConversionPoints)
+        : form.conversionType === 'HEALTH'
+          ? Number(settings.healthConversionPoints)
+          : 0)
+    : 0;
+
   const previewPoints = settings ? round2(
     n(form.touchBase) * Number(settings.touchBasePoints) +
     n(form.interested) * Number(settings.interestedPoints) +
-    n(form.followUp) * Number(settings.followUpPoints) +
-    n(form.conversion) * Number(settings.conversionPoints)
+    conversionPts
   ) : 0;
   const previewAmount = settings ? round2(previewPoints * Number(settings.amountPerPoint)) : 0;
 
@@ -381,7 +450,6 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
 
     for (const [key, label] of [
       ['totalCalls', 'Total Calls Made'], ['touchBase', 'Touch Base'], ['interested', 'Interested'],
-      ['followUp', 'Follow Up'], ['conversion', 'Conversion'],
     ]) {
       if (form[key] === '' || !Number.isInteger(Number(form[key])) || Number(form[key]) < 0) {
         setError(`${label} must be a non-negative whole number.`);
@@ -389,16 +457,20 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
       }
     }
 
+    if (!form.conversionType) {
+      setError('Conversion Type is required.');
+      return;
+    }
+
     setSaving(true);
     const payload = {
-      employeeId: parseInt(form.employeeId),
-      date: form.date,
-      totalCalls: Number(form.totalCalls),
-      touchBase: Number(form.touchBase),
-      interested: Number(form.interested),
-      followUp: Number(form.followUp),
-      conversion: Number(form.conversion),
-      remarks: form.remarks.trim() || undefined,
+      employeeId:     parseInt(form.employeeId),
+      date:           form.date,
+      totalCalls:     Number(form.totalCalls),
+      touchBase:      Number(form.touchBase),
+      interested:     Number(form.interested),
+      conversionType: form.conversionType,
+      remarks:        form.remarks.trim() || undefined,
     };
 
     try {
@@ -442,11 +514,12 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
           <Field label="Interested" required>
             <Input type="number" min="0" step="1" value={form.interested} onChange={(e) => set('interested', e.target.value)} />
           </Field>
-          <Field label="Follow Up" required>
-            <Input type="number" min="0" step="1" value={form.followUp} onChange={(e) => set('followUp', e.target.value)} />
-          </Field>
-          <Field label="Conversion" required>
-            <Input type="number" min="0" step="1" value={form.conversion} onChange={(e) => set('conversion', e.target.value)} />
+          <Field label="Conversion Type" required>
+            <Select value={form.conversionType} onChange={(e) => set('conversionType', e.target.value)}>
+              <option value="">Select type…</option>
+              <option value="LIFE">Life</option>
+              <option value="HEALTH">Health</option>
+            </Select>
           </Field>
         </div>
 
@@ -585,7 +658,7 @@ function WeeklyReportTab({ employees }) {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Follow Up', 'Conversion', 'Total Points', 'Total Incentive Amount'].map((h) => (
+                  {['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Total Points', 'Total Incentive Amount'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -597,8 +670,8 @@ function WeeklyReportTab({ employees }) {
                     <td className="px-4 py-3 text-gray-600">{row.totalCalls}</td>
                     <td className="px-4 py-3 text-gray-600">{row.touchBase}</td>
                     <td className="px-4 py-3 text-gray-600">{row.interested}</td>
-                    <td className="px-4 py-3 text-gray-600">{row.followUp}</td>
-                    <td className="px-4 py-3 text-gray-600">{row.conversion}</td>
+                    <td className="px-4 py-3 text-gray-600">{row.lifeConversions}</td>
+                    <td className="px-4 py-3 text-gray-600">{row.healthConversions}</td>
                     <td className="px-4 py-3 text-gray-600">{row.totalPoints}</td>
                     <td className="px-4 py-3 text-gray-900 font-mono font-medium">{fmt(row.totalIncentiveAmount)}</td>
                   </tr>
@@ -610,8 +683,8 @@ function WeeklyReportTab({ employees }) {
                   <td className="px-4 py-3 text-gray-700">{data.overall.totalCalls}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.touchBase}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.interested}</td>
-                  <td className="px-4 py-3 text-gray-700">{data.overall.followUp}</td>
-                  <td className="px-4 py-3 text-gray-700">{data.overall.conversion}</td>
+                  <td className="px-4 py-3 text-gray-700">{data.overall.lifeConversions}</td>
+                  <td className="px-4 py-3 text-gray-700">{data.overall.healthConversions}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.totalPoints}</td>
                   <td className="px-4 py-3 text-gray-900 font-mono">{fmt(data.overall.totalIncentiveAmount)}</td>
                 </tr>
@@ -624,7 +697,7 @@ function WeeklyReportTab({ employees }) {
   );
 }
 
-// ─── Settings Tab (Admin only) ──────────────────────────────────────────────
+// ─── Incentive Slab Tab (Admin only) ────────────────────────────────────────
 
 function SettingsTab({ settings, onSaved }) {
   const [form, setForm] = useState(null);
@@ -635,11 +708,11 @@ function SettingsTab({ settings, onSaved }) {
   useEffect(() => {
     if (settings) {
       setForm({
-        touchBasePoints: String(settings.touchBasePoints),
-        interestedPoints: String(settings.interestedPoints),
-        followUpPoints: String(settings.followUpPoints),
-        conversionPoints: String(settings.conversionPoints),
-        amountPerPoint: String(settings.amountPerPoint),
+        touchBasePoints:        String(settings.touchBasePoints),
+        interestedPoints:       String(settings.interestedPoints),
+        lifeConversionPoints:   String(settings.lifeConversionPoints),
+        healthConversionPoints: String(settings.healthConversionPoints),
+        amountPerPoint:         String(settings.amountPerPoint),
       });
     }
   }, [settings]);
@@ -653,7 +726,7 @@ function SettingsTab({ settings, onSaved }) {
 
     for (const [key, label] of [
       ['touchBasePoints', 'Touch Base Points'], ['interestedPoints', 'Interested Points'],
-      ['followUpPoints', 'Follow Up Points'], ['conversionPoints', 'Conversion Points'],
+      ['lifeConversionPoints', 'Life Conversion Points'], ['healthConversionPoints', 'Health Conversion Points'],
       ['amountPerPoint', 'Amount Per Point'],
     ]) {
       if (form[key] === '' || isNaN(Number(form[key])) || Number(form[key]) < 0) {
@@ -665,16 +738,16 @@ function SettingsTab({ settings, onSaved }) {
     setSaving(true);
     try {
       await updateIncentiveSettings({
-        touchBasePoints: Number(form.touchBasePoints),
-        interestedPoints: Number(form.interestedPoints),
-        followUpPoints: Number(form.followUpPoints),
-        conversionPoints: Number(form.conversionPoints),
-        amountPerPoint: Number(form.amountPerPoint),
+        touchBasePoints:        Number(form.touchBasePoints),
+        interestedPoints:       Number(form.interestedPoints),
+        lifeConversionPoints:   Number(form.lifeConversionPoints),
+        healthConversionPoints: Number(form.healthConversionPoints),
+        amountPerPoint:         Number(form.amountPerPoint),
       });
-      setSuccess('Settings saved.');
+      setSuccess('Incentive slab saved.');
       onSaved();
     } catch (err) {
-      setError(err.response?.data?.errors?.[0] || 'Failed to save settings.');
+      setError(err.response?.data?.errors?.[0] || 'Failed to save incentive slab.');
     } finally {
       setSaving(false);
     }
@@ -683,14 +756,14 @@ function SettingsTab({ settings, onSaved }) {
   if (!form) {
     return (
       <section className="bg-white rounded-lg border border-gray-200 shadow-sm px-6 py-12 text-sm text-gray-400">
-        Loading settings…
+        Loading…
       </section>
     );
   }
 
   return (
     <section className="bg-white rounded-lg border border-gray-200 shadow-sm p-6 max-w-xl">
-      <h2 className="text-sm font-semibold text-gray-900 mb-1">Incentive Point Settings</h2>
+      <h2 className="text-sm font-semibold text-gray-900 mb-1">Incentive Slab Configuration</h2>
       <p className="text-xs text-gray-500 mb-4">
         Configure the point values and amount-per-point used to calculate daily incentive entries.
         These values default to 0 — set them before relying on calculated amounts.
@@ -711,11 +784,11 @@ function SettingsTab({ settings, onSaved }) {
           <Field label="Interested Points" required>
             <Input type="number" min="0" step="0.01" value={form.interestedPoints} onChange={(e) => set('interestedPoints', e.target.value)} />
           </Field>
-          <Field label="Follow Up Points" required>
-            <Input type="number" min="0" step="0.01" value={form.followUpPoints} onChange={(e) => set('followUpPoints', e.target.value)} />
+          <Field label="Life Conversion Points" required>
+            <Input type="number" min="0" step="0.01" value={form.lifeConversionPoints} onChange={(e) => set('lifeConversionPoints', e.target.value)} />
           </Field>
-          <Field label="Conversion Points" required>
-            <Input type="number" min="0" step="0.01" value={form.conversionPoints} onChange={(e) => set('conversionPoints', e.target.value)} />
+          <Field label="Health Conversion Points" required>
+            <Input type="number" min="0" step="0.01" value={form.healthConversionPoints} onChange={(e) => set('healthConversionPoints', e.target.value)} />
           </Field>
         </div>
 
@@ -729,7 +802,7 @@ function SettingsTab({ settings, onSaved }) {
             disabled={saving}
             className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {saving ? 'Saving…' : 'Save Settings'}
+            {saving ? 'Saving…' : 'Save Incentive Slab'}
           </button>
         </div>
       </form>

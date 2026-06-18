@@ -14,7 +14,8 @@ const dailyIncentiveRouter = require('./modules/daily-incentive/daily-incentive.
 const dataHealthRouter = require('./modules/data-health/data-health.routes');
 const dashboardRouter = require('./modules/dashboard/dashboard.routes');
 const renewalRouter = require('./modules/renewals/renewal.routes');
-const errorHandler = require('./middleware/errorHandler');
+const pospRouter    = require('./modules/posp/posp.routes');
+const errorHandler  = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/daily-incentives', dailyIncentiveRouter);
 app.use('/api/data-health', dataHealthRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/renewals', renewalRouter);
+app.use('/api/posp',    pospRouter);
 
 app.use(errorHandler);
 

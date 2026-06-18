@@ -23,10 +23,13 @@ function validateCreate(body) {
   if (!isValidDate(body.date))
     errors.push('date is required and must be in YYYY-MM-DD format.');
 
-  for (const field of ['totalCalls', 'touchBase', 'interested', 'followUp', 'conversion']) {
+  for (const field of ['totalCalls', 'touchBase', 'interested']) {
     if (!isNonNegativeInteger(body[field]))
       errors.push(`${field} must be a non-negative integer.`);
   }
+
+  if (!body.conversionType || !['LIFE', 'HEALTH'].includes(body.conversionType))
+    errors.push('conversionType is required and must be LIFE or HEALTH.');
 
   if (body.remarks !== undefined && body.remarks !== null && String(body.remarks).length > 500)
     errors.push('remarks must not exceed 500 characters.');
@@ -44,10 +47,13 @@ function validateUpdate(body) {
   if (body.date !== undefined && !isValidDate(body.date))
     errors.push('date must be in YYYY-MM-DD format.');
 
-  for (const field of ['totalCalls', 'touchBase', 'interested', 'followUp', 'conversion']) {
+  for (const field of ['totalCalls', 'touchBase', 'interested']) {
     if (body[field] !== undefined && !isNonNegativeInteger(body[field]))
       errors.push(`${field} must be a non-negative integer.`);
   }
+
+  if (body.conversionType !== undefined && !['LIFE', 'HEALTH'].includes(body.conversionType))
+    errors.push('conversionType must be LIFE or HEALTH.');
 
   if (body.remarks !== undefined && body.remarks !== null && String(body.remarks).length > 500)
     errors.push('remarks must not exceed 500 characters.');
@@ -58,7 +64,7 @@ function validateUpdate(body) {
 function validateSettings(body) {
   const errors = [];
 
-  for (const field of ['touchBasePoints', 'interestedPoints', 'followUpPoints', 'conversionPoints', 'amountPerPoint']) {
+  for (const field of ['touchBasePoints', 'interestedPoints', 'lifeConversionPoints', 'healthConversionPoints', 'amountPerPoint']) {
     if (body[field] !== undefined && !isNonNegativeNumber(body[field]))
       errors.push(`${field} must be a non-negative number.`);
   }
