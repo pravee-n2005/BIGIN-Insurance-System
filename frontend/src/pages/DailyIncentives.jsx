@@ -260,7 +260,7 @@ function EntriesTab({ employees, isAdmin, settings }) {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Date', 'Employee', 'Total Calls', 'Touch Base', 'Interested', 'Conversion Type', 'Points', 'Amount', 'Remarks', isAdmin ? 'Actions' : null]
+                  {['Date', 'Employee', 'Total Calls', 'Touch Base', 'Interested', 'Conversion', 'Business Pts', 'Points', 'Amount', 'Remarks', isAdmin ? 'Actions' : null]
                     .filter(Boolean)
                     .map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
@@ -286,8 +286,9 @@ function EntriesTab({ employees, isAdmin, settings }) {
                         }`}>
                           {en.conversionType === 'LIFE' ? 'Life' : 'Health'}
                         </span>
-                      ) : '—'}
+                      ) : <span className="text-gray-400 text-xs">None</span>}
                     </td>
+                    <td className="px-4 py-3 text-gray-600">{Number(en.businessPoints ?? 0)}</td>
                     <td className="px-4 py-3 text-gray-600">{Number(en.calculatedPoints)}</td>
                     <td className="px-4 py-3 text-gray-900 font-mono font-medium">{fmt(en.calculatedAmount)}</td>
                     <td className="px-4 py-3 text-gray-500 max-w-xs truncate">{en.remarks || '—'}</td>
@@ -417,7 +418,8 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
     totalCalls:     entry ? String(entry.totalCalls) : '',
     touchBase:      entry ? String(entry.touchBase) : '',
     interested:     entry ? String(entry.interested) : '',
-    conversionType: entry?.conversionType ?? '',
+    conversionType: entry?.conversionType ?? 'NONE',
+    businessPoints: entry ? String(entry.businessPoints ?? 0) : '0',
     remarks:        entry?.remarks ?? '',
   });
   const [error, setError] = useState('');
@@ -438,6 +440,7 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
   const previewPoints = settings ? round2(
     n(form.touchBase) * Number(settings.touchBasePoints) +
     n(form.interested) * Number(settings.interestedPoints) +
+    n(form.businessPoints) +
     conversionPts
   ) : 0;
   const previewAmount = settings ? round2(previewPoints * Number(settings.amountPerPoint)) : 0;
@@ -457,8 +460,8 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
       }
     }
 
-    if (!form.conversionType) {
-      setError('Conversion Type is required.');
+    if (form.businessPoints !== '' && (!Number.isInteger(Number(form.businessPoints)) || Number(form.businessPoints) < 0)) {
+      setError('Business Points must be a non-negative whole number.');
       return;
     }
 
@@ -469,7 +472,8 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
       totalCalls:     Number(form.totalCalls),
       touchBase:      Number(form.touchBase),
       interested:     Number(form.interested),
-      conversionType: form.conversionType,
+      conversionType: form.conversionType || 'NONE',
+      businessPoints: Number(form.businessPoints || 0),
       remarks:        form.remarks.trim() || undefined,
     };
 
@@ -514,12 +518,15 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
           <Field label="Interested" required>
             <Input type="number" min="0" step="1" value={form.interested} onChange={(e) => set('interested', e.target.value)} />
           </Field>
-          <Field label="Conversion Type" required>
+          <Field label="Conversion Type">
             <Select value={form.conversionType} onChange={(e) => set('conversionType', e.target.value)}>
-              <option value="">Select type…</option>
-              <option value="LIFE">Life</option>
-              <option value="HEALTH">Health</option>
+              <option value="NONE">No Conversion</option>
+              <option value="LIFE">Life Conversion</option>
+              <option value="HEALTH">Health Conversion</option>
             </Select>
+          </Field>
+          <Field label="Business Points">
+            <Input type="number" min="0" step="1" value={form.businessPoints} onChange={(e) => set('businessPoints', e.target.value)} />
           </Field>
         </div>
 
@@ -528,6 +535,18 @@ function EntryModal({ entry, employees, settings, onClose, onSaved }) {
         </Field>
 
         <div className="px-4 py-3 bg-blue-50 border border-blue-100 rounded-md text-sm text-blue-800 space-y-1">
+          {n(form.businessPoints) > 0 && (
+            <div className="flex items-center justify-between text-xs text-blue-600">
+              <span>Business Points (direct)</span>
+              <span className="font-mono">+{n(form.businessPoints)}</span>
+            </div>
+          )}
+          {conversionPts > 0 && (
+            <div className="flex items-center justify-between text-xs text-blue-600">
+              <span>{form.conversionType === 'LIFE' ? 'Life' : 'Health'} Conversion Points</span>
+              <span className="font-mono">+{conversionPts}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <span>Calculated Points</span>
             <span className="font-mono font-semibold">{previewPoints}</span>
@@ -658,7 +677,7 @@ function WeeklyReportTab({ employees }) {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  {['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Total Points', 'Total Incentive Amount'].map((h) => (
+                  {['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Business Points', 'Total Points', 'Total Incentive Amount'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -672,6 +691,7 @@ function WeeklyReportTab({ employees }) {
                     <td className="px-4 py-3 text-gray-600">{row.interested}</td>
                     <td className="px-4 py-3 text-gray-600">{row.lifeConversions}</td>
                     <td className="px-4 py-3 text-gray-600">{row.healthConversions}</td>
+                    <td className="px-4 py-3 text-gray-600">{row.businessPoints ?? 0}</td>
                     <td className="px-4 py-3 text-gray-600">{row.totalPoints}</td>
                     <td className="px-4 py-3 text-gray-900 font-mono font-medium">{fmt(row.totalIncentiveAmount)}</td>
                   </tr>
@@ -685,6 +705,7 @@ function WeeklyReportTab({ employees }) {
                   <td className="px-4 py-3 text-gray-700">{data.overall.interested}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.lifeConversions}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.healthConversions}</td>
+                  <td className="px-4 py-3 text-gray-700">{data.overall.businessPoints ?? 0}</td>
                   <td className="px-4 py-3 text-gray-700">{data.overall.totalPoints}</td>
                   <td className="px-4 py-3 text-gray-900 font-mono">{fmt(data.overall.totalIncentiveAmount)}</td>
                 </tr>

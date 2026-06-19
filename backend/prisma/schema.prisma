@@ -193,6 +193,7 @@ model IncentiveEntry {
   followUp        Int     @default(0)
   conversion      Int     @default(0)
   conversionType  String?
+  businessPoints  Int     @default(0)
 
   calculatedPoints Decimal @db.Decimal(10, 2)
   calculatedAmount Decimal @db.Decimal(18, 2)

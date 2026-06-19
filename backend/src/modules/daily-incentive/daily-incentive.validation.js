@@ -28,8 +28,14 @@ function validateCreate(body) {
       errors.push(`${field} must be a non-negative integer.`);
   }
 
-  if (!body.conversionType || !['LIFE', 'HEALTH'].includes(body.conversionType))
-    errors.push('conversionType is required and must be LIFE or HEALTH.');
+  if (body.businessPoints !== undefined && body.businessPoints !== null && body.businessPoints !== '' &&
+      !isNonNegativeInteger(body.businessPoints))
+    errors.push('businessPoints must be a non-negative integer.');
+
+  const validConversionTypes = ['LIFE', 'HEALTH', 'NONE', ''];
+  if (body.conversionType !== undefined && body.conversionType !== null &&
+      !validConversionTypes.includes(body.conversionType))
+    errors.push('conversionType must be LIFE, HEALTH, or NONE.');
 
   if (body.remarks !== undefined && body.remarks !== null && String(body.remarks).length > 500)
     errors.push('remarks must not exceed 500 characters.');
@@ -52,8 +58,13 @@ function validateUpdate(body) {
       errors.push(`${field} must be a non-negative integer.`);
   }
 
-  if (body.conversionType !== undefined && !['LIFE', 'HEALTH'].includes(body.conversionType))
-    errors.push('conversionType must be LIFE or HEALTH.');
+  if (body.businessPoints !== undefined && body.businessPoints !== null && body.businessPoints !== '' &&
+      !isNonNegativeInteger(body.businessPoints))
+    errors.push('businessPoints must be a non-negative integer.');
+
+  if (body.conversionType !== undefined && body.conversionType !== null && body.conversionType !== '' &&
+      !['LIFE', 'HEALTH', 'NONE'].includes(body.conversionType))
+    errors.push('conversionType must be LIFE, HEALTH, or NONE.');
 
   if (body.remarks !== undefined && body.remarks !== null && String(body.remarks).length > 500)
     errors.push('remarks must not exceed 500 characters.');

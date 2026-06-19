@@ -53,7 +53,7 @@ async function updateSettings(body) {
 
 // ─── Calculation ────────────────────────────────────────────────────────────
 
-function calcPointsAndAmount({ touchBase, interested, conversionType }, settings) {
+function calcPointsAndAmount({ touchBase, interested, conversionType, businessPoints }, settings) {
   const conversionPts = conversionType === 'LIFE'
     ? Number(settings.lifeConversionPoints)
     : conversionType === 'HEALTH'
@@ -61,8 +61,9 @@ function calcPointsAndAmount({ touchBase, interested, conversionType }, settings
       : 0;
 
   const points = round2(
-    Number(touchBase) * Number(settings.touchBasePoints) +
-    Number(interested) * Number(settings.interestedPoints) +
+    Number(touchBase)       * Number(settings.touchBasePoints) +
+    Number(interested)      * Number(settings.interestedPoints) +
+    Number(businessPoints || 0) +
     conversionPts
   );
   const amount = round2(points * Number(settings.amountPerPoint));
@@ -77,18 +78,19 @@ async function create(body, userId) {
 
   return prisma.incentiveEntry.create({
     data: {
-      employeeId: Number(body.employeeId),
-      date: new Date(body.date),
-      totalCalls: Number(body.totalCalls),
-      touchBase: Number(body.touchBase),
-      interested: Number(body.interested),
-      followUp: 0,
-      conversion: 1,
-      conversionType: body.conversionType || null,
+      employeeId:      Number(body.employeeId),
+      date:            new Date(body.date),
+      totalCalls:      Number(body.totalCalls),
+      touchBase:       Number(body.touchBase),
+      interested:      Number(body.interested),
+      followUp:        0,
+      conversion:      1,
+      conversionType:  (body.conversionType && body.conversionType !== 'NONE') ? body.conversionType : null,
+      businessPoints:  Number(body.businessPoints || 0),
       calculatedPoints: points,
       calculatedAmount: amount,
-      remarks: body.remarks?.trim() || null,
-      createdById: userId,
+      remarks:         body.remarks?.trim() || null,
+      createdById:     userId,
     },
     include: ENTRY_INCLUDE,
   });
@@ -128,13 +130,16 @@ async function update(id, body, userId) {
   if (!existing) return null;
 
   const merged = {
-    employeeId: body.employeeId !== undefined ? Number(body.employeeId) : existing.employeeId,
-    date: body.date !== undefined ? new Date(body.date) : existing.date,
-    totalCalls: body.totalCalls !== undefined ? Number(body.totalCalls) : existing.totalCalls,
-    touchBase: body.touchBase !== undefined ? Number(body.touchBase) : existing.touchBase,
-    interested: body.interested !== undefined ? Number(body.interested) : existing.interested,
-    conversionType: body.conversionType !== undefined ? body.conversionType : existing.conversionType,
-    remarks: 'remarks' in body ? (body.remarks?.trim() || null) : existing.remarks,
+    employeeId:     body.employeeId     !== undefined ? Number(body.employeeId)     : existing.employeeId,
+    date:           body.date           !== undefined ? new Date(body.date)          : existing.date,
+    totalCalls:     body.totalCalls     !== undefined ? Number(body.totalCalls)      : existing.totalCalls,
+    touchBase:      body.touchBase      !== undefined ? Number(body.touchBase)       : existing.touchBase,
+    interested:     body.interested     !== undefined ? Number(body.interested)      : existing.interested,
+    conversionType: body.conversionType !== undefined
+      ? ((body.conversionType && body.conversionType !== 'NONE') ? body.conversionType : null)
+      : existing.conversionType,
+    businessPoints: body.businessPoints !== undefined ? Number(body.businessPoints)  : Number(existing.businessPoints || 0),
+    remarks:        'remarks' in body   ? (body.remarks?.trim() || null)             : existing.remarks,
   };
 
   const settings = await getSettings();
@@ -143,16 +148,17 @@ async function update(id, body, userId) {
   return prisma.incentiveEntry.update({
     where: { id },
     data: {
-      employeeId: merged.employeeId,
-      date: merged.date,
-      totalCalls: merged.totalCalls,
-      touchBase: merged.touchBase,
-      interested: merged.interested,
-      conversionType: merged.conversionType,
+      employeeId:       merged.employeeId,
+      date:             merged.date,
+      totalCalls:       merged.totalCalls,
+      touchBase:        merged.touchBase,
+      interested:       merged.interested,
+      conversionType:   merged.conversionType,
+      businessPoints:   merged.businessPoints,
       calculatedPoints: points,
       calculatedAmount: amount,
-      remarks: merged.remarks,
-      createdById: userId,
+      remarks:          merged.remarks,
+      createdById:      userId,
     },
     include: ENTRY_INCLUDE,
   });
@@ -196,6 +202,7 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
         interested: 0,
         lifeConversions: 0,
         healthConversions: 0,
+        businessPoints: 0,
         totalPoints: 0,
         totalIncentiveAmount: 0,
         entries: [],
@@ -207,6 +214,7 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
     row.interested += e.interested;
     if (e.conversionType === 'LIFE') row.lifeConversions += 1;
     else if (e.conversionType === 'HEALTH') row.healthConversions += 1;
+    row.businessPoints += Number(e.businessPoints || 0);
     row.totalPoints = round2(row.totalPoints + Number(e.calculatedPoints));
     row.totalIncentiveAmount = round2(row.totalIncentiveAmount + Number(e.calculatedAmount));
     row.entries.push({
@@ -216,6 +224,7 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
       touchBase: e.touchBase,
       interested: e.interested,
       conversionType: e.conversionType,
+      businessPoints: Number(e.businessPoints || 0),
       calculatedPoints: Number(e.calculatedPoints),
       calculatedAmount: Number(e.calculatedAmount),
       remarks: e.remarks,
@@ -225,14 +234,15 @@ async function weeklyReport({ weekStart, weekEnd, employeeId } = {}) {
   const rows = Array.from(byEmployee.values()).sort((a, b) => a.employeeName.localeCompare(b.employeeName));
 
   const overall = rows.reduce((acc, r) => ({
-    totalCalls: acc.totalCalls + r.totalCalls,
-    touchBase: acc.touchBase + r.touchBase,
-    interested: acc.interested + r.interested,
-    lifeConversions: acc.lifeConversions + r.lifeConversions,
-    healthConversions: acc.healthConversions + r.healthConversions,
-    totalPoints: round2(acc.totalPoints + r.totalPoints),
+    totalCalls:           acc.totalCalls + r.totalCalls,
+    touchBase:            acc.touchBase + r.touchBase,
+    interested:           acc.interested + r.interested,
+    lifeConversions:      acc.lifeConversions + r.lifeConversions,
+    healthConversions:    acc.healthConversions + r.healthConversions,
+    businessPoints:       acc.businessPoints + r.businessPoints,
+    totalPoints:          round2(acc.totalPoints + r.totalPoints),
     totalIncentiveAmount: round2(acc.totalIncentiveAmount + r.totalIncentiveAmount),
-  }), { totalCalls: 0, touchBase: 0, interested: 0, lifeConversions: 0, healthConversions: 0, totalPoints: 0, totalIncentiveAmount: 0 });
+  }), { totalCalls: 0, touchBase: 0, interested: 0, lifeConversions: 0, healthConversions: 0, businessPoints: 0, totalPoints: 0, totalIncentiveAmount: 0 });
 
   return { weekStart, weekEnd, employees: rows, overall };
 }

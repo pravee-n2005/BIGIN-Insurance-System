@@ -38,18 +38,19 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
   });
 
   ws.columns = [
-    { key: 'employee',         width: 24 },
-    { key: 'totalCalls',       width: 14 },
-    { key: 'touchBase',        width: 14 },
-    { key: 'interested',       width: 14 },
-    { key: 'lifeConversions',  width: 16 },
+    { key: 'employee',          width: 24 },
+    { key: 'totalCalls',        width: 14 },
+    { key: 'touchBase',         width: 14 },
+    { key: 'interested',        width: 14 },
+    { key: 'lifeConversions',   width: 16 },
     { key: 'healthConversions', width: 18 },
-    { key: 'points',           width: 12 },
-    { key: 'amount',           width: 16 },
+    { key: 'businessPoints',    width: 16 },
+    { key: 'points',            width: 12 },
+    { key: 'amount',            width: 16 },
   ];
 
   // ── Row 1 — Title ────────────────────────────────────────────────────────
-  ws.mergeCells('A1:H1');
+  ws.mergeCells('A1:I1');
   const titleCell = ws.getCell('A1');
   titleCell.value = 'BIGIN INSURANCE BROKERS PRIVATE LIMITED';
   titleCell.font  = { name: 'Arial', size: 14, bold: true };
@@ -57,7 +58,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
   ws.getRow(1).height = 22;
 
   // ── Row 2 — Sub-title ────────────────────────────────────────────────────
-  ws.mergeCells('A2:H2');
+  ws.mergeCells('A2:I2');
   const subCell = ws.getCell('A2');
   subCell.value = `DAILY INCENTIVES — WEEKLY REPORT (${formatDate(weekStart)} to ${formatDate(weekEnd)}) — Generated: ${formatDate(new Date())}`;
   subCell.font  = { name: 'Arial', size: 11, bold: true };
@@ -65,7 +66,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
   ws.getRow(2).height = 20;
 
   // ── Row 3 — Headers ──────────────────────────────────────────────────────
-  const headers = ['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Points', 'Amount'];
+  const headers = ['Employee', 'Total Calls', 'Touch Base', 'Interested', 'Life Conversions', 'Health Conversions', 'Business Points', 'Points', 'Amount'];
   const headerRow = ws.getRow(3);
   headers.forEach((h, idx) => { headerRow.getCell(idx + 1).value = h; });
   headerRow.eachCell((cell) => {
@@ -91,8 +92,9 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
     row.getCell(4).value = e.interested;
     row.getCell(5).value = e.lifeConversions;
     row.getCell(6).value = e.healthConversions;
-    row.getCell(7).value = Number(e.totalPoints);
-    row.getCell(8).value = Number(e.totalIncentiveAmount);
+    row.getCell(7).value = e.businessPoints;
+    row.getCell(8).value = Number(e.totalPoints);
+    row.getCell(9).value = Number(e.totalIncentiveAmount);
 
     row.eachCell({ includeEmpty: true }, (cell, col) => {
       cell.font = cell.font || { name: 'Arial', size: 10 };
@@ -102,7 +104,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
         left:   { style: 'thin', color: { argb: 'FFD0D0D0' } },
         right:  { style: 'thin', color: { argb: 'FFD0D0D0' } },
       };
-      if (col === 7 || col === 8) cell.numFmt = '#,##0.00';
+      if (col === 8 || col === 9) cell.numFmt = '#,##0.00';
     });
   });
 
@@ -120,6 +122,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
     totalRow.getCell(6).value = { formula: `SUM(F${startRow}:F${lastDataRow})` };
     totalRow.getCell(7).value = { formula: `SUM(G${startRow}:G${lastDataRow})` };
     totalRow.getCell(8).value = { formula: `SUM(H${startRow}:H${lastDataRow})` };
+    totalRow.getCell(9).value = { formula: `SUM(I${startRow}:I${lastDataRow})` };
     totalRow.eachCell((cell, col) => {
       cell.font   = { name: 'Arial', size: 10, bold: true };
       cell.fill   = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFF2CC' } };
@@ -127,7 +130,7 @@ async function generateWeeklyIncentiveXlsx({ weekStart, weekEnd, employees, over
         top:    { style: 'double' }, bottom: { style: 'double' },
         left:   { style: 'thin' },   right:  { style: 'thin' },
       };
-      if (col === 7 || col === 8) cell.numFmt = '#,##0.00';
+      if (col === 8 || col === 9) cell.numFmt = '#,##0.00';
     });
   }
 
