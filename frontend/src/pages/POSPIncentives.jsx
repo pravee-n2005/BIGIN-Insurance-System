@@ -1167,7 +1167,7 @@ export default function POSPIncentives() {
 
   const [members, setMembers]           = useState([]);
   const [selectedMember, setMember]     = useState('');
-  const [selectedFY, setFY]             = useState(currentFY());
+  const [selectedFY, setFY]             = useState('');
   const [selectedMonth, setMonth]       = useState('');
 
   const [data, setData]                 = useState(null);
@@ -1187,7 +1187,8 @@ export default function POSPIncentives() {
     setLoading(true); setError('');
     const params = { pospMemberId: selectedMember };
     if (selectedMonth) params.month = selectedMonth;
-    else if (selectedFY) params.fy  = selectedFY;
+    else if (selectedFY) params.fy = selectedFY;
+    // if selectedFY is '' (All Years), no fy param → backend returns all entries
     fetchPOSPEntries(params)
       .then(setData)
       .catch(() => setError('Failed to load register.'))
@@ -1214,17 +1215,17 @@ export default function POSPIncentives() {
   }
 
   const selectedMemberObj = members.find((m) => String(m.id) === String(selectedMember));
-  const months            = fyMonths(selectedFY);
+  const months            = fyMonths(selectedFY || currentFY());
   const periodLabel       = selectedMonth
     ? months.find((m) => m.value === selectedMonth)?.label || selectedMonth
-    : `FY ${selectedFY}`;
+    : selectedFY ? `FY ${selectedFY}` : 'All Years';
 
   return (
     <div className="p-8 space-y-5">
       {/* Header */}
       <div>
         <h1 className="text-xl font-bold text-gray-900">POSP Incentives</h1>
-        <p className="text-sm text-gray-500 mt-1">Select a POSP member to view suggested policies and manage the payout register.</p>
+        <p className="text-sm text-gray-500 mt-1">Select a POSP member to view the imported payout register.</p>
       </div>
 
       <SlabCard />
@@ -1236,17 +1237,20 @@ export default function POSPIncentives() {
             <label className="text-xs font-medium text-gray-600">Financial Year</label>
             <select value={selectedFY} onChange={(e) => { setFY(e.target.value); setMonth(''); }}
               className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">All Years</option>
               {fyOptions().map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-600">Month (optional)</label>
-            <select value={selectedMonth} onChange={(e) => setMonth(e.target.value)}
-              className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All months in FY</option>
-              {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
-            </select>
-          </div>
+          {selectedFY && (
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-600">Month (optional)</label>
+              <select value={selectedMonth} onChange={(e) => setMonth(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All months in FY</option>
+                {months.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+            </div>
+          )}
           <div className="flex flex-col gap-1 min-w-[200px]">
             <label className="text-xs font-medium text-gray-600">POSP Member</label>
             <select value={selectedMember} onChange={(e) => setMember(e.target.value)}
@@ -1281,25 +1285,14 @@ export default function POSPIncentives() {
 
       {!selectedMember ? (
         <div className="bg-white rounded-lg border border-gray-200 px-6 py-14 text-center">
-          <p className="text-sm text-gray-500">Select a POSP member above to view the register, or import a sheet to get started.</p>
+          <p className="text-sm text-gray-500">Select a POSP member above to view the imported payout register.</p>
         </div>
       ) : (
         <>
           {/* Summary */}
           {data && <SummaryCard summary={data.summary} memberName={selectedMemberObj?.name} periodLabel={periodLabel} />}
 
-          {/* ── Suggested Policies ─────────────────────────────────────────── */}
-          {selectedMember && (
-            <SuggestedPolicies
-              pospMemberId={Number(selectedMember)}
-              fy={selectedMonth ? undefined : selectedFY}
-              month={selectedMonth || undefined}
-              isAdmin={isAdmin}
-              onImported={handleImported}
-            />
-          )}
-
-          {/* ── Add entry buttons (import moved above filter bar) ─────────── */}
+          {/* ── Add entry buttons ────────────────────────────────────────── */}
           {isAdmin && (
             <div className="flex flex-wrap gap-3 items-center">
               <button onClick={() => setModal('link')}
