@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 import {
   fetchAllPOSPMembers, fetchPOSPEntries, fetchPOSPSuggestions,
   bulkImportPOSPEntries, createPOSPEntry, updatePOSPEntry, deletePOSPEntry,
   searchPoliciesForPOSP, previewPOSPExcel, importPOSPExcel,
+  uploadPOSPBill,
 } from '../api/posp';
 
 // ─── Formatting helpers ───────────────────────────────────────────────────────
@@ -371,6 +373,8 @@ function EditEntryModal({ entry, onClose, onSaved }) {
     customerName:     entry.customerName,
     policyType:       entry.policyType || '',
     premium:          String(Number(entry.premium)),
+    pospBillNo:       entry.pospBillNo || '',
+    pospBillDate:     entry.pospBillDate ? new Date(entry.pospBillDate).toISOString().slice(0, 10) : '',
   });
   const [error, setError]   = useState('');
   const [saving, setSaving] = useState(false);
@@ -391,6 +395,8 @@ function EditEntryModal({ entry, onClose, onSaved }) {
         invoiceReference: form.invoiceReference.trim() || undefined,
         invoiceDate:      form.invoiceDate || undefined,
         remarks:          form.remarks.trim() || undefined,
+        pospBillNo:       form.pospBillNo.trim() || undefined,
+        pospBillDate:     form.pospBillDate || undefined,
       };
       if (entry.isManual) {
         payload.entryDate    = form.entryDate;
@@ -476,6 +482,21 @@ function EditEntryModal({ entry, onClose, onSaved }) {
             <input value={form.remarks} onChange={(e) => set('remarks', e.target.value)}
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
         </div>
+        {form.paymentStatus === 'PAID' && (
+          <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+            <div><label className="block text-xs font-medium text-gray-600 mb-1">POSP Bill No</label>
+              <input value={form.pospBillNo} onChange={(e) => set('pospBillNo', e.target.value)}
+                placeholder="e.g. BILL-001"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+            <div><label className="block text-xs font-medium text-gray-600 mb-1">POSP Bill Date</label>
+              <input type="date" value={form.pospBillDate} onChange={(e) => set('pospBillDate', e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
+            <div className="col-span-2">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Bill Document</label>
+              <BillCell entry={entry} isAdmin onUpdated={onSaved} />
+            </div>
+          </div>
+        )}
         <div className="flex gap-3 pt-2 border-t border-gray-100">
           <button type="submit" disabled={saving}
             className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50">
@@ -707,6 +728,65 @@ function SuggestedPolicies({ pospMemberId, fy, month, isAdmin, onImported }) {
   );
 }
 
+// ─── Bill upload / view cell ─────────────────────────────────────────────────
+
+function BillCell({ entry, isAdmin, onUpdated }) {
+  const [uploading, setUploading] = useState(false);
+  const [viewing,   setViewing]   = useState(false);
+  const fileRef = useRef(null);
+
+  async function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      await uploadPOSPBill(entry.id, file);
+      onUpdated();
+    } catch {
+      alert('Failed to upload bill.');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  }
+
+  async function handleView() {
+    setViewing(true);
+    try {
+      const resp = await api.get(`/posp/entries/${entry.id}/bill`, { responseType: 'blob' });
+      const url  = URL.createObjectURL(resp.data);
+      window.open(url, '_blank');
+      // Revoke after a delay to allow the browser tab to finish loading
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch {
+      alert('Could not load bill document.');
+    } finally { setViewing(false); }
+  }
+
+  const hasBill = !!entry.pospBillFilePath;
+
+  return (
+    <div className="flex items-center gap-1">
+      {hasBill && (
+        <button onClick={handleView} disabled={viewing}
+          className="px-2 py-0.5 text-xs border border-blue-300 text-blue-600 rounded hover:bg-blue-50 whitespace-nowrap disabled:opacity-50">
+          {viewing ? '…' : 'View'}
+        </button>
+      )}
+      {isAdmin && (
+        <>
+          <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" onChange={handleFile} />
+          <button disabled={uploading} onClick={() => fileRef.current?.click()}
+            className="px-2 py-0.5 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50 whitespace-nowrap disabled:opacity-50">
+            {uploading ? '…' : hasBill ? 'Replace' : 'Upload'}
+          </button>
+        </>
+      )}
+      {!hasBill && !isAdmin && <span className="text-gray-300 text-xs">—</span>}
+    </div>
+  );
+}
+
 // ─── POSP Register table ──────────────────────────────────────────────────────
 
 function POSPRegister({ entries, summary, isAdmin, onEdit, onDelete, onStatusChange }) {
@@ -714,7 +794,7 @@ function POSPRegister({ entries, summary, isAdmin, onEdit, onDelete, onStatusCha
     return (
       <div className="bg-white rounded-lg border border-gray-200 px-6 py-10 text-center">
         <p className="text-sm text-gray-500">No policies imported yet.</p>
-        <p className="text-xs text-gray-400 mt-1">Select policies from "Suggested Policies" above and click Import, or add them manually.</p>
+        <p className="text-xs text-gray-400 mt-1">Import a POSP Excel sheet or add a manual entry.</p>
       </div>
     );
   }
@@ -727,13 +807,16 @@ function POSPRegister({ entries, summary, isAdmin, onEdit, onDelete, onStatusCha
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm min-w-[1100px]">
+        <table className="w-full text-sm min-w-[1400px]">
           <thead className="bg-gray-900 text-white">
             <tr>
               {['Date', 'Policy Number', 'Customer', 'Type',
+                'Insurer', 'Category', 'Net Premium', 'Taxable Value',
                 'Premium', 'Comm %', 'Brokerage',
                 'POSP %', 'POSP Commission', 'Org Commission',
-                'Payment', 'Invoice Ref', 'Invoice Date', 'Remarks',
+                'Invoice Ref', 'Invoice Date',
+                'Payment', 'Bill No', 'Bill Date', 'Document',
+                'Remarks',
                 isAdmin ? 'Actions' : null,
               ].filter(Boolean).map((h) => (
                 <th key={h} className="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide whitespace-nowrap">{h}</th>
@@ -741,44 +824,56 @@ function POSPRegister({ entries, summary, isAdmin, onEdit, onDelete, onStatusCha
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {entries.map((e) => (
-              <tr key={e.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-3 py-2.5 text-gray-600 text-xs whitespace-nowrap">{fmtDate(e.entryDate)}</td>
-                <td className="px-3 py-2.5 font-mono text-gray-800 text-xs whitespace-nowrap">
-                  {e.policyNumber}
-                  {e.isImported && <span className="ml-1 text-blue-400 text-xs">(I)</span>}
-                  {e.isManual && !e.isImported && <span className="ml-1 text-gray-400 text-xs">(M)</span>}
-                </td>
-                <td className="px-3 py-2.5 text-gray-800 max-w-[130px] truncate">{e.customerName}</td>
-                <td className="px-3 py-2.5 text-gray-500 text-xs">{e.policyType || '—'}</td>
-                <td className="px-3 py-2.5 text-gray-900 font-mono text-right">{fmt(e.premium)}</td>
-                <td className="px-3 py-2.5 text-center font-mono text-gray-700">{fmtPct(e.commissionRate)}</td>
-                <td className="px-3 py-2.5 text-gray-900 font-mono text-right font-medium">{fmt(e.brokerage)}</td>
-                <td className="px-3 py-2.5 text-center font-mono text-gray-700">{fmtPct(e.pospShare)}</td>
-                <td className="px-3 py-2.5 text-blue-900 font-mono text-right font-semibold">{fmt(e.pospCommission)}</td>
-                <td className="px-3 py-2.5 text-gray-700 font-mono text-right">{fmt(e.orgCommission)}</td>
-                <td className="px-3 py-2.5">
-                  <PaymentStatusCell entryId={e.id} value={e.paymentStatus} isAdmin={isAdmin} onUpdated={onStatusChange} />
-                </td>
-                <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[100px] truncate">{e.invoiceReference || '—'}</td>
-                <td className="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">{fmtDate(e.invoiceDate)}</td>
-                <td className="px-3 py-2.5 text-gray-400 text-xs max-w-[120px] truncate">{e.remarks || '—'}</td>
-                {isAdmin && (
-                  <td className="px-3 py-2.5">
-                    <div className="flex gap-1">
-                      <button onClick={() => onEdit(e)}
-                        className="px-2.5 py-1 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50">Edit</button>
-                      <button onClick={() => onDelete(e)}
-                        className="px-2.5 py-1 text-xs border border-red-300 text-red-600 rounded hover:bg-red-50">Del</button>
-                    </div>
+            {entries.map((e) => {
+              const pi = e.policyInfo;
+              return (
+                <tr key={e.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-2.5 text-gray-600 text-xs whitespace-nowrap">{fmtDate(e.entryDate)}</td>
+                  <td className="px-3 py-2.5 font-mono text-gray-800 text-xs whitespace-nowrap">
+                    {e.policyNumber}
+                    {e.isImported && <span className="ml-1 text-blue-400 text-xs">(I)</span>}
+                    {e.isManual && !e.isImported && <span className="ml-1 text-gray-400 text-xs">(M)</span>}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td className="px-3 py-2.5 text-gray-800 max-w-[130px] truncate">{e.customerName}</td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs">{e.policyType || '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-600 text-xs max-w-[100px] truncate">{pi?.insurerName || '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">{pi?.insuranceCategory || '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right text-xs">{pi ? fmt(pi.netPremium) : '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-700 font-mono text-right text-xs">{pi ? fmt(pi.commissionAmount) : '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right">{fmt(e.premium)}</td>
+                  <td className="px-3 py-2.5 text-center font-mono text-gray-700">{fmtPct(e.commissionRate)}</td>
+                  <td className="px-3 py-2.5 text-gray-900 font-mono text-right font-medium">{fmt(e.brokerage)}</td>
+                  <td className="px-3 py-2.5 text-center font-mono text-gray-700">{fmtPct(e.pospShare)}</td>
+                  <td className="px-3 py-2.5 text-blue-900 font-mono text-right font-semibold">{fmt(e.pospCommission)}</td>
+                  <td className="px-3 py-2.5 text-gray-700 font-mono text-right">{fmt(e.orgCommission)}</td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs max-w-[100px] truncate">{e.invoiceReference || '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">{fmtDate(e.invoiceDate)}</td>
+                  <td className="px-3 py-2.5">
+                    <PaymentStatusCell entryId={e.id} value={e.paymentStatus} isAdmin={isAdmin} onUpdated={onStatusChange} />
+                  </td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">{e.pospBillNo || '—'}</td>
+                  <td className="px-3 py-2.5 text-gray-500 text-xs whitespace-nowrap">{e.pospBillDate ? fmtDate(e.pospBillDate) : '—'}</td>
+                  <td className="px-3 py-2.5">
+                    <BillCell entry={e} isAdmin={isAdmin} onUpdated={onStatusChange} />
+                  </td>
+                  <td className="px-3 py-2.5 text-gray-400 text-xs max-w-[120px] truncate">{e.remarks || '—'}</td>
+                  {isAdmin && (
+                    <td className="px-3 py-2.5">
+                      <div className="flex gap-1">
+                        <button onClick={() => onEdit(e)}
+                          className="px-2.5 py-1 text-xs border border-gray-300 text-gray-600 rounded hover:bg-gray-50">Edit</button>
+                        <button onClick={() => onDelete(e)}
+                          className="px-2.5 py-1 text-xs border border-red-300 text-red-600 rounded hover:bg-red-50">Del</button>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
           <tfoot className="bg-yellow-50 border-t-2 border-yellow-300">
             <tr>
-              <td colSpan={4} className="px-3 py-2.5 text-xs font-bold text-gray-600 uppercase">
+              <td colSpan={8} className="px-3 py-2.5 text-xs font-bold text-gray-600 uppercase">
                 Total ({entries.length} policies)
               </td>
               <td className="px-3 py-2.5 font-mono font-bold text-gray-900 text-right">{fmt(summary.totalPremium)}</td>
@@ -787,7 +882,7 @@ function POSPRegister({ entries, summary, isAdmin, onEdit, onDelete, onStatusCha
               <td></td>
               <td className="px-3 py-2.5 font-mono font-bold text-blue-900 text-right">{fmt(summary.totalPospCommission)}</td>
               <td className="px-3 py-2.5 font-mono font-bold text-gray-900 text-right">{fmt(summary.totalOrgCommission)}</td>
-              <td colSpan={isAdmin ? 5 : 4}></td>
+              <td colSpan={isAdmin ? 8 : 7}></td>
             </tr>
           </tfoot>
         </table>
@@ -1295,10 +1390,6 @@ export default function POSPIncentives() {
           {/* ── Add entry buttons ────────────────────────────────────────── */}
           {isAdmin && (
             <div className="flex flex-wrap gap-3 items-center">
-              <button onClick={() => setModal('link')}
-                className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50">
-                + Link Specific Policy
-              </button>
               <button onClick={() => setModal('manual')}
                 className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50">
                 + Add Manual Entry
@@ -1336,14 +1427,6 @@ export default function POSPIncentives() {
             fetchAllPOSPMembers().then(setMembers).catch(() => {});
             load();
           }}
-        />
-      )}
-
-      {modal === 'link' && (
-        <LinkPolicyModal
-          pospMemberId={Number(selectedMember)}
-          onClose={() => setModal(null)}
-          onSaved={() => { setModal(null); load(); }}
         />
       )}
 

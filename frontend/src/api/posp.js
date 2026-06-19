@@ -34,6 +34,13 @@ export const importPOSPExcel = (file, pospMemberId, defaultPospShare) => {
   return api.post('/posp/entries/import-excel', fd).then((r) => r.data);
 };
 
+// ─── Bill upload / serve ─────────────────────────────────────────────────────
+export const uploadPOSPBill = (entryId, file) => {
+  const fd = new FormData();
+  fd.append('file', file);
+  return api.post(`/posp/entries/${entryId}/bill`, fd).then((r) => r.data);
+};
+
 // ─── Reports ──────────────────────────────────────────────────────────────────
 export const fetchPOSPReport        = (params)  => api.get('/posp/reports', { params }).then((r) => r.data);
 export const downloadPOSPReportXlsx = (params)  =>

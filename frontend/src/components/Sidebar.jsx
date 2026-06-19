@@ -11,7 +11,7 @@ const NAV = [
   { to: '/daily-incentives',  label: 'Daily Incentives',  icon: DailyIncentiveIcon },
   { to: '/renewals',          label: 'Renewals',          icon: RenewalIcon },
   { to: '/master-data',       label: 'Master Data',       icon: MasterDataIcon, adminOnly: true },
-  { to: '/invoice-profiles',  label: 'Invoice Profiles',  icon: ReceiptIcon, adminOnly: true },
+  { to: '/invoice-profiles',  label: 'Insurer Profiles',  icon: ReceiptIcon, adminOnly: true },
   { to: '/data-health',       label: 'Data Health',       icon: DataHealthIcon, adminOnly: true },
 ];
 

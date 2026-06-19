@@ -2,9 +2,11 @@
 
 const { Router } = require('express');
 const multer     = require('multer');
+const path       = require('path');
 const authenticate = require('../../middleware/authenticate');
 const { adminOnly } = require('../../middleware/authorize');
 const c = require('./posp.controller');
+const { BILL_UPLOAD_DIR } = require('./posp.service');
 
 const router = Router();
 
@@ -19,6 +21,22 @@ const upload = multer({
     ].includes(file.mimetype);
     if (okExt || okMime) return cb(null, true);
     cb(new Error('Only .xlsx or .xls files are allowed.'));
+  },
+});
+
+const billUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, BILL_UPLOAD_DIR),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      cb(null, `bill_${req.params.id}_${Date.now()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const ok = /\.(pdf|jpg|jpeg|png)$/i.test(file.originalname || '');
+    if (ok) return cb(null, true);
+    cb(new Error('Only PDF, JPG, or PNG files are allowed.'));
   },
 });
 
@@ -44,6 +62,8 @@ router.post('/entries/import-excel',      adminOnly, upload.single('file'), c.im
 router.post('/entries',                   adminOnly, c.createEntry);
 router.put('/entries/:id',                adminOnly, c.updateEntry);
 router.delete('/entries/:id',             adminOnly, c.deleteEntry);
+router.post('/entries/:id/bill',          adminOnly, billUpload.single('file'), c.uploadBill);
+router.get('/entries/:id/bill',           c.serveBill);
 
 // ─── Reports ──────────────────────────────────────────────────────────────────
 router.get('/reports',        c.getReport);

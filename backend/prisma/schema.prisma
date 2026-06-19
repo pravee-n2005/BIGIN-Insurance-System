@@ -366,6 +366,11 @@ model POSPIncentiveEntry {
   // Payment tracking
   paymentStatus  String     @default("PENDING") // PENDING | PAID | PARTIALLY_PAID
 
+  // POSP Bill (populated when paymentStatus = PAID)
+  pospBillNo       String?
+  pospBillDate     DateTime?
+  pospBillFilePath String?   // relative path under uploads/posp-bills/
+
   // Invoice tracking
   invoiceReference String?
   invoiceDate      DateTime?

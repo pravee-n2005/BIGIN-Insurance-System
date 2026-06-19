@@ -160,9 +160,15 @@ function parseDataRow(row, rowNum, colMap, warnings) {
     warnings.push(`Row ${rowNum}: could not parse date "${entryDateRaw}" for "${policyNumber}" — using today.`);
   }
 
-  const commissionRate    = parseNum(get('commissionRate')) ?? 0;
+  // Normalize a 0–100 percent value — Excel percentage-formatted cells come in as 0–1 decimals.
+  function normPct(v) {
+    if (v === null) return null;
+    return (v > 0 && v <= 1) ? Math.round(v * 10000) / 100 : v;
+  }
+
+  const commissionRate    = normPct(parseNum(get('commissionRate'))) ?? 0;
   const brokerageRaw      = parseNum(get('brokerage'));
-  const pospShareRaw      = parseNum(get('pospShare'));
+  const pospShareRaw      = normPct(parseNum(get('pospShare')));
   const pospCommissionRaw = parseNum(get('pospCommission'));
   const orgCommissionRaw  = parseNum(get('orgCommission'));
 

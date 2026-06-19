@@ -278,6 +278,21 @@ async function listEntries({ pospMemberId, fy, month, paymentStatus, page = 1, l
     prisma.pOSPIncentiveEntry.count({ where }),
   ]);
 
+  // Batch-fetch Policy records by policyNumber to attach insurer/category/GST info
+  const policyNumbers = [...new Set(entries.map((e) => e.policyNumber).filter(Boolean))];
+  let policyInfoMap = {};
+  if (policyNumbers.length > 0) {
+    const policies = await prisma.policy.findMany({
+      where: { policyNumber: { in: policyNumbers } },
+      select: { policyNumber: true, insurerName: true, insuranceCategory: true, netPremium: true, commissionAmount: true },
+    });
+    policies.forEach((p) => { policyInfoMap[p.policyNumber] = p; });
+  }
+  const enrichedEntries = entries.map((e) => ({
+    ...e,
+    policyInfo: policyInfoMap[e.policyNumber] || null,
+  }));
+
   // Summary aggregation
   const agg = await prisma.pOSPIncentiveEntry.aggregate({
     where,
@@ -293,7 +308,7 @@ async function listEntries({ pospMemberId, fy, month, paymentStatus, page = 1, l
     totalOrgCommission:   round2(agg._sum.orgCommission  || 0),
   };
 
-  return { entries, total, page: Number(page), pages: Math.ceil(total / limit), summary };
+  return { entries: enrichedEntries, total, page: Number(page), pages: Math.ceil(total / limit), summary };
 }
 
 async function getEntryById(id) {
@@ -362,6 +377,16 @@ async function updateEntry(id, body, userId) {
   if (body.invoiceDate      !== undefined) data.invoiceDate      = body.invoiceDate ? new Date(body.invoiceDate) : null;
   if (body.remarks          !== undefined) data.remarks          = body.remarks?.trim() || null;
 
+  // Bill fields — only meaningful when PAID; clear them when status changes away from PAID
+  const effectiveStatus = data.paymentStatus ?? existing.paymentStatus;
+  if (effectiveStatus !== 'PAID') {
+    data.pospBillNo   = null;
+    data.pospBillDate = null;
+  } else {
+    if (body.pospBillNo   !== undefined) data.pospBillNo   = body.pospBillNo?.trim()   || null;
+    if (body.pospBillDate !== undefined) data.pospBillDate = body.pospBillDate ? new Date(body.pospBillDate) : null;
+  }
+
   // Also allow updating non-financial fields for manual entries
   if (existing.isManual) {
     if (body.entryDate    !== undefined) data.entryDate    = new Date(body.entryDate);
@@ -392,6 +417,32 @@ async function deleteEntry(id) {
     where: { id },
     data: { isDeleted: true, deletedAt: new Date() },
   });
+}
+
+// ─── Bill file storage ────────────────────────────────────────────────────────
+
+const path = require('path');
+const fs   = require('fs');
+
+const BILL_UPLOAD_DIR = path.join(__dirname, '..', '..', '..', 'uploads', 'posp-bills');
+
+async function saveBillFilePath(id, filePath) {
+  const existing = await prisma.pOSPIncentiveEntry.findUnique({ where: { id } });
+  if (!existing || existing.isDeleted) return null;
+  // Delete old file if one existed
+  if (existing.pospBillFilePath) {
+    const oldPath = path.join(BILL_UPLOAD_DIR, existing.pospBillFilePath);
+    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+  }
+  return prisma.pOSPIncentiveEntry.update({
+    where: { id },
+    data: { pospBillFilePath: filePath },
+    include: { pospMember: { select: { id: true, name: true, code: true } } },
+  });
+}
+
+function getBillFilePath(relativePath) {
+  return path.join(BILL_UPLOAD_DIR, relativePath);
 }
 
 // ─── Excel import ─────────────────────────────────────────────────────────────
@@ -612,6 +663,7 @@ module.exports = {
   suggestPolicies, bulkCreateEntries,
   searchPoliciesForLink,
   listEntries, getEntryById, createEntry, updateEntry, deleteEntry,
+  saveBillFilePath, getBillFilePath, BILL_UPLOAD_DIR,
   previewExcelImport, importExcelEntries,
   getReportData,
   calcFields,

@@ -139,6 +139,39 @@ async function deleteEntry(req, res, next) {
   } catch (err) { next(err); }
 }
 
+// ─── Bill file upload / serve ─────────────────────────────────────────────────
+
+const path = require('path');
+const fs   = require('fs');
+
+async function uploadBill(req, res, next) {
+  try {
+    const id = parseInt(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id.' });
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
+    const entry = await service.saveBillFilePath(id, req.file.filename);
+    if (!entry) return res.status(404).json({ error: 'Entry not found.' });
+    res.json({ pospBillFilePath: req.file.filename, entry });
+  } catch (err) { next(err); }
+}
+
+async function serveBill(req, res, next) {
+  try {
+    const id = parseInt(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid id.' });
+    const entry = await service.getEntryById(id);
+    if (!entry || entry.isDeleted) return res.status(404).json({ error: 'Entry not found.' });
+    if (!entry.pospBillFilePath) return res.status(404).json({ error: 'No bill uploaded.' });
+    const filePath = service.getBillFilePath(entry.pospBillFilePath);
+    if (!fs.existsSync(filePath)) return res.status(404).json({ error: 'Bill file not found on server.' });
+    const ext = path.extname(entry.pospBillFilePath).toLowerCase();
+    const mimeMap = { '.pdf': 'application/pdf', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png' };
+    res.setHeader('Content-Type', mimeMap[ext] || 'application/octet-stream');
+    res.setHeader('Content-Disposition', `inline; filename="bill${ext}"`);
+    fs.createReadStream(filePath).pipe(res);
+  } catch (err) { next(err); }
+}
+
 // ─── Excel import ────────────────────────────────────────────────────────────
 
 async function previewExcelImport(req, res, next) {
@@ -202,6 +235,7 @@ module.exports = {
   getSuggestedPolicies, bulkImportEntries,
   searchPolicies,
   listEntries, createEntry, updateEntry, deleteEntry,
+  uploadBill, serveBill,
   previewExcelImport, importExcel,
   getReport, exportReport,
 };
