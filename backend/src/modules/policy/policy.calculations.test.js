@@ -207,11 +207,16 @@ test('validateCreate — gstPercent is still required and bounded', () => {
   assert.ok(tooHigh.some((e) => e.includes('gstPercent')));
 });
 
-test('validateCreate — accepts zero-value financial fields', () => {
-  const body = {
-    ...BASE_CREATE_BODY,
-    grossPremium: 0, netPremium: 0, gstPercent: 0, commissionPercent: 0, tdsPercent: 0,
-  };
+test('validateCreate — rejects zero grossPremium and netPremium', () => {
+  const errorsGross = validateCreate({ ...BASE_CREATE_BODY, grossPremium: 0 });
+  assert.ok(errorsGross.some((e) => e.includes('grossPremium')), 'expected grossPremium error');
+
+  const errorsNet = validateCreate({ ...BASE_CREATE_BODY, netPremium: 0 });
+  assert.ok(errorsNet.some((e) => e.includes('netPremium')), 'expected netPremium error');
+});
+
+test('validateCreate — accepts zero gstPercent, commissionPercent, tdsPercent', () => {
+  const body = { ...BASE_CREATE_BODY, gstPercent: 0, commissionPercent: 0, tdsPercent: 0 };
   assert.deepStrictEqual(validateCreate(body), []);
 });
 

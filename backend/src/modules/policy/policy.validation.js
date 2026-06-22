@@ -13,6 +13,11 @@ function isPositiveNumber(val) {
   return val !== undefined && val !== null && !isNaN(Number(val)) && Number(val) >= 0;
 }
 
+// Must be a number strictly greater than 0 (used for grossPremium / netPremium).
+function isAboveZero(val) {
+  return val !== undefined && val !== null && !isNaN(Number(val)) && Number(val) > 0;
+}
+
 // Required percent: must be a number between 0 and 100 inclusive.
 function isPercent(val) {
   return isPositiveNumber(val) && Number(val) <= 100;
@@ -43,8 +48,8 @@ function validateCreate(body) {
   if (!isValidDate(body.issueDate)) errors.push('issueDate is required and must be a valid date.');
   if (!PAYMENT_FREQUENCIES.includes(body.paymentFrequency))
     errors.push(`paymentFrequency must be one of: ${PAYMENT_FREQUENCIES.join(', ')}.`);
-  if (!isPositiveNumber(body.grossPremium)) errors.push('grossPremium must be a non-negative number.');
-  if (!isPositiveNumber(body.netPremium)) errors.push('netPremium must be a non-negative number.');
+  if (!isAboveZero(body.grossPremium)) errors.push('grossPremium must be greater than 0.');
+  if (!isAboveZero(body.netPremium)) errors.push('netPremium must be greater than 0.');
   if (!isPercent(body.gstPercent)) errors.push('gstPercent must be a number between 0 and 100.');
   if (!isOptionalPercent(body.commissionPercent)) errors.push('commissionPercent must be a number between 0 and 100.');
   if (!isOptionalPercent(body.tdsPercent)) errors.push('tdsPercent must be a number between 0 and 100.');
@@ -70,10 +75,10 @@ function validateUpdate(body) {
     errors.push(`paymentFrequency must be one of: ${PAYMENT_FREQUENCIES.join(', ')}.`);
   if (body.status !== undefined && !POLICY_STATUSES.includes(body.status))
     errors.push(`status must be one of: ${POLICY_STATUSES.join(', ')}.`);
-  if (body.grossPremium !== undefined && !isPositiveNumber(body.grossPremium))
-    errors.push('grossPremium must be a non-negative number.');
-  if (body.netPremium !== undefined && !isPositiveNumber(body.netPremium))
-    errors.push('netPremium must be a non-negative number.');
+  if (body.grossPremium !== undefined && !isAboveZero(body.grossPremium))
+    errors.push('grossPremium must be greater than 0.');
+  if (body.netPremium !== undefined && !isAboveZero(body.netPremium))
+    errors.push('netPremium must be greater than 0.');
   if (body.gstPercent !== undefined && !isPercent(body.gstPercent))
     errors.push('gstPercent must be a number between 0 and 100.');
   if (body.commissionPercent !== undefined && !isOptionalPercent(body.commissionPercent))
@@ -116,6 +121,6 @@ function validateCancellation(body, existingStatus) {
 }
 
 module.exports = {
-  validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isPercent, isOptionalPercent,
+  validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isAboveZero, isPercent, isOptionalPercent,
   INSURANCE_CATEGORIES, PAYMENT_FREQUENCIES, POLICY_STATUSES,
 };

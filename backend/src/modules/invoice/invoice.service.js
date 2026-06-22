@@ -433,6 +433,16 @@ async function cancelInvoice(id, body, userId) {
       });
     }
 
+    // Revert any linked InsurerStatement back to FINALIZED so it can be re-invoiced.
+    // The statement's invoiceId pointer is cleared so saveInvoiceFromStatement() no
+    // longer treats it as already-invoiced.
+    if (linkedStatement) {
+      await tx.insurerStatement.update({
+        where: { id: linkedStatement.id },
+        data:  { status: 'FINALIZED', invoiceId: null },
+      });
+    }
+
     return tx.invoice.update({
       where: { id },
       data: {

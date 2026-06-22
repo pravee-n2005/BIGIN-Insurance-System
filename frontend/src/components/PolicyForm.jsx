@@ -254,6 +254,24 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
     [form.netPremium, form.gstPercent, form.commissionPercent, form.tdsPercent]
   );
 
+  function validate() {
+    const errors = {};
+    if (!form.insurerName.trim()) errors.insurerName = 'Insurer is required.';
+    if (!form.insuranceCategory) errors.insuranceCategory = 'Insurance category is required.';
+    if (!form.productName.trim()) errors.productName = 'Product is required.';
+    if (!form.customerName.trim()) errors.customerName = 'Customer name is required.';
+    if (!form.policyNumber.trim()) errors.policyNumber = 'Policy number is required.';
+    if (!form.issueDate) errors.issueDate = 'Issue date is required.';
+    const gross = Number(form.grossPremium);
+    if (!form.grossPremium || isNaN(gross) || gross <= 0) errors.grossPremium = 'Gross premium must be greater than 0.';
+    const net = Number(form.netPremium);
+    if (!form.netPremium || isNaN(net) || net <= 0) errors.netPremium = 'Net premium must be greater than 0.';
+    const gst = form.gstPercent === '' ? NaN : Number(form.gstPercent);
+    if (isNaN(gst) || gst < 0) errors.gstPercent = 'GST % must be 0 or greater.';
+    if (!form.leadSource.trim()) errors.leadSource = 'Lead member is required.';
+    return errors;
+  }
+
   function set(key, value) {
     setForm((f) => ({ ...f, [key]: value }));
     // Clear field error on change
@@ -292,6 +310,13 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
   async function handleSubmit(e) {
     e.preventDefault();
     setServerError('');
+
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
+
     setFieldErrors({});
     setLoading(true);
 
