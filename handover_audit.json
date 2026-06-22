@@ -1,0 +1,677 @@
+{
+  "summary": {
+    "totalFlags": 37,
+    "byType": {
+      "POLICY": 3,
+      "INVOICE": 18,
+      "STATEMENT": 11,
+      "USER": 4,
+      "INCENTIVE": 1
+    },
+    "notInLedgerCount": 8
+  },
+  "flags": [
+    {
+      "id": 2,
+      "type": "POLICY",
+      "reason": "Seed/dev policy number pattern: SH202511002",
+      "safeToDel": true,
+      "customer": "Bhavani Kumar",
+      "gross": 15420
+    },
+    {
+      "id": 3,
+      "type": "POLICY",
+      "reason": "Seed/dev policy number pattern: HDMOTOR003",
+      "safeToDel": true,
+      "customer": "Arjun Raj",
+      "gross": 22150
+    },
+    {
+      "id": 163,
+      "type": "POLICY",
+      "reason": "Auto-assigned UNKNOWN- policy number (import artefact): UNKNOWN-165",
+      "safeToDel": false,
+      "customer": "BHUVANESHWARI",
+      "insurer": "New India Ins",
+      "gross": 11326
+    },
+    {
+      "id": 1,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG049",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-04",
+      "amount": 0,
+      "cancellationReason": null
+    },
+    {
+      "id": 2,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG050",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-04",
+      "amount": 0,
+      "cancellationReason": null
+    },
+    {
+      "id": 3,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG051",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-02",
+      "amount": 77882.25,
+      "cancellationReason": null
+    },
+    {
+      "id": 4,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG052",
+      "status": "CANCELLED",
+      "insurer": "Star Health Insurance"
+    },
+    {
+      "id": 4,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG052",
+      "insurer": "Star Health Insurance",
+      "billingMonth": "2026-02",
+      "amount": 27534.46,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 5,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG053",
+      "insurer": "Star Health Insurance",
+      "billingMonth": "2026-01",
+      "amount": 3534.87,
+      "cancellationReason": null
+    },
+    {
+      "id": 6,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG054",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "amount": 11764.84,
+      "cancellationReason": "DUPLICATE_INVOICE"
+    },
+    {
+      "id": 7,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG055",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-01",
+      "amount": 163.06,
+      "cancellationReason": "DUPLICATE_INVOICE"
+    },
+    {
+      "id": 8,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG056",
+      "status": "CANCELLED",
+      "insurer": "HDFC Ergo General"
+    },
+    {
+      "id": 8,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG056",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "amount": 11800,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 9,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG057",
+      "status": "CANCELLED",
+      "insurer": "HDFC Ergo General"
+    },
+    {
+      "id": 9,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG057",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "amount": 0,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 10,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG058",
+      "status": "CANCELLED",
+      "insurer": "HDFC Ergo General"
+    },
+    {
+      "id": 10,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG058",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "amount": 11800,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 11,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG059",
+      "status": "CANCELLED",
+      "insurer": "Tata AIA Life"
+    },
+    {
+      "id": 11,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG059",
+      "insurer": "Tata AIA Life",
+      "billingMonth": "2026-07",
+      "amount": 2360,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 13,
+      "type": "INVOICE",
+      "reason": "Cancelled with reason TEST_DUMMY_INVOICE",
+      "safeToDel": false,
+      "invoiceNumber": "BG061",
+      "status": "CANCELLED",
+      "insurer": "HDFC Ergo General"
+    },
+    {
+      "id": 13,
+      "type": "INVOICE",
+      "reason": "Development-era CANCELLED invoice (BG049–BG061)",
+      "safeToDel": false,
+      "invoiceNumber": "BG061",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "amount": 0,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 1,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: TEST-001",
+      "safeToDel": true,
+      "status": "CANCELLED",
+      "businessMonth": "2026-05",
+      "remarks": "testing gst module"
+    },
+    {
+      "id": 1,
+      "type": "STATEMENT",
+      "reason": "Test keyword in remarks: \"testing gst module\"",
+      "safeToDel": true,
+      "ref": "TEST-001",
+      "status": "CANCELLED"
+    },
+    {
+      "id": 5,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: CREDIT-TEST-001",
+      "safeToDel": false,
+      "status": "FINALIZED",
+      "businessMonth": "2026-06",
+      "remarks": "Credits Report Final Testing"
+    },
+    {
+      "id": 5,
+      "type": "STATEMENT",
+      "reason": "Test keyword in remarks: \"Credits Report Final Testing\"",
+      "safeToDel": false,
+      "ref": "CREDIT-TEST-001",
+      "status": "FINALIZED"
+    },
+    {
+      "id": 2,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: TEST-002",
+      "safeToDel": true,
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "remarks": "testing gst module"
+    },
+    {
+      "id": 2,
+      "type": "STATEMENT",
+      "reason": "Test keyword in remarks: \"testing gst module\"",
+      "safeToDel": true,
+      "ref": "TEST-002",
+      "status": "CANCELLED"
+    },
+    {
+      "id": 6,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: CREDIT-TEST-002",
+      "safeToDel": true,
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "remarks": "Credits Report Final Testing"
+    },
+    {
+      "id": 6,
+      "type": "STATEMENT",
+      "reason": "Test keyword in remarks: \"Credits Report Final Testing\"",
+      "safeToDel": true,
+      "ref": "CREDIT-TEST-002",
+      "status": "CANCELLED"
+    },
+    {
+      "id": 7,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: CREDIT TEST 003",
+      "safeToDel": true,
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "remarks": "credit report tests final"
+    },
+    {
+      "id": 4,
+      "type": "STATEMENT",
+      "reason": "Dev/test statement reference number: HDFC-JUN-TEST-001",
+      "safeToDel": true,
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "remarks": "Credits Report testing"
+    },
+    {
+      "id": 4,
+      "type": "STATEMENT",
+      "reason": "Test keyword in remarks: \"Credits Report testing\"",
+      "safeToDel": true,
+      "ref": "HDFC-JUN-TEST-001",
+      "status": "CANCELLED"
+    },
+    {
+      "id": 1,
+      "type": "USER",
+      "reason": "Placeholder/seed email must be replaced: admin@bigin.com",
+      "safeToDel": false,
+      "name": "Admin",
+      "role": "ADMIN"
+    },
+    {
+      "id": 1,
+      "type": "USER",
+      "reason": "Generic display name must be replaced: Admin",
+      "safeToDel": false,
+      "email": "admin@bigin.com",
+      "role": "ADMIN"
+    },
+    {
+      "id": 2,
+      "type": "USER",
+      "reason": "Placeholder/seed email must be replaced: owner@bigin.com",
+      "safeToDel": false,
+      "name": "Owner",
+      "role": "OWNER"
+    },
+    {
+      "id": 2,
+      "type": "USER",
+      "reason": "Generic display name must be replaced: Owner",
+      "safeToDel": false,
+      "email": "owner@bigin.com",
+      "role": "OWNER"
+    },
+    {
+      "id": 26,
+      "type": "INCENTIVE",
+      "reason": "Soft-deleted record (isDeleted=true) still in DB",
+      "safeToDel": false,
+      "month": "2026-07",
+      "member": "Oviya",
+      "deletedAt": "2026-06-15T05:38:45.747Z"
+    }
+  ],
+  "notInLedger": [
+    {
+      "id": 2,
+      "policyNumber": "SH202511002",
+      "customer": "Bhavani Kumar",
+      "insurer": "STAR Health",
+      "gross": 15420,
+      "remarks": null,
+      "createdAt": "2026-05-31T12:13:11.672Z",
+      "isInstalment": false,
+      "isUnknown": false,
+      "isSeed": true
+    },
+    {
+      "id": 3,
+      "policyNumber": "HDMOTOR003",
+      "customer": "Arjun Raj",
+      "insurer": "HDFC ERGO",
+      "gross": 22150,
+      "remarks": null,
+      "createdAt": "2026-05-31T12:17:18.874Z",
+      "isInstalment": false,
+      "isUnknown": false,
+      "isSeed": true
+    },
+    {
+      "id": 88,
+      "policyNumber": "7786112600009264-Q2",
+      "customer": "LOKHASUDHAN",
+      "insurer": "STAR Health",
+      "gross": 8559,
+      "remarks": "Q RENEW",
+      "createdAt": "2026-05-31T12:53:05.249Z",
+      "isInstalment": true,
+      "isUnknown": false,
+      "isSeed": false
+    },
+    {
+      "id": 124,
+      "policyNumber": "D257237704",
+      "customer": "THARUN K",
+      "insurer": "Go Digit General",
+      "gross": 901,
+      "remarks": "FRESH",
+      "createdAt": "2026-05-31T12:53:05.522Z",
+      "isInstalment": false,
+      "isUnknown": false,
+      "isSeed": false
+    },
+    {
+      "id": 154,
+      "policyNumber": "7786112600009264-Q3",
+      "customer": "LOKHASUDHAN",
+      "insurer": "STAR Health",
+      "gross": 8599,
+      "remarks": "Q RENEW",
+      "createdAt": "2026-05-31T12:53:05.667Z",
+      "isInstalment": true,
+      "isUnknown": false,
+      "isSeed": false
+    },
+    {
+      "id": 155,
+      "policyNumber": "K6819292-H2",
+      "customer": "Dr Bama",
+      "insurer": "ICICI Pru Life",
+      "gross": 47109,
+      "remarks": "H RENEW",
+      "createdAt": "2026-05-31T12:53:05.672Z",
+      "isInstalment": true,
+      "isUnknown": false,
+      "isSeed": false
+    },
+    {
+      "id": 163,
+      "policyNumber": "UNKNOWN-165",
+      "customer": "BHUVANESHWARI",
+      "insurer": "New India Ins",
+      "gross": 11326,
+      "remarks": "FRESH",
+      "createdAt": "2026-05-31T12:53:05.705Z",
+      "isInstalment": false,
+      "isUnknown": true,
+      "isSeed": false
+    },
+    {
+      "id": 197,
+      "policyNumber": "D272064431",
+      "customer": "SIVAN",
+      "insurer": "Digit General",
+      "gross": 842.52,
+      "remarks": "Imported from ledger - JUNE 2026",
+      "createdAt": "2026-06-22T11:16:38.742Z",
+      "isInstalment": false,
+      "isUnknown": false,
+      "isSeed": false
+    }
+  ],
+  "allUsers": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@bigin.com",
+      "password": "$2b$12$F76UIVeYmyfNaJxs2kKWQu2Gx/zaQVpEF7B4rcENsJQloxg0KvpTK",
+      "role": "ADMIN",
+      "createdAt": "2026-05-31T11:56:36.312Z",
+      "updatedAt": "2026-05-31T11:56:36.312Z"
+    },
+    {
+      "id": 2,
+      "name": "Owner",
+      "email": "owner@bigin.com",
+      "password": "$2b$12$041sOAZj17MtirF0.M3A1eleAw5ZnEbixNJ3FOPHz.5LvPiTnE4By",
+      "role": "OWNER",
+      "createdAt": "2026-05-31T11:57:48.771Z",
+      "updatedAt": "2026-05-31T11:57:48.771Z"
+    }
+  ],
+  "allInvoices": [
+    {
+      "id": 1,
+      "invoiceNumber": "BG049",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-04",
+      "status": "CANCELLED",
+      "amount": 0,
+      "policyCount": 0,
+      "cancellationReason": null
+    },
+    {
+      "id": 2,
+      "invoiceNumber": "BG050",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-04",
+      "status": "CANCELLED",
+      "amount": 0,
+      "policyCount": 4,
+      "cancellationReason": null
+    },
+    {
+      "id": 3,
+      "invoiceNumber": "BG051",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-02",
+      "status": "CANCELLED",
+      "amount": 77882.25,
+      "policyCount": 5,
+      "cancellationReason": null
+    },
+    {
+      "id": 4,
+      "invoiceNumber": "BG052",
+      "insurer": "Star Health Insurance",
+      "billingMonth": "2026-02",
+      "status": "CANCELLED",
+      "amount": 27534.46,
+      "policyCount": 5,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 5,
+      "invoiceNumber": "BG053",
+      "insurer": "Star Health Insurance",
+      "billingMonth": "2026-01",
+      "status": "CANCELLED",
+      "amount": 3534.87,
+      "policyCount": 3,
+      "cancellationReason": null
+    },
+    {
+      "id": 6,
+      "invoiceNumber": "BG054",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "status": "CANCELLED",
+      "amount": 11764.84,
+      "policyCount": 1,
+      "cancellationReason": "DUPLICATE_INVOICE"
+    },
+    {
+      "id": 7,
+      "invoiceNumber": "BG055",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-01",
+      "status": "CANCELLED",
+      "amount": 163.06,
+      "policyCount": 5,
+      "cancellationReason": "DUPLICATE_INVOICE"
+    },
+    {
+      "id": 8,
+      "invoiceNumber": "BG056",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "status": "CANCELLED",
+      "amount": 11800,
+      "policyCount": 1,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 9,
+      "invoiceNumber": "BG057",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "status": "CANCELLED",
+      "amount": 0,
+      "policyCount": 1,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 10,
+      "invoiceNumber": "BG058",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "status": "CANCELLED",
+      "amount": 11800,
+      "policyCount": 1,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 11,
+      "invoiceNumber": "BG059",
+      "insurer": "Tata AIA Life",
+      "billingMonth": "2026-07",
+      "status": "CANCELLED",
+      "amount": 2360,
+      "policyCount": 1,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    },
+    {
+      "id": 12,
+      "invoiceNumber": "BG060",
+      "insurer": "ICICI Lombard General",
+      "billingMonth": "2026-02",
+      "status": "FINALIZED",
+      "amount": 77882.25,
+      "policyCount": 5,
+      "cancellationReason": null
+    },
+    {
+      "id": 13,
+      "invoiceNumber": "BG061",
+      "insurer": "HDFC Ergo General",
+      "billingMonth": "2026-06",
+      "status": "CANCELLED",
+      "amount": 0,
+      "policyCount": 1,
+      "cancellationReason": "TEST_DUMMY_INVOICE"
+    }
+  ],
+  "allStatements": [
+    {
+      "id": 1,
+      "ref": "TEST-001",
+      "status": "CANCELLED",
+      "businessMonth": "2026-05",
+      "invoiceStatus": null,
+      "remarks": "testing gst module"
+    },
+    {
+      "id": 3,
+      "ref": "001",
+      "status": "DRAFT",
+      "businessMonth": "2026-02",
+      "invoiceStatus": null,
+      "remarks": null
+    },
+    {
+      "id": 8,
+      "ref": "ICICI/9579055",
+      "status": "CANCELLED",
+      "businessMonth": "2026-02",
+      "invoiceStatus": null,
+      "remarks": null
+    },
+    {
+      "id": 5,
+      "ref": "CREDIT-TEST-001",
+      "status": "FINALIZED",
+      "businessMonth": "2026-06",
+      "invoiceStatus": null,
+      "remarks": "Credits Report Final Testing"
+    },
+    {
+      "id": 2,
+      "ref": "TEST-002",
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "invoiceStatus": null,
+      "remarks": "testing gst module"
+    },
+    {
+      "id": 6,
+      "ref": "CREDIT-TEST-002",
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "invoiceStatus": null,
+      "remarks": "Credits Report Final Testing"
+    },
+    {
+      "id": 7,
+      "ref": "CREDIT TEST 003",
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "invoiceStatus": null,
+      "remarks": "credit report tests final"
+    },
+    {
+      "id": 4,
+      "ref": "HDFC-JUN-TEST-001",
+      "status": "CANCELLED",
+      "businessMonth": "2026-06",
+      "invoiceStatus": null,
+      "remarks": "Credits Report testing"
+    }
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "inserted": [
+    {
+      "id": 181,
+      "policyNumber": "1708003125P109242990",
+      "customerName": "Raghavendra Ramakrishnan",
+      "insurer": "United India Ins",
+      "sheet": "SEPT 2025",
+      "gross": 6446,
+      "commAmt": 0
+    },
+    {
+      "id": 182,
+      "policyNumber": "2800000019770300000",
+      "customerName": "SRIRAM",
+      "insurer": "HDFC ERGO",
+      "sheet": "JAN 2026",
+      "gross": 9698,
+      "commAmt": 0
+    },
+    {
+      "id": 183,
+      "policyNumber": "100043909200",
+      "customerName": "PRAGADEESH K",
+      "insurer": "ICICI Lombard",
+      "sheet": "FEB 2026",
+      "gross": 8772,
+      "commAmt": 0
+    },
+    {
+      "id": 184,
+      "policyNumber": "2856208337781900000",
+      "customerName": "YUVARANI",
+      "insurer": "HDFC ERGO",
+      "sheet": "FEB 2026",
+      "gross": 70680,
+      "commAmt": 0
+    },
+    {
+      "id": 185,
+      "policyNumber": "100047337100",
+      "customerName": "SRIDHAR G",
+      "insurer": "ICICI Lombard",
+      "sheet": "FEB 2026",
+      "gross": 23224,
+      "commAmt": 0
+    },
+    {
+      "id": 187,
+      "policyNumber": "2856208429474500000",
+      "customerName": "SANTHIYA T",
+      "insurer": "HDFC ERGO",
+      "sheet": "MARCH 2026",
+      "gross": 44881,
+      "commAmt": 0
+    },
+    {
+      "id": 188,
+      "policyNumber": "3999112700281996",
+      "customerName": "VELMURUGAN A",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "gross": 20603,
+      "commAmt": 0
+    },
+    {
+      "id": 189,
+      "policyNumber": "D269126545IU",
+      "customerName": "DINESH KANNA D",
+      "insurer": "Digit General",
+      "sheet": "JUNE 2026",
+      "gross": 602.82,
+      "commAmt": 0
+    },
+    {
+      "id": 190,
+      "policyNumber": "2702112700028884",
+      "customerName": "MATHURI MANIKANDAN",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "gross": 30296,
+      "commAmt": 0
+    },
+    {
+      "id": 191,
+      "policyNumber": "28000000377761",
+      "customerName": "BAKKIYARAJ",
+      "insurer": "HDFC ERGO",
+      "sheet": "JUNE 2026",
+      "gross": 27398,
+      "commAmt": 0
+    },
+    {
+      "id": 192,
+      "policyNumber": "1710013126P103524061",
+      "customerName": "SENTHIL MANICKAM",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "gross": 10405,
+      "commAmt": 0
+    },
+    {
+      "id": 193,
+      "policyNumber": "1710013126P103592008",
+      "customerName": "AKILA S",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "gross": 502,
+      "commAmt": 0
+    },
+    {
+      "id": 194,
+      "policyNumber": "1710012726P103736821",
+      "customerName": "PRECISION TECHSERVE PVT LTD",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "gross": 12980,
+      "commAmt": 0
+    },
+    {
+      "id": 195,
+      "policyNumber": "1710012726P103736609",
+      "customerName": "PRECISION TECHSERVE PVT LTD",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "gross": 177000,
+      "commAmt": 0
+    },
+    {
+      "id": 196,
+      "policyNumber": "4107112700080822",
+      "customerName": "VYTHEESHWARAN",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "gross": 29276,
+      "commAmt": 0
+    },
+    {
+      "id": 197,
+      "policyNumber": "D272064431",
+      "customerName": "SIVAN",
+      "insurer": "Digit General",
+      "sheet": "JUNE 2026",
+      "gross": 842.52,
+      "commAmt": 0
+    },
+    {
+      "id": 198,
+      "policyNumber": "7296112700037689",
+      "customerName": "SRINATH A",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "gross": 11438,
+      "commAmt": 0
+    },
+    {
+      "id": 199,
+      "policyNumber": "918711270005218",
+      "customerName": "VIGNESH K",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "gross": 10792,
+      "commAmt": 0
+    }
+  ],
+  "errors": [
+    {
+      "policyNumber": "D257237704",
+      "customerName": "THARUN K",
+      "err": "\nInvalid `prisma.policy.create()` invocation:\n\n\nUnique constraint failed on the fields: (`policyNumber`)"
+    }
+  ]
+}

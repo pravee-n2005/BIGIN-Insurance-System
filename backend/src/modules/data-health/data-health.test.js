@@ -12,8 +12,12 @@ test('overview() returns a well-formed payload', async () => {
   assert.ok(snapshot.summary);
   assert.ok(Array.isArray(snapshot.inactiveInsurerPolicies));
   assert.ok(Array.isArray(snapshot.missingLeadExecutivePolicies));
+  assert.ok(Array.isArray(snapshot.confirmedZeroPolicies), 'confirmedZeroPolicies must be an array');
   assert.ok(Array.isArray(snapshot.missingCommissionPolicies));
   assert.ok(Array.isArray(snapshot.duplicatePolicyNumbers));
+  // New summary fields
+  assert.ok('confirmedZeroCommissionCount' in snapshot.summary);
+  assert.ok('missingCommissionCount' in snapshot.summary);
 });
 
 test('summary.totalPolicies matches prisma.policy.count()', async () => {
@@ -33,20 +37,42 @@ test('summary.inactiveInsurerCount matches policies whose insurerName is an inac
   assert.strictEqual(snapshot.inactiveInsurerPolicies.length, expected);
 });
 
-test('summary.missingCommissionPercentCount matches policies with commissionPercent = 0', async () => {
+test('summary.missingCommissionPercentCount matches all policies with commissionPercent = 0 (legacy field)', async () => {
   const expected = await prisma.policy.count({ where: { commissionPercent: 0 } });
   assert.strictEqual(snapshot.summary.missingCommissionPercentCount, expected);
 });
 
-test('summary.missingCommissionAmountCount matches policies with commissionAmount = 0', async () => {
+test('summary.missingCommissionAmountCount matches all policies with commissionAmount = 0 (legacy field)', async () => {
   const expected = await prisma.policy.count({ where: { commissionAmount: 0 } });
   assert.strictEqual(snapshot.summary.missingCommissionAmountCount, expected);
+});
+
+test('confirmedZeroPolicies + missingCommissionPolicies together equal all zero-commission policies', async () => {
+  // Count policies where EITHER percent OR amount is zero — matches the OR logic in the service.
+  const totalZero = await prisma.policy.count({
+    where: { OR: [{ commissionPercent: 0 }, { commissionAmount: 0 }] },
+  });
+  const combined = snapshot.confirmedZeroPolicies.length + snapshot.missingCommissionPolicies.length;
+  assert.strictEqual(combined, totalZero, 'confirmed + missing must cover all zero-commission policies');
+});
+
+test('confirmedZeroPolicies and missingCommissionPolicies are disjoint (no overlap)', () => {
+  const confirmedIds = new Set(snapshot.confirmedZeroPolicies.map(r => r.id));
+  for (const row of snapshot.missingCommissionPolicies) {
+    assert.ok(!confirmedIds.has(row.id), `id ${row.id} appears in both confirmedZero and missingCommission`);
+  }
+});
+
+test('summary counts are consistent with array lengths', () => {
+  assert.strictEqual(snapshot.summary.confirmedZeroCommissionCount, snapshot.confirmedZeroPolicies.length);
+  assert.strictEqual(snapshot.summary.missingCommissionCount, snapshot.missingCommissionPolicies.length);
 });
 
 test('every row exposes the fields required by the UI (policyNumber, customerName, insurerName, productName, issue, id)', async () => {
   const allRows = [
     ...snapshot.inactiveInsurerPolicies,
     ...snapshot.missingLeadExecutivePolicies,
+    ...snapshot.confirmedZeroPolicies,
     ...snapshot.missingCommissionPolicies,
     ...snapshot.duplicatePolicyNumbers,
   ];

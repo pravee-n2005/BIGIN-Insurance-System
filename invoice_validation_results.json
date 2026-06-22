@@ -1,0 +1,605 @@
+[
+  {
+    "insurer": "ICICI Lombard General",
+    "insurerId": 27,
+    "billingMonth": "2026-02",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 6,
+    "policyIds": [
+      183,
+      92,
+      93,
+      97,
+      98,
+      103
+    ],
+    "taxableValue": 66001.91,
+    "commissionSumFromDB": 66001.91,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 5940.17,
+    "sgstRate": 9,
+    "sgstAmount": 5940.17,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 77882.25,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Seventy seven thousand eight hundred and eighty two rupees and twenty five paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "HEALTH": 6
+    },
+    "policySamples": [
+      {
+        "policyNumber": "100043909200",
+        "customerName": "PRAGADEESH K",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "100044132900",
+        "customerName": "KVSS SESHADRI SASTRI",
+        "category": "HEALTH",
+        "commission": 3806.96
+      },
+      {
+        "policyNumber": "100044374300",
+        "customerName": "KVSS SESHADRI SASTRI",
+        "category": "HEALTH",
+        "commission": 680.89
+      },
+      {
+        "policyNumber": "100045542800",
+        "customerName": "JAYASANKAR",
+        "category": "HEALTH",
+        "commission": 6955.02
+      },
+      {
+        "policyNumber": "100045807000",
+        "customerName": "JAYASANKAR",
+        "category": "HEALTH",
+        "commission": 714.61
+      }
+    ],
+    "pdfSizeBytes": 3578
+  },
+  {
+    "insurer": "Star Health Insurance",
+    "insurerId": 37,
+    "billingMonth": "2026-03",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 6,
+    "policyIds": [
+      127,
+      118,
+      119,
+      107,
+      112,
+      131
+    ],
+    "taxableValue": 29728.64,
+    "commissionSumFromDB": 29728.64,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 2675.58,
+    "sgstRate": 9,
+    "sgstAmount": 2675.58,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 35079.8,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Thirty five thousand seventy nine rupees and eighty paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "HEALTH": 6
+    },
+    "policySamples": [
+      {
+        "policyNumber": "2490112600073463",
+        "customerName": "SRINIVAS M",
+        "category": "HEALTH",
+        "commission": 5475.42
+      },
+      {
+        "policyNumber": "9487112600006121",
+        "customerName": "SHALINI PRABHAKARAN",
+        "category": "HEALTH",
+        "commission": 3589.87
+      },
+      {
+        "policyNumber": "3145112600041620",
+        "customerName": "RUCKMANI SATHYAMOORTHY",
+        "category": "HEALTH",
+        "commission": 8009.07
+      },
+      {
+        "policyNumber": "2066112600050352",
+        "customerName": "ABDULLAH BEEVI",
+        "category": "HEALTH",
+        "commission": 4201.78
+      },
+      {
+        "policyNumber": "3839112600059339",
+        "customerName": "SIVAKUMAR DURAISAMY",
+        "category": "HEALTH",
+        "commission": 6984.28
+      }
+    ],
+    "pdfSizeBytes": 3541
+  },
+  {
+    "insurer": "HDFC Ergo General",
+    "insurerId": 29,
+    "billingMonth": "2026-03",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 14,
+    "policyIds": [
+      184,
+      187,
+      122,
+      132,
+      108,
+      113,
+      130,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139
+    ],
+    "taxableValue": 37834.12,
+    "commissionSumFromDB": 37834.12,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 3405.07,
+    "sgstRate": 9,
+    "sgstAmount": 3405.07,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 44644.26,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Forty four thousand six hundred and forty four rupees and twenty six paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "HEALTH": 6,
+      "GENERAL": 8
+    },
+    "policySamples": [
+      {
+        "policyNumber": "2856208337781900000",
+        "customerName": "YUVARANI",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "2856208429474500000",
+        "customerName": "SANTHIYA T",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "3317208360738200000",
+        "customerName": "MURUGAPPAN K",
+        "category": "GENERAL",
+        "commission": 1964.93
+      },
+      {
+        "policyNumber": "3317208422291000000",
+        "customerName": "MELWIN RAJ M",
+        "category": "GENERAL",
+        "commission": 1964.93
+      },
+      {
+        "policyNumber": "2800000024843000000",
+        "customerName": "SYED MOHAMMED",
+        "category": "HEALTH",
+        "commission": 3624.1
+      }
+    ],
+    "pdfSizeBytes": 3548
+  },
+  {
+    "insurer": "United India General",
+    "insurerId": 35,
+    "billingMonth": "2026-03",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 10,
+    "policyIds": [
+      123,
+      106,
+      110,
+      114,
+      115,
+      116,
+      121,
+      125,
+      126,
+      128
+    ],
+    "taxableValue": 28764.63,
+    "commissionSumFromDB": 28764.63,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 2588.82,
+    "sgstRate": 9,
+    "sgstAmount": 2588.82,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 33942.27,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Thirty three thousand nine hundred and forty two rupees and twenty seven paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "MOTOR": 10
+    },
+    "policySamples": [
+      {
+        "policyNumber": "1708003125P119601974",
+        "customerName": "ALAGAPPAN R",
+        "category": "MOTOR",
+        "commission": 67.95
+      },
+      {
+        "policyNumber": "1708003125P118701654",
+        "customerName": "GOPI S",
+        "category": "MOTOR",
+        "commission": 8374
+      },
+      {
+        "policyNumber": "1708003125P118755191",
+        "customerName": "PRIYA T",
+        "category": "MOTOR",
+        "commission": 49.45
+      },
+      {
+        "policyNumber": "1708003125P118865659",
+        "customerName": "RADHAA S",
+        "category": "MOTOR",
+        "commission": 114.8
+      },
+      {
+        "policyNumber": "1708003125P119146515",
+        "customerName": "MAHALAKSHMI",
+        "category": "MOTOR",
+        "commission": 5130.8
+      }
+    ],
+    "pdfSizeBytes": 3519
+  },
+  {
+    "insurer": "Tata AIA Life",
+    "insurerId": 30,
+    "billingMonth": "2026-04",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 1,
+    "policyIds": [
+      152
+    ],
+    "taxableValue": 31472.58,
+    "commissionSumFromDB": 31472.58,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 2832.53,
+    "sgstRate": 9,
+    "sgstAmount": 2832.53,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 37137.64,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Thirty seven thousand one hundred and thirty seven rupees and sixty four paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "LIFE": 1
+    },
+    "policySamples": [
+      {
+        "policyNumber": "C295450326",
+        "customerName": "SIVAMURTHY",
+        "category": "LIFE",
+        "commission": 31472.58
+      }
+    ],
+    "pdfSizeBytes": 3607
+  },
+  {
+    "insurer": "Go Digit General",
+    "insurerId": 32,
+    "billingMonth": "2026-02",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 1,
+    "policyIds": [
+      90
+    ],
+    "taxableValue": 8098.28,
+    "commissionSumFromDB": 8098.28,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 728.85,
+    "sgstRate": 9,
+    "sgstAmount": 728.85,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 9555.98,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Nine thousand five hundred and fifty five rupees and ninety eight paise only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "PROPERTY": 1
+    },
+    "policySamples": [
+      {
+        "policyNumber": "D250918681",
+        "customerName": "SUDAKAR",
+        "category": "PROPERTY",
+        "commission": 8098.28
+      }
+    ],
+    "pdfSizeBytes": 3581
+  },
+  {
+    "insurer": "ICICI Lombard General",
+    "insurerId": 27,
+    "billingMonth": "2026-06",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 1,
+    "policyIds": [
+      168
+    ],
+    "taxableValue": 0,
+    "commissionSumFromDB": 0,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 0,
+    "sgstRate": 9,
+    "sgstAmount": 0,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 0,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Zero rupees only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "TRAVEL": 1
+    },
+    "policySamples": [
+      {
+        "policyNumber": "4233/443209062/00/000",
+        "customerName": "ELANGO P",
+        "category": "TRAVEL",
+        "commission": 0
+      }
+    ],
+    "pdfSizeBytes": 3488,
+    "_isZeroTest": true
+  },
+  {
+    "insurer": "Star Health Insurance",
+    "insurerId": 37,
+    "billingMonth": "2026-06",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 5,
+    "policyIds": [
+      188,
+      190,
+      196,
+      198,
+      199
+    ],
+    "taxableValue": 0,
+    "commissionSumFromDB": 0,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 0,
+    "sgstRate": 9,
+    "sgstAmount": 0,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 0,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Zero rupees only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "HEALTH": 5
+    },
+    "policySamples": [
+      {
+        "policyNumber": "3999112700281996",
+        "customerName": "VELMURUGAN A",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "2702112700028884",
+        "customerName": "MATHURI MANIKANDAN",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "4107112700080822",
+        "customerName": "VYTHEESHWARAN",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "7296112700037689",
+        "customerName": "SRINATH A",
+        "category": "HEALTH",
+        "commission": 0
+      },
+      {
+        "policyNumber": "918711270005218",
+        "customerName": "VIGNESH K",
+        "category": "HEALTH",
+        "commission": 0
+      }
+    ],
+    "pdfSizeBytes": 3466,
+    "_isZeroTest": true
+  },
+  {
+    "insurer": "HDFC Ergo General",
+    "insurerId": 29,
+    "billingMonth": "2026-06",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 1,
+    "policyIds": [
+      191
+    ],
+    "taxableValue": 0,
+    "commissionSumFromDB": 0,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 0,
+    "sgstRate": 9,
+    "sgstAmount": 0,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 0,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Zero rupees only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "HEALTH": 1
+    },
+    "policySamples": [
+      {
+        "policyNumber": "28000000377761",
+        "customerName": "BAKKIYARAJ",
+        "category": "HEALTH",
+        "commission": 0
+      }
+    ],
+    "pdfSizeBytes": 3463,
+    "_isZeroTest": true
+  },
+  {
+    "insurer": "United India General",
+    "insurerId": 35,
+    "billingMonth": "2026-06",
+    "profileFound": true,
+    "profileActive": true,
+    "profileState": "Tamil Nadu",
+    "gstMode": "CGST+SGST (Intra-state)",
+    "policiesFound": 4,
+    "policyIds": [
+      192,
+      193,
+      194,
+      195
+    ],
+    "taxableValue": 0,
+    "commissionSumFromDB": 0,
+    "commissionMatch": true,
+    "cgstRate": 9,
+    "cgstAmount": 0,
+    "sgstRate": 9,
+    "sgstAmount": 0,
+    "igstRate": 0,
+    "igstAmount": 0,
+    "totalAmount": 0,
+    "gstCalcCorrect": true,
+    "invoiceNumber": "BG061",
+    "invoiceNumberSeqCorrect": true,
+    "totalInWords": "Zero rupees only",
+    "draftGenerated": true,
+    "pdfGenerated": true,
+    "errors": [],
+    "categorySummary": {
+      "MOTOR": 2,
+      "GENERAL": 2
+    },
+    "policySamples": [
+      {
+        "policyNumber": "1710013126P103524061",
+        "customerName": "SENTHIL MANICKAM",
+        "category": "MOTOR",
+        "commission": 0
+      },
+      {
+        "policyNumber": "1710013126P103592008",
+        "customerName": "AKILA S",
+        "category": "MOTOR",
+        "commission": 0
+      },
+      {
+        "policyNumber": "1710012726P103736821",
+        "customerName": "PRECISION TECHSERVE PVT LTD",
+        "category": "GENERAL",
+        "commission": 0
+      },
+      {
+        "policyNumber": "1710012726P103736609",
+        "customerName": "PRECISION TECHSERVE PVT LTD",
+        "category": "GENERAL",
+        "commission": 0
+      }
+    ],
+    "pdfSizeBytes": 3429,
+    "_isZeroTest": true
+  }
+]

@@ -1,0 +1,1665 @@
+{
+  "missingFromDB": [
+    {
+      "policyNumber": "1708001125P108086855/0",
+      "customerName": "Discovery House Distributors Pvt Ltd",
+      "insurer": "United India Ins",
+      "sheet": "AUG 2025",
+      "grossPremium": 5376,
+      "netPremium": 5376,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Leadership",
+      "invoiceNum": "BG003",
+      "issueDate": "2025-08-19T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "1708003125P109242990",
+      "customerName": "Raghavendra Ramakrishnan",
+      "insurer": "United India Ins",
+      "sheet": "SEPT 2025",
+      "grossPremium": 6446,
+      "netPremium": 6446,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Ranga POSP",
+      "invoiceNum": "BG006",
+      "issueDate": "2025-09-10T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "2800000019770300000",
+      "customerName": "SRIRAM",
+      "insurer": "HDFC ERGO",
+      "sheet": "JAN 2026",
+      "grossPremium": 9698,
+      "netPremium": 9698,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Leadership",
+      "invoiceNum": "",
+      "issueDate": "2026-02-02T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "100043909200",
+      "customerName": "PRAGADEESH K",
+      "insurer": "ICICI Lombard",
+      "sheet": "FEB 2026",
+      "grossPremium": 8772,
+      "netPremium": 8772,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Shalini D",
+      "invoiceNum": "BG037",
+      "issueDate": "2026-02-27T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "2856208337781900000",
+      "customerName": "YUVARANI",
+      "insurer": "HDFC ERGO",
+      "sheet": "FEB 2026",
+      "grossPremium": 70680,
+      "netPremium": 70680,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Shalini D",
+      "invoiceNum": "BG044",
+      "issueDate": "2026-03-15T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "100047337100",
+      "customerName": "SRIDHAR G",
+      "insurer": "ICICI Lombard",
+      "sheet": "FEB 2026",
+      "grossPremium": 23224,
+      "netPremium": 23224,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "BG037",
+      "issueDate": "2026-03-03T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+      "customerName": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+      "insurer": "HDFC ERGO",
+      "sheet": "MARCH 2026",
+      "grossPremium": 9219,
+      "netPremium": 9219,
+      "commPct": 0.15,
+      "commAmount": 0,
+      "leadSource": "Shalini D",
+      "invoiceNum": "",
+      "issueDate": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE "
+    },
+    {
+      "policyNumber": "D257237704 / 18032026",
+      "customerName": "THARUN K",
+      "insurer": "Digit General",
+      "sheet": "MARCH 2026",
+      "grossPremium": 901,
+      "netPremium": 901,
+      "commPct": 0.515,
+      "commAmount": 464.27,
+      "leadSource": "Shalini D",
+      "invoiceNum": "BG039",
+      "issueDate": "2026-03-20T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "2856208429474500000",
+      "customerName": "SANTHIYA T",
+      "insurer": "HDFC ERGO",
+      "sheet": "MARCH 2026",
+      "grossPremium": 44881,
+      "netPremium": 44881,
+      "commPct": 0.15,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "",
+      "issueDate": "2026-03-30T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "4233/443209062/00/000",
+      "customerName": "ELANGO P",
+      "insurer": "ICICI Lombard",
+      "sheet": "JUNE 2026",
+      "grossPremium": 13250,
+      "netPremium": 13250,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Leadership",
+      "invoiceNum": "",
+      "issueDate": "2026-06-01T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "3999112700281996",
+      "customerName": "VELMURUGAN A",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 20603,
+      "netPremium": 20603,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "",
+      "issueDate": "2026-06-02T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "D269126545IU",
+      "customerName": "DINESH KANNA D",
+      "insurer": "Digit General",
+      "sheet": "JUNE 2026",
+      "grossPremium": 602.82,
+      "netPremium": 510.86,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Mahalakshmi POSP",
+      "invoiceNum": "",
+      "issueDate": "2026-06-03T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "2702112700028884",
+      "customerName": "MATHURI MANIKANDAN",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 30296,
+      "netPremium": 30296,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "",
+      "issueDate": "2026-06-04T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "28000000377761",
+      "customerName": "BAKKIYARAJ",
+      "insurer": "HDFC ERGO",
+      "sheet": "JUNE 2026",
+      "grossPremium": 27398,
+      "netPremium": 27398,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Aruna Devi",
+      "invoiceNum": "",
+      "issueDate": "2026-06-05T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "1710013126P103524061",
+      "customerName": "SENTHIL MANICKAM",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "grossPremium": 10405,
+      "netPremium": 8817.8,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Leadership",
+      "invoiceNum": "",
+      "issueDate": "2026-06-16T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "1710013126P103592008",
+      "customerName": "AKILA S",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "grossPremium": 502,
+      "netPremium": 425,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Leadership",
+      "invoiceNum": "",
+      "issueDate": "2026-06-28T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "1710012726P103736821",
+      "customerName": "PRECISION TECHSERVE PVT LTD",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "grossPremium": 12980,
+      "netPremium": 11000,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Geetha",
+      "invoiceNum": "",
+      "issueDate": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "1710012726P103736609",
+      "customerName": "PRECISION TECHSERVE PVT LTD",
+      "insurer": "United India Ins",
+      "sheet": "JUNE 2026",
+      "grossPremium": 177000,
+      "netPremium": 150000,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Geetha",
+      "invoiceNum": "",
+      "issueDate": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "UW PENDING",
+      "customerName": "POONGODI",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 20370,
+      "netPremium": 20370,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "",
+      "issueDate": "2026-06-12T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "4107112700080822",
+      "customerName": "VYTHEESHWARAN",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 29276,
+      "netPremium": 29276,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Aruna Devi",
+      "invoiceNum": "",
+      "issueDate": "2026-06-13T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "D272064431 / 17062026",
+      "customerName": "SIVAN",
+      "insurer": "Digit General",
+      "sheet": "JUNE 2026",
+      "grossPremium": 842.52,
+      "netPremium": 714,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Namitha V",
+      "invoiceNum": "",
+      "issueDate": "2026-06-17T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "7296112700037689",
+      "customerName": "SRINATH A",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 11438,
+      "netPremium": 11438,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Manimehalai POSP",
+      "invoiceNum": "",
+      "issueDate": "2026-06-17T00:00:00.000Z"
+    },
+    {
+      "policyNumber": "918711270005218",
+      "customerName": "VIGNESH K",
+      "insurer": "STAR Health",
+      "sheet": "JUNE 2026",
+      "grossPremium": 10792,
+      "netPremium": 10792,
+      "commPct": null,
+      "commAmount": 0,
+      "leadSource": "Pandiyan",
+      "invoiceNum": "",
+      "issueDate": "2026-06-19T00:00:00.000Z"
+    }
+  ],
+  "extraInDB": [
+    {
+      "id": 2,
+      "policyNumber": "SH202511002",
+      "customerName": "Bhavani Kumar",
+      "insurer": "STAR Health",
+      "gross": 15420
+    },
+    {
+      "id": 3,
+      "policyNumber": "HDMOTOR003",
+      "customerName": "Arjun Raj",
+      "insurer": "HDFC ERGO",
+      "gross": 22150
+    },
+    {
+      "id": 7,
+      "policyNumber": "1708001125P108086855",
+      "customerName": "Discovery House Distributors Pvt Ltd",
+      "insurer": "United India Ins",
+      "gross": 5376
+    },
+    {
+      "id": 88,
+      "policyNumber": "7786112600009264-Q2",
+      "customerName": "LOKHASUDHAN",
+      "insurer": "STAR Health",
+      "gross": 8559
+    },
+    {
+      "id": 154,
+      "policyNumber": "7786112600009264-Q3",
+      "customerName": "LOKHASUDHAN",
+      "insurer": "STAR Health",
+      "gross": 8599
+    },
+    {
+      "id": 155,
+      "policyNumber": "K6819292-H2",
+      "customerName": "Dr Bama",
+      "insurer": "ICICI Pru Life",
+      "gross": 47109
+    },
+    {
+      "id": 163,
+      "policyNumber": "UNKNOWN-165",
+      "customerName": "BHUVANESHWARI",
+      "insurer": "New India Ins",
+      "gross": 11326
+    },
+    {
+      "id": 168,
+      "policyNumber": "4233/443209062/00/00",
+      "customerName": "ELANGO P",
+      "insurer": "ICICI Lombard General",
+      "gross": 13250
+    },
+    {
+      "id": 124,
+      "policyNumber": "D257237704",
+      "customerName": "THARUN K",
+      "insurer": "Go Digit General",
+      "gross": 901
+    }
+  ],
+  "zeroCommFixes": [
+    {
+      "id": 30,
+      "policyNumber": "20902962",
+      "customerName": "LOGANATHAN J",
+      "insurer": "Care health",
+      "dbNet": 26248,
+      "dbGross": 26248,
+      "ledgerCommAmt": 4158.22,
+      "ledgerCommPct": 15.84
+    },
+    {
+      "id": 41,
+      "policyNumber": "1708003125P113706460",
+      "customerName": "KANCHANA BHARATHI",
+      "insurer": "United India Ins",
+      "dbNet": 15015,
+      "dbGross": 17717,
+      "ledgerCommAmt": 1801.8,
+      "ledgerCommPct": 12
+    },
+    {
+      "id": 42,
+      "policyNumber": "1708003125P113785999",
+      "customerName": "MARIYA DOSS D",
+      "insurer": "United India Ins",
+      "dbNet": 714,
+      "dbGross": 842,
+      "ledgerCommAmt": 35.7,
+      "ledgerCommPct": 5
+    },
+    {
+      "id": 47,
+      "policyNumber": "1708003125P114312408",
+      "customerName": "UMA S BHASKARAN",
+      "insurer": "United India Ins",
+      "dbNet": 9747,
+      "dbGross": 11502,
+      "ledgerCommAmt": 1462.2,
+      "ledgerCommPct": 15
+    },
+    {
+      "id": 48,
+      "policyNumber": "1708003125P114369876",
+      "customerName": "SARAVANAN V",
+      "insurer": "United India Ins",
+      "dbNet": 1118,
+      "dbGross": 1320,
+      "ledgerCommAmt": 55.9,
+      "ledgerCommPct": 5
+    },
+    {
+      "id": 49,
+      "policyNumber": "1708003125P114386501",
+      "customerName": "SATHISH A",
+      "insurer": "United India Ins",
+      "dbNet": 1186,
+      "dbGross": 1400,
+      "ledgerCommAmt": 59.3,
+      "ledgerCommPct": 5
+    },
+    {
+      "id": 58,
+      "policyNumber": "190000029440674",
+      "customerName": "ELIZABETH",
+      "insurer": "Cholamandalam",
+      "dbNet": 12847,
+      "dbGross": 12847,
+      "ledgerCommAmt": 5781,
+      "ledgerCommPct": 45
+    },
+    {
+      "id": 59,
+      "policyNumber": "100034391600",
+      "customerName": "SRIDHAR S",
+      "insurer": "ICICI Lombard",
+      "dbNet": 29481,
+      "dbGross": 29481,
+      "ledgerCommAmt": 8119.58,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 60,
+      "policyNumber": "100035075700",
+      "customerName": "SRIDHAR S",
+      "insurer": "ICICI Lombard",
+      "dbNet": 6364,
+      "dbGross": 6364,
+      "ledgerCommAmt": 1752.61,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 61,
+      "policyNumber": "1708003125P114811380",
+      "customerName": "SARAVANAN B",
+      "insurer": "United India Ins",
+      "dbNet": 10721,
+      "dbGross": 12651,
+      "ledgerCommAmt": 1608,
+      "ledgerCommPct": 15
+    },
+    {
+      "id": 62,
+      "policyNumber": "1708003125P114921811",
+      "customerName": "PARAMASIVAM J",
+      "insurer": "United India Ins",
+      "dbNet": 3466,
+      "dbGross": 4090,
+      "ledgerCommAmt": 519.9,
+      "ledgerCommPct": 15
+    },
+    {
+      "id": 66,
+      "policyNumber": "100036374200",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "insurer": "ICICI Lombard",
+      "dbNet": 216495,
+      "dbGross": 216495,
+      "ledgerCommAmt": 11925.52,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 67,
+      "policyNumber": "100036492400",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "insurer": "ICICI Lombard",
+      "dbNet": 4274,
+      "dbGross": 4274,
+      "ledgerCommAmt": 392.32,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 63,
+      "policyNumber": "2800000015616500000",
+      "customerName": "OVIYA ELANGO",
+      "insurer": "HDFC ERGO",
+      "dbNet": 95068,
+      "dbGross": 95068,
+      "ledgerCommAmt": 14727,
+      "ledgerCommPct": 25
+    },
+    {
+      "id": 64,
+      "policyNumber": "6954112600069431",
+      "customerName": "ROBERT SAMUEL",
+      "insurer": "STAR Health",
+      "dbNet": 7746,
+      "dbGross": 7746,
+      "ledgerCommAmt": 2711.1,
+      "ledgerCommPct": 35
+    },
+    {
+      "id": 65,
+      "policyNumber": "100036094700",
+      "customerName": "GEETHA R",
+      "insurer": "ICICI Lombard",
+      "dbNet": 4029,
+      "dbGross": 4029,
+      "ledgerCommAmt": 369.83,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 69,
+      "policyNumber": "4172/423240326/00/000",
+      "customerName": "MOGESH V",
+      "insurer": "ICICI Lombard",
+      "dbNet": 858,
+      "dbGross": 858,
+      "ledgerCommAmt": 222.53,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 70,
+      "policyNumber": "4172/423242477/00/000",
+      "customerName": "SANJAY V",
+      "insurer": "ICICI Lombard",
+      "dbNet": 858,
+      "dbGross": 858,
+      "ledgerCommAmt": 222.53,
+      "ledgerCommPct": 27.54
+    },
+    {
+      "id": 71,
+      "policyNumber": "4233/422150699/00/000",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "insurer": "ICICI Lombard",
+      "dbNet": 2479,
+      "dbGross": 2479,
+      "ledgerCommAmt": 630.19,
+      "ledgerCommPct": 25.42
+    },
+    {
+      "id": 74,
+      "policyNumber": "2176112600015177",
+      "customerName": "REVATHI DINESHKUMAR",
+      "insurer": "STAR Health",
+      "dbNet": 51913,
+      "dbGross": 51913,
+      "ledgerCommAmt": 5132.64,
+      "ledgerCommPct": 35
+    },
+    {
+      "id": 76,
+      "policyNumber": "100038248300",
+      "customerName": "P ELANGO",
+      "insurer": "ICICI Lombard",
+      "dbNet": 58441,
+      "dbGross": 58441,
+      "ledgerCommAmt": 4952.53,
+      "ledgerCommPct": 25.42
+    },
+    {
+      "id": 78,
+      "policyNumber": "100038795500",
+      "customerName": "VEER GANESH",
+      "insurer": "ICICI Lombard",
+      "dbNet": 4599,
+      "dbGross": 4599,
+      "ledgerCommAmt": 389.69,
+      "ledgerCommPct": 25.42
+    },
+    {
+      "id": 80,
+      "policyNumber": "3427112600095492",
+      "customerName": "NIRANJALI K",
+      "insurer": "STAR Health",
+      "dbNet": 78007,
+      "dbGross": 78007,
+      "ledgerCommAmt": 7712.56,
+      "ledgerCommPct": 35
+    },
+    {
+      "id": 81,
+      "policyNumber": "100041455600",
+      "customerName": "SUDAKARAN J",
+      "insurer": "ICICI Lombard",
+      "dbNet": 7796,
+      "dbGross": 7796,
+      "ledgerCommAmt": 1981.55,
+      "ledgerCommPct": 25
+    },
+    {
+      "id": 84,
+      "policyNumber": "100042250500",
+      "customerName": "HARISH BABU",
+      "insurer": "ICICI Lombard",
+      "dbNet": 39845,
+      "dbGross": 39845,
+      "ledgerCommAmt": 10128.4,
+      "ledgerCommPct": 25
+    },
+    {
+      "id": 96,
+      "policyNumber": "8283112600008330",
+      "customerName": "MAHESWARI K",
+      "insurer": "STAR Health",
+      "dbNet": 35957,
+      "dbGross": 35957,
+      "ledgerCommAmt": 12584.95,
+      "ledgerCommPct": 35
+    },
+    {
+      "id": 106,
+      "policyNumber": "1708003125P118701654",
+      "customerName": "GOPI S",
+      "insurer": "United India Ins",
+      "dbNet": 17676,
+      "dbGross": 17676,
+      "ledgerCommAmt": 8374,
+      "ledgerCommPct": 47.37
+    },
+    {
+      "id": 110,
+      "policyNumber": "1708003125P118755191",
+      "customerName": "PRIYA T",
+      "insurer": "United India Ins",
+      "dbNet": 1167,
+      "dbGross": 1167,
+      "ledgerCommAmt": 49.45,
+      "ledgerCommPct": 4.24
+    },
+    {
+      "id": 114,
+      "policyNumber": "1708003125P118865659",
+      "customerName": "RADHAA S",
+      "insurer": "United India Ins",
+      "dbNet": 678,
+      "dbGross": 678,
+      "ledgerCommAmt": 114.8,
+      "ledgerCommPct": 16.93
+    },
+    {
+      "id": 115,
+      "policyNumber": "1708003125P119146515",
+      "customerName": "MAHALAKSHMI",
+      "insurer": "United India Ins",
+      "dbNet": 15135,
+      "dbGross": 15135,
+      "ledgerCommAmt": 5130.8,
+      "ledgerCommPct": 33.9
+    },
+    {
+      "id": 121,
+      "policyNumber": "1708003125P119533096",
+      "customerName": "MURUGAPPAN K",
+      "insurer": "United India Ins",
+      "dbNet": 16594,
+      "dbGross": 16594,
+      "ledgerCommAmt": 5624,
+      "ledgerCommPct": 33.89
+    },
+    {
+      "id": 125,
+      "policyNumber": "202603232088622",
+      "customerName": "SAMY",
+      "insurer": "United India Ins",
+      "dbNet": 992,
+      "dbGross": 992,
+      "ledgerCommAmt": 42,
+      "ledgerCommPct": 4.23
+    },
+    {
+      "id": 126,
+      "policyNumber": "202603231973548",
+      "customerName": "SAMY",
+      "insurer": "United India Ins",
+      "dbNet": 949,
+      "dbGross": 949,
+      "ledgerCommAmt": 40.25,
+      "ledgerCommPct": 4.24
+    },
+    {
+      "id": 128,
+      "policyNumber": "1708003125P120252933",
+      "customerName": "GOPIKA",
+      "insurer": "United India Ins",
+      "dbNet": 842,
+      "dbGross": 842,
+      "ledgerCommAmt": 35.7,
+      "ledgerCommPct": 4.24
+    },
+    {
+      "id": 140,
+      "policyNumber": "28000000296245",
+      "customerName": "KUMARA GURU",
+      "insurer": "HDFC ERGO",
+      "dbNet": 44510,
+      "dbGross": 44510,
+      "ledgerCommAmt": 4896.92,
+      "ledgerCommPct": 22
+    },
+    {
+      "id": 143,
+      "policyNumber": "1708003126P100397955",
+      "customerName": "RAJESHKANNA",
+      "insurer": "United India Ins",
+      "dbNet": 842,
+      "dbGross": 842,
+      "ledgerCommAmt": 35.7,
+      "ledgerCommPct": 4.24
+    },
+    {
+      "id": 144,
+      "policyNumber": "2302208442240300000",
+      "customerName": "SRIDHAR A",
+      "insurer": "HDFC ERGO",
+      "dbNet": 8805,
+      "dbGross": 8805,
+      "ledgerCommAmt": 624.91,
+      "ledgerCommPct": 8
+    },
+    {
+      "id": 145,
+      "policyNumber": "1708003126P100491700",
+      "customerName": "BHASKARAN",
+      "insurer": "United India Ins",
+      "dbNet": 54263,
+      "dbGross": 54263,
+      "ledgerCommAmt": 12578.6,
+      "ledgerCommPct": 23.18
+    },
+    {
+      "id": 146,
+      "policyNumber": "1708003126P100752697",
+      "customerName": "SRIVIDHYA D",
+      "insurer": "United India Ins",
+      "dbNet": 842,
+      "dbGross": 842,
+      "ledgerCommAmt": 35.7,
+      "ledgerCommPct": 4.24
+    },
+    {
+      "id": 148,
+      "policyNumber": "3317208506462600000",
+      "customerName": "HARIHARAN M",
+      "insurer": "HDFC ERGO",
+      "dbNet": 26070,
+      "dbGross": 26070,
+      "ledgerCommAmt": 2648.76,
+      "ledgerCommPct": 30.5
+    },
+    {
+      "id": 149,
+      "policyNumber": "2302208509234800000",
+      "customerName": "PRABHU",
+      "insurer": "HDFC ERGO",
+      "dbNet": 28409,
+      "dbGross": 28409,
+      "ledgerCommAmt": 2870.17,
+      "ledgerCommPct": 15
+    },
+    {
+      "id": 150,
+      "policyNumber": "1708003126P101630107",
+      "customerName": "SANTHOSH KUMAR K",
+      "insurer": "United India Ins",
+      "dbNet": 7746,
+      "dbGross": 7746,
+      "ledgerCommAmt": 1312.8,
+      "ledgerCommPct": 16.95
+    },
+    {
+      "id": 157,
+      "policyNumber": "A8573140",
+      "customerName": "GANESH",
+      "insurer": "Care health",
+      "dbNet": 66699,
+      "dbGross": 66699,
+      "ledgerCommAmt": 14129.91,
+      "ledgerCommPct": 21.18
+    },
+    {
+      "id": 165,
+      "policyNumber": "B3255339",
+      "customerName": "MK NITHIYANANDHAM",
+      "insurer": "Care health",
+      "dbNet": 44268,
+      "dbGross": 44268,
+      "ledgerCommAmt": 9377.9,
+      "ledgerCommPct": 21.18
+    }
+  ],
+  "commAmtDiffs": [
+    {
+      "id": 29,
+      "policyNumber": "20903827",
+      "customerName": "SUDHANYA LOGANATHAN",
+      "dbCommAmt": 4577.5,
+      "ledgerCommAmt": 5960.85,
+      "diff": 1383.35,
+      "dbNet": 18310,
+      "impliedPct": 32.56
+    },
+    {
+      "id": 30,
+      "policyNumber": "20902962",
+      "customerName": "LOGANATHAN J",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 4158.22,
+      "diff": 4158.22,
+      "dbNet": 26248,
+      "impliedPct": 15.84
+    },
+    {
+      "id": 31,
+      "policyNumber": "21053852",
+      "customerName": "ARUN T",
+      "dbCommAmt": 4972.75,
+      "ledgerCommAmt": 4517.29,
+      "diff": -455.46,
+      "dbNet": 19891,
+      "impliedPct": 22.71
+    },
+    {
+      "id": 1,
+      "policyNumber": "100029591300",
+      "customerName": "Naveen Senguttuvan",
+      "dbCommAmt": 968.76,
+      "ledgerCommAmt": 666.9,
+      "diff": -301.86,
+      "dbNet": 8073,
+      "impliedPct": 8.26
+    },
+    {
+      "id": 37,
+      "policyNumber": "4172/417729912/00/000",
+      "customerName": "NAVEEN SENGUTTUVAN",
+      "dbCommAmt": 102.96,
+      "ledgerCommAmt": 66.95,
+      "diff": -36.01,
+      "dbNet": 858,
+      "impliedPct": 7.8
+    },
+    {
+      "id": 41,
+      "policyNumber": "1708003125P113706460",
+      "customerName": "KANCHANA BHARATHI",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1801.8,
+      "diff": 1801.8,
+      "dbNet": 15015,
+      "impliedPct": 12
+    },
+    {
+      "id": 42,
+      "policyNumber": "1708003125P113785999",
+      "customerName": "MARIYA DOSS D",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 35.7,
+      "diff": 35.7,
+      "dbNet": 714,
+      "impliedPct": 5
+    },
+    {
+      "id": 43,
+      "policyNumber": "1708003125P113916260",
+      "customerName": "SRIDEVI CHANDRASEKAR",
+      "dbCommAmt": 1047.45,
+      "ledgerCommAmt": 1100.25,
+      "diff": 52.8,
+      "dbNet": 6983,
+      "impliedPct": 15.76
+    },
+    {
+      "id": 47,
+      "policyNumber": "1708003125P114312408",
+      "customerName": "UMA S BHASKARAN",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1462.2,
+      "diff": 1462.2,
+      "dbNet": 9747,
+      "impliedPct": 15
+    },
+    {
+      "id": 48,
+      "policyNumber": "1708003125P114369876",
+      "customerName": "SARAVANAN V",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 55.9,
+      "diff": 55.9,
+      "dbNet": 1118,
+      "impliedPct": 5
+    },
+    {
+      "id": 49,
+      "policyNumber": "1708003125P114386501",
+      "customerName": "SATHISH A",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 59.3,
+      "diff": 59.3,
+      "dbNet": 1186,
+      "impliedPct": 5
+    },
+    {
+      "id": 58,
+      "policyNumber": "190000029440674",
+      "customerName": "ELIZABETH",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 5781,
+      "diff": 5781,
+      "dbNet": 12847,
+      "impliedPct": 45
+    },
+    {
+      "id": 59,
+      "policyNumber": "100034391600",
+      "customerName": "SRIDHAR S",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 8119.58,
+      "diff": 8119.58,
+      "dbNet": 29481,
+      "impliedPct": 27.54
+    },
+    {
+      "id": 60,
+      "policyNumber": "100035075700",
+      "customerName": "SRIDHAR S",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1752.61,
+      "diff": 1752.61,
+      "dbNet": 6364,
+      "impliedPct": 27.54
+    },
+    {
+      "id": 61,
+      "policyNumber": "1708003125P114811380",
+      "customerName": "SARAVANAN B",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1608,
+      "diff": 1608,
+      "dbNet": 10721,
+      "impliedPct": 15
+    },
+    {
+      "id": 62,
+      "policyNumber": "1708003125P114921811",
+      "customerName": "PARAMASIVAM J",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 519.9,
+      "diff": 519.9,
+      "dbNet": 3466,
+      "impliedPct": 15
+    },
+    {
+      "id": 66,
+      "policyNumber": "100036374200",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 11925.52,
+      "diff": 11925.52,
+      "dbNet": 216495,
+      "impliedPct": 5.51
+    },
+    {
+      "id": 67,
+      "policyNumber": "100036492400",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 392.32,
+      "diff": 392.32,
+      "dbNet": 4274,
+      "impliedPct": 9.18
+    },
+    {
+      "id": 63,
+      "policyNumber": "2800000015616500000",
+      "customerName": "OVIYA ELANGO",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 14727,
+      "diff": 14727,
+      "dbNet": 95068,
+      "impliedPct": 15.49
+    },
+    {
+      "id": 64,
+      "policyNumber": "6954112600069431",
+      "customerName": "ROBERT SAMUEL",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 2711.1,
+      "diff": 2711.1,
+      "dbNet": 7746,
+      "impliedPct": 35
+    },
+    {
+      "id": 65,
+      "policyNumber": "100036094700",
+      "customerName": "GEETHA R",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 369.83,
+      "diff": 369.83,
+      "dbNet": 4029,
+      "impliedPct": 9.18
+    },
+    {
+      "id": 69,
+      "policyNumber": "4172/423240326/00/000",
+      "customerName": "MOGESH V",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 222.53,
+      "diff": 222.53,
+      "dbNet": 858,
+      "impliedPct": 25.94
+    },
+    {
+      "id": 70,
+      "policyNumber": "4172/423242477/00/000",
+      "customerName": "SANJAY V",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 222.53,
+      "diff": 222.53,
+      "dbNet": 858,
+      "impliedPct": 25.94
+    },
+    {
+      "id": 71,
+      "policyNumber": "4233/422150699/00/000",
+      "customerName": "SRIDHARAN VILVA KUMAR",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 630.19,
+      "diff": 630.19,
+      "dbNet": 2479,
+      "impliedPct": 25.42
+    },
+    {
+      "id": 72,
+      "policyNumber": "1708003125P115430293",
+      "customerName": "MADHESHWARAN",
+      "dbCommAmt": 682.87,
+      "ledgerCommAmt": 578.7,
+      "diff": -104.17,
+      "dbNet": 11574,
+      "impliedPct": 5
+    },
+    {
+      "id": 73,
+      "policyNumber": "3317208066873500000",
+      "customerName": "MUTHUKUMAR",
+      "dbCommAmt": 1660.5,
+      "ledgerCommAmt": 1699.35,
+      "diff": 38.85,
+      "dbNet": 5535,
+      "impliedPct": 30.7
+    },
+    {
+      "id": 74,
+      "policyNumber": "2176112600015177",
+      "customerName": "REVATHI DINESHKUMAR",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 5132.64,
+      "diff": 5132.64,
+      "dbNet": 51913,
+      "impliedPct": 9.89
+    },
+    {
+      "id": 75,
+      "policyNumber": "2800000017246600000",
+      "customerName": "SITHUKKANNAN",
+      "dbCommAmt": 18958.72,
+      "ledgerCommAmt": 6975.61,
+      "diff": -11983.11,
+      "dbNet": 86176,
+      "impliedPct": 8.09
+    },
+    {
+      "id": 76,
+      "policyNumber": "100038248300",
+      "customerName": "P ELANGO",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 4952.53,
+      "diff": 4952.53,
+      "dbNet": 58441,
+      "impliedPct": 8.47
+    },
+    {
+      "id": 78,
+      "policyNumber": "100038795500",
+      "customerName": "VEER GANESH",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 389.69,
+      "diff": 389.69,
+      "dbNet": 4599,
+      "impliedPct": 8.47
+    },
+    {
+      "id": 79,
+      "policyNumber": "2800000017684300000",
+      "customerName": "RANJITH SRINIVASAN",
+      "dbCommAmt": 22270.5,
+      "ledgerCommAmt": 8105.13,
+      "diff": -14165.37,
+      "dbNet": 74235,
+      "impliedPct": 10.92
+    },
+    {
+      "id": 80,
+      "policyNumber": "3427112600095492",
+      "customerName": "NIRANJALI K",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 7712.56,
+      "diff": 7712.56,
+      "dbNet": 78007,
+      "impliedPct": 9.89
+    },
+    {
+      "id": 81,
+      "policyNumber": "100041455600",
+      "customerName": "SUDAKARAN J",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1981.55,
+      "diff": 1981.55,
+      "dbNet": 7796,
+      "impliedPct": 25.42
+    },
+    {
+      "id": 82,
+      "policyNumber": "2800000019216100000",
+      "customerName": "SUGANYA",
+      "dbCommAmt": 12262.75,
+      "ledgerCommAmt": 4663.3,
+      "diff": -7599.45,
+      "dbNet": 49051,
+      "impliedPct": 9.51
+    },
+    {
+      "id": 83,
+      "policyNumber": "2800000019444200000",
+      "customerName": "GUNASEKARAN",
+      "dbCommAmt": 4500.24,
+      "ledgerCommAmt": 5884.04,
+      "diff": 1383.8,
+      "dbNet": 26472,
+      "impliedPct": 22.23
+    },
+    {
+      "id": 84,
+      "policyNumber": "100042250500",
+      "customerName": "HARISH BABU",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 10128.4,
+      "diff": 10128.4,
+      "dbNet": 39845,
+      "impliedPct": 25.42
+    },
+    {
+      "id": 85,
+      "policyNumber": "100043305700",
+      "customerName": "HARISH BABU",
+      "dbCommAmt": 138.18,
+      "ledgerCommAmt": 276.07,
+      "diff": 137.89,
+      "dbNet": 2100,
+      "impliedPct": 13.15
+    },
+    {
+      "id": 86,
+      "policyNumber": "28000000019603000000",
+      "customerName": "SELVA MUTHU KUMARAN",
+      "dbCommAmt": 7689.78,
+      "ledgerCommAmt": 2008.07,
+      "diff": -5681.71,
+      "dbNet": 45234,
+      "impliedPct": 4.44
+    },
+    {
+      "id": 87,
+      "policyNumber": "2800000019680800000",
+      "customerName": "SELVA MUTHU KUMARAN",
+      "dbCommAmt": 1735.7,
+      "ledgerCommAmt": 8902.5,
+      "diff": 7166.8,
+      "dbNet": 10210,
+      "impliedPct": 87.19
+    },
+    {
+      "id": 90,
+      "policyNumber": "D250918681",
+      "customerName": "SUDAKAR",
+      "dbCommAmt": 8097.18,
+      "ledgerCommAmt": 8098.28,
+      "diff": 1.1,
+      "dbNet": 29660,
+      "impliedPct": 27.3
+    },
+    {
+      "id": 92,
+      "policyNumber": "100044132900",
+      "customerName": "KVSS SESHADRI SASTRI",
+      "dbCommAmt": 3806.96,
+      "ledgerCommAmt": 7613.8,
+      "diff": 3806.84,
+      "dbNet": 27212,
+      "impliedPct": 27.98
+    },
+    {
+      "id": 93,
+      "policyNumber": "100044374300",
+      "customerName": "KVSS SESHADRI SASTRI",
+      "dbCommAmt": 680.89,
+      "ledgerCommAmt": 453.87,
+      "diff": -227.02,
+      "dbNet": 4867,
+      "impliedPct": 9.33
+    },
+    {
+      "id": 96,
+      "policyNumber": "8283112600008330",
+      "customerName": "MAHESWARI K",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 12584.95,
+      "diff": 12584.95,
+      "dbNet": 35957,
+      "impliedPct": 35
+    },
+    {
+      "id": 97,
+      "policyNumber": "100045542800",
+      "customerName": "JAYASANKAR",
+      "dbCommAmt": 6955.02,
+      "ledgerCommAmt": 7402.12,
+      "diff": 447.1,
+      "dbNet": 26455,
+      "impliedPct": 27.98
+    },
+    {
+      "id": 98,
+      "policyNumber": "100045807000",
+      "customerName": "JAYASANKAR",
+      "dbCommAmt": 714.61,
+      "ledgerCommAmt": 476.36,
+      "diff": -238.25,
+      "dbNet": 5108,
+      "impliedPct": 9.33
+    },
+    {
+      "id": 100,
+      "policyNumber": "5798112600080916",
+      "customerName": "ARUNADEVI B",
+      "dbCommAmt": 6666.68,
+      "ledgerCommAmt": 2222.3,
+      "diff": -4444.38,
+      "dbNet": 22477,
+      "impliedPct": 9.89
+    },
+    {
+      "id": 103,
+      "policyNumber": "100048074400",
+      "customerName": "SUDAKARAN J",
+      "dbCommAmt": 53844.43,
+      "ledgerCommAmt": 53850,
+      "diff": 5.57,
+      "dbNet": 192439,
+      "impliedPct": 27.98
+    },
+    {
+      "id": 106,
+      "policyNumber": "1708003125P118701654",
+      "customerName": "GOPI S",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 8374,
+      "diff": 8374,
+      "dbNet": 17676,
+      "impliedPct": 47.37
+    },
+    {
+      "id": 107,
+      "policyNumber": "2066112600050352",
+      "customerName": "ABDULLAH BEEVI",
+      "dbCommAmt": 4958.1,
+      "ledgerCommAmt": 4201.78,
+      "diff": -756.32,
+      "dbNet": 14166,
+      "impliedPct": 29.66
+    },
+    {
+      "id": 108,
+      "policyNumber": "2800000024843000000",
+      "customerName": "SYED MOHAMMED",
+      "dbCommAmt": 3701.56,
+      "ledgerCommAmt": 3624.1,
+      "diff": -77.46,
+      "dbNet": 12764,
+      "impliedPct": 28.39
+    },
+    {
+      "id": 109,
+      "policyNumber": "4233/431542283/00/000",
+      "customerName": "MATHY SAM",
+      "dbCommAmt": 220.8,
+      "ledgerCommAmt": 222.55,
+      "diff": 1.75,
+      "dbNet": 736,
+      "impliedPct": 30.24
+    },
+    {
+      "id": 110,
+      "policyNumber": "1708003125P118755191",
+      "customerName": "PRIYA T",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 49.45,
+      "diff": 49.45,
+      "dbNet": 1167,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 111,
+      "policyNumber": "K9042973",
+      "customerName": "UMA",
+      "dbCommAmt": 5000,
+      "ledgerCommAmt": 7080,
+      "diff": 2080,
+      "dbNet": 50000,
+      "impliedPct": 14.16
+    },
+    {
+      "id": 112,
+      "policyNumber": "3839112600059339",
+      "customerName": "SIVAKUMAR DURAISAMY",
+      "dbCommAmt": 8241.8,
+      "ledgerCommAmt": 6984.28,
+      "diff": -1257.52,
+      "dbNet": 23548,
+      "impliedPct": 29.66
+    },
+    {
+      "id": 113,
+      "policyNumber": "2800000024096100000",
+      "customerName": "NEVERA",
+      "dbCommAmt": 6081.89,
+      "ledgerCommAmt": 6094.9,
+      "diff": 13.01,
+      "dbNet": 18486,
+      "impliedPct": 32.97
+    },
+    {
+      "id": 114,
+      "policyNumber": "1708003125P118865659",
+      "customerName": "RADHAA S",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 114.8,
+      "diff": 114.8,
+      "dbNet": 678,
+      "impliedPct": 16.93
+    },
+    {
+      "id": 115,
+      "policyNumber": "1708003125P119146515",
+      "customerName": "MAHALAKSHMI",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 5130.8,
+      "diff": 5130.8,
+      "dbNet": 15135,
+      "impliedPct": 33.9
+    },
+    {
+      "id": 116,
+      "policyNumber": "1708003125P118701987",
+      "customerName": "PURAVALAN FRIGHT",
+      "dbCommAmt": 6787.6,
+      "ledgerCommAmt": 9285.68,
+      "diff": 2498.08,
+      "dbNet": 16969,
+      "impliedPct": 54.72
+    },
+    {
+      "id": 117,
+      "policyNumber": "6862112600092246",
+      "customerName": "SIVA MURTHY",
+      "dbCommAmt": 6461,
+      "ledgerCommAmt": 5475.42,
+      "diff": -985.58,
+      "dbNet": 18460,
+      "impliedPct": 29.66
+    },
+    {
+      "id": 118,
+      "policyNumber": "9487112600006121",
+      "customerName": "SHALINI PRABHAKARAN",
+      "dbCommAmt": 8472.1,
+      "ledgerCommAmt": 3589.87,
+      "diff": -4882.23,
+      "dbNet": 24206,
+      "impliedPct": 14.83
+    },
+    {
+      "id": 119,
+      "policyNumber": "3145112600041620",
+      "customerName": "RUCKMANI SATHYAMOORTHY",
+      "dbCommAmt": 9450.7,
+      "ledgerCommAmt": 8009.07,
+      "diff": -1441.63,
+      "dbNet": 27002,
+      "impliedPct": 29.66
+    },
+    {
+      "id": 120,
+      "policyNumber": "100050894600",
+      "customerName": "VARADHARAJAN N",
+      "dbCommAmt": 15132.74,
+      "ledgerCommAmt": 15128.17,
+      "diff": -4.57,
+      "dbNet": 53834,
+      "impliedPct": 28.1
+    },
+    {
+      "id": 121,
+      "policyNumber": "1708003125P119533096",
+      "customerName": "MURUGAPPAN K",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 5624,
+      "diff": 5624,
+      "dbNet": 16594,
+      "impliedPct": 33.89
+    },
+    {
+      "id": 123,
+      "policyNumber": "1708003125P119601974",
+      "customerName": "ALAGAPPAN R",
+      "dbCommAmt": 80.15,
+      "ledgerCommAmt": 67.95,
+      "diff": -12.2,
+      "dbNet": 1603,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 125,
+      "policyNumber": "202603232088622",
+      "customerName": "SAMY",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 42,
+      "diff": 42,
+      "dbNet": 992,
+      "impliedPct": 4.23
+    },
+    {
+      "id": 126,
+      "policyNumber": "202603231973548",
+      "customerName": "SAMY",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 40.25,
+      "diff": 40.25,
+      "dbNet": 949,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 127,
+      "policyNumber": "2490112600073463",
+      "customerName": "SRINIVAS M",
+      "dbCommAmt": 6461,
+      "ledgerCommAmt": 5475.42,
+      "diff": -985.58,
+      "dbNet": 18460,
+      "impliedPct": 29.66
+    },
+    {
+      "id": 128,
+      "policyNumber": "1708003125P120252933",
+      "customerName": "GOPIKA",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 35.7,
+      "diff": 35.7,
+      "dbNet": 842,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 130,
+      "policyNumber": "2800000027450400000",
+      "customerName": "BALAMURUGAN",
+      "dbCommAmt": 9675.54,
+      "ledgerCommAmt": 3223.39,
+      "diff": -6452.15,
+      "dbNet": 26728,
+      "impliedPct": 12.06
+    },
+    {
+      "id": 131,
+      "policyNumber": "958112600018689",
+      "customerName": "SENTHILKUMAR PALSAMY",
+      "dbCommAmt": 6930,
+      "ledgerCommAmt": 1468.22,
+      "diff": -5461.78,
+      "dbNet": 19800,
+      "impliedPct": 7.42
+    },
+    {
+      "id": 139,
+      "policyNumber": "2800000028185100000",
+      "customerName": "GOPIKA KARTHIKEYAN",
+      "dbCommAmt": 9970.2,
+      "ledgerCommAmt": 9172.29,
+      "diff": -797.91,
+      "dbNet": 27542,
+      "impliedPct": 33.3
+    },
+    {
+      "id": 140,
+      "policyNumber": "28000000296245",
+      "customerName": "KUMARA GURU",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 4896.92,
+      "diff": 4896.92,
+      "dbNet": 44510,
+      "impliedPct": 11
+    },
+    {
+      "id": 142,
+      "policyNumber": "5290112700030086",
+      "customerName": "MURUGESAN G",
+      "dbCommAmt": 26101.25,
+      "ledgerCommAmt": 7373.04,
+      "diff": -18728.21,
+      "dbNet": 74575,
+      "impliedPct": 9.89
+    },
+    {
+      "id": 143,
+      "policyNumber": "1708003126P100397955",
+      "customerName": "RAJESHKANNA",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 35.7,
+      "diff": 35.7,
+      "dbNet": 842,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 144,
+      "policyNumber": "2302208442240300000",
+      "customerName": "SRIDHAR A",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 624.91,
+      "diff": 624.91,
+      "dbNet": 8805,
+      "impliedPct": 7.1
+    },
+    {
+      "id": 145,
+      "policyNumber": "1708003126P100491700",
+      "customerName": "BHASKARAN",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 12578.6,
+      "diff": 12578.6,
+      "dbNet": 54263,
+      "impliedPct": 23.18
+    },
+    {
+      "id": 146,
+      "policyNumber": "1708003126P100752697",
+      "customerName": "SRIVIDHYA D",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 35.7,
+      "diff": 35.7,
+      "dbNet": 842,
+      "impliedPct": 4.24
+    },
+    {
+      "id": 147,
+      "policyNumber": "1499112700091371",
+      "customerName": "VENKATESAN G",
+      "dbCommAmt": 19373.9,
+      "ledgerCommAmt": 5472.85,
+      "diff": -13901.05,
+      "dbNet": 55354,
+      "impliedPct": 9.89
+    },
+    {
+      "id": 148,
+      "policyNumber": "3317208506462600000",
+      "customerName": "HARIHARAN M",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 2648.76,
+      "diff": 2648.76,
+      "dbNet": 26070,
+      "impliedPct": 10.16
+    },
+    {
+      "id": 149,
+      "policyNumber": "2302208509234800000",
+      "customerName": "PRABHU",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 2870.17,
+      "diff": 2870.17,
+      "dbNet": 28409,
+      "impliedPct": 10.1
+    },
+    {
+      "id": 150,
+      "policyNumber": "1708003126P101630107",
+      "customerName": "SANTHOSH KUMAR K",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 1312.8,
+      "diff": 1312.8,
+      "dbNet": 7746,
+      "impliedPct": 16.95
+    },
+    {
+      "id": 157,
+      "policyNumber": "A8573140",
+      "customerName": "GANESH",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 14129.91,
+      "diff": 14129.91,
+      "dbNet": 66699,
+      "impliedPct": 21.18
+    },
+    {
+      "id": 165,
+      "policyNumber": "B3255339",
+      "customerName": "MK NITHIYANANDHAM",
+      "dbCommAmt": 0,
+      "ledgerCommAmt": 9377.9,
+      "diff": 9377.9,
+      "dbNet": 44268,
+      "impliedPct": 21.18
+    }
+  ],
+  "netDiffs": [
+    {
+      "id": 153,
+      "policyNumber": "K8718031",
+      "customerName": "PARTHASARATHY SELVARAJ",
+      "dbNet": 44844,
+      "ledgerNet": 3737
+    },
+    {
+      "id": 131,
+      "policyNumber": "958112600018689",
+      "customerName": "SENTHILKUMAR PALSAMY",
+      "dbNet": 19800,
+      "ledgerNet": 4950
+    },
+    {
+      "id": 160,
+      "policyNumber": "L020376289",
+      "customerName": "PANDIYAN S",
+      "dbNet": 34615,
+      "ledgerNet": 3000
+    }
+  ]
+}

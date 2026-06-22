@@ -1,0 +1,661 @@
+{
+  "inserted": [],
+  "commFixed": [
+    {
+      "id": 29,
+      "pn": "20903827",
+      "customer": "SUDHANYA LOGANATHAN",
+      "oldComm": 4577.5,
+      "newComm": 5960.85,
+      "pct": 32.56
+    },
+    {
+      "id": 30,
+      "pn": "20902962",
+      "customer": "LOGANATHAN J",
+      "oldComm": 0,
+      "newComm": 4158.22,
+      "pct": 15.84
+    },
+    {
+      "id": 31,
+      "pn": "21053852",
+      "customer": "ARUN T",
+      "oldComm": 4972.75,
+      "newComm": 4517.29,
+      "pct": 25
+    },
+    {
+      "id": 1,
+      "pn": "100029591300",
+      "customer": "Naveen Senguttuvan",
+      "oldComm": 968.76,
+      "newComm": 666.9,
+      "pct": 12
+    },
+    {
+      "id": 37,
+      "pn": "4172/417729912/00/000",
+      "customer": "NAVEEN SENGUTTUVAN",
+      "oldComm": 102.96,
+      "newComm": 66.95,
+      "pct": 12
+    },
+    {
+      "id": 41,
+      "pn": "1708003125P113706460",
+      "customer": "KANCHANA BHARATHI",
+      "oldComm": 0,
+      "newComm": 1801.8,
+      "pct": 12
+    },
+    {
+      "id": 42,
+      "pn": "1708003125P113785999",
+      "customer": "MARIYA DOSS D",
+      "oldComm": 0,
+      "newComm": 35.7,
+      "pct": 5
+    },
+    {
+      "id": 43,
+      "pn": "1708003125P113916260",
+      "customer": "SRIDEVI CHANDRASEKAR",
+      "oldComm": 1047.45,
+      "newComm": 1100.25,
+      "pct": 15.76
+    },
+    {
+      "id": 47,
+      "pn": "1708003125P114312408",
+      "customer": "UMA S BHASKARAN",
+      "oldComm": 0,
+      "newComm": 1462.2,
+      "pct": 15
+    },
+    {
+      "id": 48,
+      "pn": "1708003125P114369876",
+      "customer": "SARAVANAN V",
+      "oldComm": 0,
+      "newComm": 55.9,
+      "pct": 5
+    },
+    {
+      "id": 49,
+      "pn": "1708003125P114386501",
+      "customer": "SATHISH A",
+      "oldComm": 0,
+      "newComm": 59.3,
+      "pct": 5
+    },
+    {
+      "id": 58,
+      "pn": "190000029440674",
+      "customer": "ELIZABETH",
+      "oldComm": 0,
+      "newComm": 5781,
+      "pct": 45
+    },
+    {
+      "id": 59,
+      "pn": "100034391600",
+      "customer": "SRIDHAR S",
+      "oldComm": 0,
+      "newComm": 8119.58,
+      "pct": 27.54
+    },
+    {
+      "id": 60,
+      "pn": "100035075700",
+      "customer": "SRIDHAR S",
+      "oldComm": 0,
+      "newComm": 1752.61,
+      "pct": 27.54
+    },
+    {
+      "id": 61,
+      "pn": "1708003125P114811380",
+      "customer": "SARAVANAN B",
+      "oldComm": 0,
+      "newComm": 1608,
+      "pct": 15
+    },
+    {
+      "id": 62,
+      "pn": "1708003125P114921811",
+      "customer": "PARAMASIVAM J",
+      "oldComm": 0,
+      "newComm": 519.9,
+      "pct": 15
+    },
+    {
+      "id": 66,
+      "pn": "100036374200",
+      "customer": "SRIDHARAN VILVA KUMAR",
+      "oldComm": 0,
+      "newComm": 11925.52,
+      "pct": 27.54
+    },
+    {
+      "id": 67,
+      "pn": "100036492400",
+      "customer": "SRIDHARAN VILVA KUMAR",
+      "oldComm": 0,
+      "newComm": 392.32,
+      "pct": 27.54
+    },
+    {
+      "id": 63,
+      "pn": "2800000015616500000",
+      "customer": "OVIYA ELANGO",
+      "oldComm": 0,
+      "newComm": 14727,
+      "pct": 25
+    },
+    {
+      "id": 64,
+      "pn": "6954112600069431",
+      "customer": "ROBERT SAMUEL",
+      "oldComm": 0,
+      "newComm": 2711.1,
+      "pct": 35
+    },
+    {
+      "id": 65,
+      "pn": "100036094700",
+      "customer": "GEETHA R",
+      "oldComm": 0,
+      "newComm": 369.83,
+      "pct": 27.54
+    },
+    {
+      "id": 69,
+      "pn": "4172/423240326/00/000",
+      "customer": "MOGESH V",
+      "oldComm": 0,
+      "newComm": 222.53,
+      "pct": 27.54
+    },
+    {
+      "id": 70,
+      "pn": "4172/423242477/00/000",
+      "customer": "SANJAY V",
+      "oldComm": 0,
+      "newComm": 222.53,
+      "pct": 27.54
+    },
+    {
+      "id": 71,
+      "pn": "4233/422150699/00/000",
+      "customer": "SRIDHARAN VILVA KUMAR",
+      "oldComm": 0,
+      "newComm": 630.19,
+      "pct": 25.42
+    },
+    {
+      "id": 72,
+      "pn": "1708003125P115430293",
+      "customer": "MADHESHWARAN",
+      "oldComm": 682.87,
+      "newComm": 578.7,
+      "pct": 5
+    },
+    {
+      "id": 73,
+      "pn": "3317208066873500000",
+      "customer": "MUTHUKUMAR",
+      "oldComm": 1660.5,
+      "newComm": 1699.35,
+      "pct": 30
+    },
+    {
+      "id": 74,
+      "pn": "2176112600015177",
+      "customer": "REVATHI DINESHKUMAR",
+      "oldComm": 0,
+      "newComm": 5132.64,
+      "pct": 35
+    },
+    {
+      "id": 75,
+      "pn": "2800000017246600000",
+      "customer": "SITHUKKANNAN",
+      "oldComm": 18958.72,
+      "newComm": 6975.61,
+      "pct": 24.3
+    },
+    {
+      "id": 76,
+      "pn": "100038248300",
+      "customer": "P ELANGO",
+      "oldComm": 0,
+      "newComm": 4952.53,
+      "pct": 25.42
+    },
+    {
+      "id": 78,
+      "pn": "100038795500",
+      "customer": "VEER GANESH",
+      "oldComm": 0,
+      "newComm": 389.69,
+      "pct": 25.42
+    },
+    {
+      "id": 79,
+      "pn": "2800000017684300000",
+      "customer": "RANJITH SRINIVASAN",
+      "oldComm": 22270.5,
+      "newComm": 8105.13,
+      "pct": 32.78
+    },
+    {
+      "id": 80,
+      "pn": "3427112600095492",
+      "customer": "NIRANJALI K",
+      "oldComm": 0,
+      "newComm": 7712.56,
+      "pct": 35
+    },
+    {
+      "id": 81,
+      "pn": "100041455600",
+      "customer": "SUDAKARAN J",
+      "oldComm": 0,
+      "newComm": 1981.55,
+      "pct": 25
+    },
+    {
+      "id": 82,
+      "pn": "2800000019216100000",
+      "customer": "SUGANYA",
+      "oldComm": 12262.75,
+      "newComm": 4663.3,
+      "pct": 28.54
+    },
+    {
+      "id": 83,
+      "pn": "2800000019444200000",
+      "customer": "GUNASEKARAN",
+      "oldComm": 4500.24,
+      "newComm": 5884.04,
+      "pct": 22.22
+    },
+    {
+      "id": 84,
+      "pn": "100042250500",
+      "customer": "HARISH BABU",
+      "oldComm": 0,
+      "newComm": 10128.4,
+      "pct": 25
+    },
+    {
+      "id": 85,
+      "pn": "100043305700",
+      "customer": "HARISH BABU",
+      "oldComm": 138.18,
+      "newComm": 276.07,
+      "pct": 6.58
+    },
+    {
+      "id": 86,
+      "pn": "28000000019603000000",
+      "customer": "SELVA MUTHU KUMARAN",
+      "oldComm": 7689.78,
+      "newComm": 2008.07,
+      "pct": 19.68
+    },
+    {
+      "id": 87,
+      "pn": "2800000019680800000",
+      "customer": "SELVA MUTHU KUMARAN",
+      "oldComm": 1735.7,
+      "newComm": 8902.5,
+      "pct": 19.68
+    },
+    {
+      "id": 90,
+      "pn": "D250918681",
+      "customer": "SUDAKAR",
+      "oldComm": 8097.18,
+      "newComm": 8098.28,
+      "pct": 27.3
+    },
+    {
+      "id": 96,
+      "pn": "8283112600008330",
+      "customer": "MAHESWARI K",
+      "oldComm": 0,
+      "newComm": 12584.95,
+      "pct": 35
+    },
+    {
+      "id": 100,
+      "pn": "5798112600080916",
+      "customer": "ARUNADEVI B",
+      "oldComm": 6666.68,
+      "newComm": 2222.3,
+      "pct": 29.66
+    },
+    {
+      "id": 106,
+      "pn": "1708003125P118701654",
+      "customer": "GOPI S",
+      "oldComm": 0,
+      "newComm": 8374,
+      "pct": 47.37
+    },
+    {
+      "id": 107,
+      "pn": "2066112600050352",
+      "customer": "ABDULLAH BEEVI",
+      "oldComm": 4958.1,
+      "newComm": 4201.78,
+      "pct": 35
+    },
+    {
+      "id": 108,
+      "pn": "2800000024843000000",
+      "customer": "SYED MOHAMMED",
+      "oldComm": 3701.56,
+      "newComm": 3624.1,
+      "pct": 28.7
+    },
+    {
+      "id": 109,
+      "pn": "4233/431542283/00/000",
+      "customer": "MATHY SAM",
+      "oldComm": 220.8,
+      "newComm": 222.55,
+      "pct": 30
+    },
+    {
+      "id": 110,
+      "pn": "1708003125P118755191",
+      "customer": "PRIYA T",
+      "oldComm": 0,
+      "newComm": 49.45,
+      "pct": 4.24
+    },
+    {
+      "id": 111,
+      "pn": "K9042973",
+      "customer": "UMA",
+      "oldComm": 5000,
+      "newComm": 7080,
+      "pct": 10
+    },
+    {
+      "id": 112,
+      "pn": "3839112600059339",
+      "customer": "SIVAKUMAR DURAISAMY",
+      "oldComm": 8241.8,
+      "newComm": 6984.28,
+      "pct": 35
+    },
+    {
+      "id": 113,
+      "pn": "2800000024096100000",
+      "customer": "NEVERA",
+      "oldComm": 6081.89,
+      "newComm": 6094.9,
+      "pct": 32.9
+    },
+    {
+      "id": 114,
+      "pn": "1708003125P118865659",
+      "customer": "RADHAA S",
+      "oldComm": 0,
+      "newComm": 114.8,
+      "pct": 16.93
+    },
+    {
+      "id": 115,
+      "pn": "1708003125P119146515",
+      "customer": "MAHALAKSHMI",
+      "oldComm": 0,
+      "newComm": 5130.8,
+      "pct": 33.9
+    },
+    {
+      "id": 116,
+      "pn": "1708003125P118701987",
+      "customer": "PURAVALAN FRIGHT",
+      "oldComm": 6787.6,
+      "newComm": 9285.68,
+      "pct": 40
+    },
+    {
+      "id": 117,
+      "pn": "6862112600092246",
+      "customer": "SIVA MURTHY",
+      "oldComm": 6461,
+      "newComm": 5475.42,
+      "pct": 35
+    },
+    {
+      "id": 118,
+      "pn": "9487112600006121",
+      "customer": "SHALINI PRABHAKARAN",
+      "oldComm": 8472.1,
+      "newComm": 3589.87,
+      "pct": 35
+    },
+    {
+      "id": 119,
+      "pn": "3145112600041620",
+      "customer": "RUCKMANI SATHYAMOORTHY",
+      "oldComm": 9450.7,
+      "newComm": 8009.07,
+      "pct": 35
+    },
+    {
+      "id": 120,
+      "pn": "100050894600",
+      "customer": "VARADHARAJAN N",
+      "oldComm": 15132.74,
+      "newComm": 15128.17,
+      "pct": 28.11
+    },
+    {
+      "id": 121,
+      "pn": "1708003125P119533096",
+      "customer": "MURUGAPPAN K",
+      "oldComm": 0,
+      "newComm": 5624,
+      "pct": 33.89
+    },
+    {
+      "id": 123,
+      "pn": "1708003125P119601974",
+      "customer": "ALAGAPPAN R",
+      "oldComm": 80.15,
+      "newComm": 67.95,
+      "pct": 4.24
+    },
+    {
+      "id": 125,
+      "pn": "202603232088622",
+      "customer": "SAMY",
+      "oldComm": 0,
+      "newComm": 42,
+      "pct": 4.23
+    },
+    {
+      "id": 126,
+      "pn": "202603231973548",
+      "customer": "SAMY",
+      "oldComm": 0,
+      "newComm": 40.25,
+      "pct": 4.24
+    },
+    {
+      "id": 127,
+      "pn": "2490112600073463",
+      "customer": "SRINIVAS M",
+      "oldComm": 6461,
+      "newComm": 5475.42,
+      "pct": 35
+    },
+    {
+      "id": 128,
+      "pn": "1708003125P120252933",
+      "customer": "GOPIKA",
+      "oldComm": 0,
+      "newComm": 35.7,
+      "pct": 4.24
+    },
+    {
+      "id": 130,
+      "pn": "2800000027450400000",
+      "customer": "BALAMURUGAN",
+      "oldComm": 9675.54,
+      "newComm": 3223.39,
+      "pct": 36.2
+    },
+    {
+      "id": 139,
+      "pn": "2800000028185100000",
+      "customer": "GOPIKA KARTHIKEYAN",
+      "oldComm": 9970.2,
+      "newComm": 9172.29,
+      "pct": 36.2
+    },
+    {
+      "id": 140,
+      "pn": "28000000296245",
+      "customer": "KUMARA GURU",
+      "oldComm": 0,
+      "newComm": 4896.92,
+      "pct": 22
+    },
+    {
+      "id": 142,
+      "pn": "5290112700030086",
+      "customer": "MURUGESAN G",
+      "oldComm": 26101.25,
+      "newComm": 7373.04,
+      "pct": 35
+    },
+    {
+      "id": 143,
+      "pn": "1708003126P100397955",
+      "customer": "RAJESHKANNA",
+      "oldComm": 0,
+      "newComm": 35.7,
+      "pct": 4.24
+    },
+    {
+      "id": 144,
+      "pn": "2302208442240300000",
+      "customer": "SRIDHAR A",
+      "oldComm": 0,
+      "newComm": 624.91,
+      "pct": 8
+    },
+    {
+      "id": 145,
+      "pn": "1708003126P100491700",
+      "customer": "BHASKARAN",
+      "oldComm": 0,
+      "newComm": 12578.6,
+      "pct": 23.18
+    },
+    {
+      "id": 146,
+      "pn": "1708003126P100752697",
+      "customer": "SRIVIDHYA D",
+      "oldComm": 0,
+      "newComm": 35.7,
+      "pct": 4.24
+    },
+    {
+      "id": 147,
+      "pn": "1499112700091371",
+      "customer": "VENKATESAN G",
+      "oldComm": 19373.9,
+      "newComm": 5472.85,
+      "pct": 35
+    },
+    {
+      "id": 148,
+      "pn": "3317208506462600000",
+      "customer": "HARIHARAN M",
+      "oldComm": 0,
+      "newComm": 2648.76,
+      "pct": 30.5
+    },
+    {
+      "id": 149,
+      "pn": "2302208509234800000",
+      "customer": "PRABHU",
+      "oldComm": 0,
+      "newComm": 2870.17,
+      "pct": 15
+    },
+    {
+      "id": 150,
+      "pn": "1708003126P101630107",
+      "customer": "SANTHOSH KUMAR K",
+      "oldComm": 0,
+      "newComm": 1312.8,
+      "pct": 16.95
+    },
+    {
+      "id": 157,
+      "pn": "A8573140",
+      "customer": "GANESH",
+      "oldComm": 0,
+      "newComm": 14129.91,
+      "pct": 21.18
+    },
+    {
+      "id": 165,
+      "pn": "B3255339",
+      "customer": "MK NITHIYANANDHAM",
+      "oldComm": 0,
+      "newComm": 9377.9,
+      "pct": 21.18
+    }
+  ],
+  "pnFixed": [
+    {
+      "id": 7,
+      "oldPN": "1708001125P108086855",
+      "newPN": "1708001125P108086855/0"
+    },
+    {
+      "id": 168,
+      "oldPN": "4233/443209062/00/00",
+      "newPN": "4233/443209062/00/000"
+    }
+  ],
+  "skipped": [],
+  "netHold": [
+    {
+      "id": 153,
+      "policyNumber": "K8718031",
+      "customerName": "PARTHASARATHY SELVARAJ",
+      "dbNet": 44844,
+      "ledgerNet": 3737,
+      "diff": 41107
+    },
+    {
+      "id": 131,
+      "policyNumber": "958112600018689",
+      "customerName": "SENTHILKUMAR PALSAMY",
+      "dbNet": 19800,
+      "ledgerNet": 4950,
+      "diff": 14850
+    },
+    {
+      "id": 160,
+      "policyNumber": "L020376289",
+      "customerName": "PANDIYAN S",
+      "dbNet": 34615,
+      "ledgerNet": 3000,
+      "diff": 31615
+    }
+  ],
+  "errors": []
+}

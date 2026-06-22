@@ -5,34 +5,39 @@ import { fetchDataHealthOverview } from '../api/dataHealth';
 
 // ─── Summary card ───────────────────────────────────────────────────────────
 
-function StatCard({ label, value, tone = 'default' }) {
-  const valueColor = tone === 'alert' && Number(value) > 0 ? 'text-red-600' : 'text-gray-900';
+function StatCard({ label, value, tone = 'default', note }) {
+  const valueColor =
+    tone === 'alert' && Number(value) > 0 ? 'text-red-600' :
+    tone === 'info'  ? 'text-blue-600' :
+    tone === 'ok'    ? 'text-green-600' :
+    'text-gray-900';
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
       <p className="text-sm font-medium text-gray-500">{label}</p>
       <p className={`text-2xl font-bold mt-1 ${valueColor}`}>{value}</p>
+      {note && <p className="text-xs text-gray-400 mt-1">{note}</p>}
     </div>
   );
 }
 
 // ─── Issue table ────────────────────────────────────────────────────────────
 
-function IssueTable({ title, description, rows, onView }) {
+function IssueTable({ title, description, rows, onView, issueColor = 'text-amber-700', emptyText = 'No issues found.' }) {
   return (
     <section className="bg-white rounded-lg border border-gray-200 shadow-sm">
       <div className="px-5 py-4 border-b border-gray-100">
         <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
-        <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+        {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
       </div>
 
       {rows.length === 0 ? (
-        <div className="px-6 py-10 text-center text-sm text-gray-400">No issues found.</div>
+        <div className="px-6 py-10 text-center text-sm text-gray-400">{emptyText}</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                {['Policy Number', 'Customer Name', 'Insurer', 'Policy Type', 'Issue Description', ''].map((h) => (
+                {['Policy Number', 'Customer Name', 'Insurer', 'Policy Type', 'Note', ''].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide whitespace-nowrap">
                     {h}
                   </th>
@@ -46,7 +51,7 @@ function IssueTable({ title, description, rows, onView }) {
                   <td className="px-4 py-3 text-gray-700">{row.customerName}</td>
                   <td className="px-4 py-3 text-gray-600">{row.insurerName}</td>
                   <td className="px-4 py-3 text-gray-600">{row.productName}</td>
-                  <td className="px-4 py-3 text-amber-700">{row.issue}</td>
+                  <td className={`px-4 py-3 ${issueColor}`}>{row.issue}</td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => onView(row.id)}
@@ -103,10 +108,11 @@ export default function DataHealthDashboard() {
     );
   }
 
-  const inactiveInsurerPolicies = useMemo(() => applyFilters(data?.inactiveInsurerPolicies), [data, filters]);
+  const inactiveInsurerPolicies      = useMemo(() => applyFilters(data?.inactiveInsurerPolicies),      [data, filters]);
   const missingLeadExecutivePolicies = useMemo(() => applyFilters(data?.missingLeadExecutivePolicies), [data, filters]);
-  const missingCommissionPolicies = useMemo(() => applyFilters(data?.missingCommissionPolicies), [data, filters]);
-  const duplicatePolicyNumbers = useMemo(() => applyFilters(data?.duplicatePolicyNumbers), [data, filters]);
+  const confirmedZeroPolicies        = useMemo(() => applyFilters(data?.confirmedZeroPolicies),        [data, filters]);
+  const missingCommissionPolicies    = useMemo(() => applyFilters(data?.missingCommissionPolicies),    [data, filters]);
+  const duplicatePolicyNumbers       = useMemo(() => applyFilters(data?.duplicatePolicyNumbers),       [data, filters]);
 
   function viewPolicy(id) {
     navigate(`/policies/${id}`);
@@ -139,8 +145,18 @@ export default function DataHealthDashboard() {
             <StatCard label="Total Policies" value={data.summary.totalPolicies} />
             <StatCard label="Linked to Inactive Insurers" value={data.summary.inactiveInsurerCount} tone="alert" />
             <StatCard label="Missing Lead Executive" value={data.summary.missingLeadExecutiveCount} tone="alert" />
-            <StatCard label="Missing Commission Percentage" value={data.summary.missingCommissionPercentCount} tone="alert" />
-            <StatCard label="Missing Commission Amount" value={data.summary.missingCommissionAmountCount} tone="alert" />
+            <StatCard
+              label="Zero Commission — Confirmed"
+              value={data.summary.confirmedZeroCommissionCount}
+              tone="info"
+              note="Insurer paid ₹0 brokerage — verified against ledger"
+            />
+            <StatCard
+              label="Commission Data Missing"
+              value={data.summary.missingCommissionCount}
+              tone={data.summary.missingCommissionCount > 0 ? 'alert' : 'ok'}
+              note="Not confirmed in ledger — needs verification"
+            />
             <StatCard label="Duplicate Policy Numbers" value={data.summary.duplicatePolicyNumberCount} tone="alert" />
           </div>
 
@@ -193,12 +209,25 @@ export default function DataHealthDashboard() {
             rows={missingLeadExecutivePolicies}
             onView={viewPolicy}
           />
+
+          {/* Commission — split into two distinct sections */}
           <IssueTable
-            title="Policies Missing Commission Data"
-            description="Commission Percent and/or Commission Amount is zero on these policies."
+            title={`Commission Data Missing (${missingCommissionPolicies.length})`}
+            description="Commission percentage or amount is zero and has not been confirmed by the ledger. These policies require verification — supply commission data from the paper ledger or insurer statement."
             rows={missingCommissionPolicies}
             onView={viewPolicy}
+            issueColor="text-red-700"
+            emptyText="No unverified commission records. All zero-commission policies are confirmed by the ledger."
           />
+          <IssueTable
+            title={`Confirmed Zero Commission — No Action Required (${confirmedZeroPolicies.length})`}
+            description="The uploaded client ledger (14 May 2026) explicitly records ₹0 commission for these policies. This is not a data quality issue — the insurer paid no brokerage (common for TP-only motor, direct business, NBFC-routed deals, or waived commission). Shown here for transparency only."
+            rows={confirmedZeroPolicies}
+            onView={viewPolicy}
+            issueColor="text-blue-600"
+            emptyText="No confirmed-zero commission records."
+          />
+
           <IssueTable
             title="Duplicate Policy Numbers"
             description="These policy numbers appear more than once."
