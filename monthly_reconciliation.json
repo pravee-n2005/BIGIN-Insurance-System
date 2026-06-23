@@ -1,0 +1,404 @@
+[
+  {
+    "month": "2025-07",
+    "sheet": "JULY 2025",
+    "ledgerCount": 2,
+    "dbCount": 2,
+    "diff": 0,
+    "missing": [],
+    "extra": []
+  },
+  {
+    "month": "2025-08",
+    "sheet": "AUG 2025",
+    "ledgerCount": 4,
+    "dbCount": 4,
+    "diff": 0,
+    "missing": [],
+    "extra": []
+  },
+  {
+    "month": "2025-09",
+    "sheet": "SEPT 2025",
+    "ledgerCount": 8,
+    "dbCount": 8,
+    "diff": 0,
+    "missing": [],
+    "extra": []
+  },
+  {
+    "month": "2025-10",
+    "sheet": "OCT 2025",
+    "ledgerCount": 14,
+    "dbCount": 15,
+    "diff": -1,
+    "missing": [],
+    "extra": [
+      {
+        "id": 155,
+        "pn": "K6819292-H2",
+        "customer": "Dr Bama"
+      }
+    ]
+  },
+  {
+    "month": "2025-11",
+    "sheet": "NOV 2025",
+    "ledgerCount": 10,
+    "dbCount": 9,
+    "diff": 1,
+    "missing": [
+      {
+        "pn": "1708003125P113706460",
+        "customer": "SYED ALI FATHIMA",
+        "insurer": "United India Ins",
+        "sheet": "NOV 2025",
+        "ledgerGross": 17717,
+        "inDB": true,
+        "dbIssueDate": "2025-12-08",
+        "dbMonth": "2025-12",
+        "dbId": 41,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "MOTOR"
+      }
+    ],
+    "extra": []
+  },
+  {
+    "month": "2025-12",
+    "sheet": "DEC 2025",
+    "ledgerCount": 30,
+    "dbCount": 31,
+    "diff": -1,
+    "missing": [],
+    "extra": [
+      {
+        "id": 41,
+        "pn": "1708003125P113706460",
+        "customer": "KANCHANA BHARATHI"
+      }
+    ]
+  },
+  {
+    "month": "2026-01",
+    "sheet": "JAN 2026",
+    "ledgerCount": 18,
+    "dbCount": 17,
+    "diff": 1,
+    "missing": [
+      {
+        "pn": "2800000019770300000",
+        "customer": "SRIRAM",
+        "insurer": "HDFC ERGO",
+        "sheet": "JAN 2026",
+        "ledgerGross": 9698,
+        "inDB": true,
+        "dbIssueDate": "2026-02-02",
+        "dbMonth": "2026-02",
+        "dbId": 182,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      },
+      {
+        "pn": "7786112600009264",
+        "customer": "LOKHASUDHAN",
+        "insurer": "STAR Health",
+        "sheet": "JAN 2026",
+        "ledgerGross": 8599,
+        "inDB": true,
+        "dbIssueDate": "2025-10-23",
+        "dbMonth": "2025-10",
+        "dbId": 26,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      }
+    ],
+    "extra": [
+      {
+        "id": 88,
+        "pn": "7786112600009264-Q2",
+        "customer": "LOKHASUDHAN"
+      }
+    ]
+  },
+  {
+    "month": "2026-02",
+    "sheet": "FEB 2026",
+    "ledgerCount": 21,
+    "dbCount": 20,
+    "diff": 1,
+    "missing": [
+      {
+        "pn": "K8718031",
+        "customer": "PARTHASARATHY SELVARAJ",
+        "insurer": "ICICI Pru Life",
+        "sheet": "FEB 2026",
+        "ledgerGross": 44844,
+        "inDB": true,
+        "dbIssueDate": "2026-04-07",
+        "dbMonth": "2026-04",
+        "dbId": 153,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      },
+      {
+        "pn": "2856208337781900000",
+        "customer": "YUVARANI",
+        "insurer": "HDFC ERGO",
+        "sheet": "FEB 2026",
+        "ledgerGross": 70680,
+        "inDB": true,
+        "dbIssueDate": "2026-03-15",
+        "dbMonth": "2026-03",
+        "dbId": 184,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      },
+      {
+        "pn": "100047337100",
+        "customer": "SRIDHAR G",
+        "insurer": "ICICI Lombard",
+        "sheet": "FEB 2026",
+        "ledgerGross": 23224,
+        "inDB": true,
+        "dbIssueDate": "2026-03-03",
+        "dbMonth": "2026-03",
+        "dbId": 185,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      }
+    ],
+    "extra": [
+      {
+        "id": 182,
+        "pn": "2800000019770300000",
+        "customer": "SRIRAM"
+      },
+      {
+        "id": 117,
+        "pn": "6862112600092246",
+        "customer": "SIVA MURTHY"
+      }
+    ]
+  },
+  {
+    "month": "2026-03",
+    "sheet": "MARCH 2026",
+    "ledgerCount": 37,
+    "dbCount": 36,
+    "diff": 1,
+    "missing": [
+      {
+        "pn": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+        "customer": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+        "insurer": "HDFC ERGO",
+        "sheet": "MARCH 2026",
+        "ledgerGross": 9219,
+        "inDB": false
+      },
+      {
+        "pn": "6862112600092246",
+        "customer": "SIVA MURTHY",
+        "insurer": "STAR Health",
+        "sheet": "MARCH 2026",
+        "ledgerGross": 18460,
+        "inDB": true,
+        "dbIssueDate": "2026-02-19",
+        "dbMonth": "2026-02",
+        "dbId": 117,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      },
+      {
+        "pn": "D257237704 / 18032026",
+        "customer": "THARUN K",
+        "insurer": "Digit General",
+        "sheet": "MARCH 2026",
+        "ledgerGross": 901,
+        "inDB": false
+      },
+      {
+        "pn": "C295450326",
+        "customer": "SIVAMURTHY",
+        "insurer": "TATA AIA",
+        "sheet": "MARCH 2026",
+        "ledgerGross": 46974,
+        "inDB": true,
+        "dbIssueDate": "2026-04-06",
+        "dbMonth": "2026-04",
+        "dbId": 152,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      }
+    ],
+    "extra": [
+      {
+        "id": 185,
+        "pn": "100047337100",
+        "customer": "SRIDHAR G"
+      },
+      {
+        "id": 184,
+        "pn": "2856208337781900000",
+        "customer": "YUVARANI"
+      },
+      {
+        "id": 124,
+        "pn": "D257237704",
+        "customer": "THARUN K"
+      }
+    ]
+  },
+  {
+    "month": "2026-04",
+    "sheet": "APRIL 2026",
+    "ledgerCount": 14,
+    "dbCount": 15,
+    "diff": -1,
+    "missing": [
+      {
+        "pn": "7786112600009264",
+        "customer": "LOKHASUDHAN",
+        "insurer": "STAR Health",
+        "sheet": "APRIL 2026",
+        "ledgerGross": 8599,
+        "inDB": true,
+        "dbIssueDate": "2025-10-23",
+        "dbMonth": "2025-10",
+        "dbId": 26,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      },
+      {
+        "pn": "K6819292",
+        "customer": "Dr.Bama",
+        "insurer": "ICICI Pru Life",
+        "sheet": "APRIL 2026",
+        "ledgerGross": 47109,
+        "inDB": true,
+        "dbIssueDate": "2025-10-24",
+        "dbMonth": "2025-10",
+        "dbId": 20,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      }
+    ],
+    "extra": [
+      {
+        "id": 152,
+        "pn": "C295450326",
+        "customer": "SIVAMURTHY"
+      },
+      {
+        "id": 153,
+        "pn": "K8718031",
+        "customer": "PARTHASARATHY SELVARAJ"
+      },
+      {
+        "id": 154,
+        "pn": "7786112600009264-Q3",
+        "customer": "LOKHASUDHAN"
+      }
+    ]
+  },
+  {
+    "month": "2026-05",
+    "sheet": "MAY 2026",
+    "ledgerCount": 12,
+    "dbCount": 12,
+    "diff": 0,
+    "missing": [
+      {
+        "pn": "K8718031",
+        "customer": "PARTHASARATHY SELVARAJ",
+        "insurer": "ICICI Pru Life",
+        "sheet": "MAY 2026",
+        "ledgerGross": 44844,
+        "inDB": true,
+        "dbIssueDate": "2026-04-07",
+        "dbMonth": "2026-04",
+        "dbId": 153,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      }
+    ],
+    "extra": [
+      {
+        "id": 163,
+        "pn": "UNKNOWN-165",
+        "customer": "BHUVANESHWARI"
+      }
+    ]
+  },
+  {
+    "month": "2026-06",
+    "sheet": "JUNE 2026",
+    "ledgerCount": 17,
+    "dbCount": 13,
+    "diff": 4,
+    "missing": [
+      {
+        "pn": "UW PENDING",
+        "customer": "POONGODI",
+        "insurer": "STAR Health",
+        "sheet": "JUNE 2026",
+        "ledgerGross": 20370,
+        "inDB": false
+      },
+      {
+        "pn": "D272064431 / 17062026",
+        "customer": "SIVAN",
+        "insurer": "Digit General",
+        "sheet": "JUNE 2026",
+        "ledgerGross": 842.52,
+        "inDB": false
+      },
+      {
+        "pn": "L020376289",
+        "customer": "PANDIYAN S",
+        "insurer": "Digit Life",
+        "sheet": "JUNE 2026",
+        "ledgerGross": 34615,
+        "inDB": true,
+        "dbIssueDate": "2026-05-11",
+        "dbMonth": "2026-05",
+        "dbId": 160,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      },
+      {
+        "pn": "958112600018689",
+        "customer": "SENTHILKUMAR PALSAMY",
+        "insurer": "STAR Health",
+        "sheet": "JUNE 2026",
+        "ledgerGross": 19800,
+        "inDB": true,
+        "dbIssueDate": "2026-03-29",
+        "dbMonth": "2026-03",
+        "dbId": 131,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "HEALTH"
+      },
+      {
+        "pn": "195933858",
+        "customer": "JEEVARATHINAM",
+        "insurer": "Max Life",
+        "sheet": "JUNE 2026",
+        "ledgerGross": 27754,
+        "inDB": true,
+        "dbIssueDate": "2026-04-26",
+        "dbMonth": "2026-04",
+        "dbId": 151,
+        "dbStatus": "ACTIVE",
+        "dbCategory": "LIFE"
+      }
+    ],
+    "extra": [
+      {
+        "id": 197,
+        "pn": "D272064431",
+        "customer": "SIVAN"
+      }
+    ]
+  }
+]

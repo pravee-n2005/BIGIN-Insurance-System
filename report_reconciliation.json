@@ -1,0 +1,247 @@
+[
+  {
+    "month": "2025-07",
+    "sheet": "JULY 2025",
+    "ledgerCount": 2,
+    "reportCount": 2,
+    "diff": 0,
+    "missing": []
+  },
+  {
+    "month": "2025-08",
+    "sheet": "AUG 2025",
+    "ledgerCount": 4,
+    "reportCount": 4,
+    "diff": 0,
+    "missing": []
+  },
+  {
+    "month": "2025-09",
+    "sheet": "SEPT 2025",
+    "ledgerCount": 8,
+    "reportCount": 8,
+    "diff": 0,
+    "missing": []
+  },
+  {
+    "month": "2025-10",
+    "sheet": "OCT 2025",
+    "ledgerCount": 14,
+    "reportCount": 15,
+    "diff": -1,
+    "missing": []
+  },
+  {
+    "month": "2025-11",
+    "sheet": "NOV 2025",
+    "ledgerCount": 10,
+    "reportCount": 9,
+    "diff": 1,
+    "missing": [
+      {
+        "customer": "SYED ALI FATHIMA",
+        "pn": "1708003125P113706460",
+        "reason": "DB issueDate is 2025-12 (ledger sheet says 2025-11) — report filters by DB issueDate",
+        "dbId": 41,
+        "dbDate": "2025-12-08",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2025-12",
+    "sheet": "DEC 2025",
+    "ledgerCount": 30,
+    "reportCount": 31,
+    "diff": -1,
+    "missing": []
+  },
+  {
+    "month": "2026-01",
+    "sheet": "JAN 2026",
+    "ledgerCount": 18,
+    "reportCount": 17,
+    "diff": 1,
+    "missing": [
+      {
+        "customer": "SRIRAM",
+        "pn": "2800000019770300000",
+        "reason": "DB issueDate is 2026-02 (ledger sheet says 2026-01) — report filters by DB issueDate",
+        "dbId": 182,
+        "dbDate": "2026-02-02",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "LOKHASUDHAN",
+        "pn": "7786112600009264",
+        "reason": "DB issueDate is 2025-10 (ledger sheet says 2026-01) — report filters by DB issueDate",
+        "dbId": 26,
+        "dbDate": "2025-10-23",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2026-02",
+    "sheet": "FEB 2026",
+    "ledgerCount": 21,
+    "reportCount": 20,
+    "diff": 1,
+    "missing": [
+      {
+        "customer": "PARTHASARATHY SELVARAJ",
+        "pn": "K8718031",
+        "reason": "DB issueDate is 2026-04 (ledger sheet says 2026-02) — report filters by DB issueDate",
+        "dbId": 153,
+        "dbDate": "2026-04-07",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "YUVARANI",
+        "pn": "2856208337781900000",
+        "reason": "DB issueDate is 2026-03 (ledger sheet says 2026-02) — report filters by DB issueDate",
+        "dbId": 184,
+        "dbDate": "2026-03-15",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "SRIDHAR G",
+        "pn": "100047337100",
+        "reason": "DB issueDate is 2026-03 (ledger sheet says 2026-02) — report filters by DB issueDate",
+        "dbId": 185,
+        "dbDate": "2026-03-03",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2026-03",
+    "sheet": "MARCH 2026",
+    "ledgerCount": 37,
+    "reportCount": 36,
+    "diff": 1,
+    "missing": [
+      {
+        "customer": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+        "pn": "REF : FEB LOGIN /YUVARANI -LOADING PREMIUM /MARCH ISSUANCE",
+        "reason": "Not in DB — not imported"
+      },
+      {
+        "customer": "SIVA MURTHY",
+        "pn": "6862112600092246",
+        "reason": "DB issueDate is 2026-02 (ledger sheet says 2026-03) — report filters by DB issueDate",
+        "dbId": 117,
+        "dbDate": "2026-02-19",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "THARUN K",
+        "pn": "D257237704 / 18032026",
+        "reason": "Not in DB — not imported"
+      },
+      {
+        "customer": "SIVAMURTHY",
+        "pn": "C295450326",
+        "reason": "DB issueDate is 2026-04 (ledger sheet says 2026-03) — report filters by DB issueDate",
+        "dbId": 152,
+        "dbDate": "2026-04-06",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2026-04",
+    "sheet": "APRIL 2026",
+    "ledgerCount": 14,
+    "reportCount": 15,
+    "diff": -1,
+    "missing": [
+      {
+        "customer": "LOKHASUDHAN",
+        "pn": "7786112600009264",
+        "reason": "DB issueDate is 2025-10 (ledger sheet says 2026-04) — report filters by DB issueDate",
+        "dbId": 26,
+        "dbDate": "2025-10-23",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "Dr.Bama",
+        "pn": "K6819292",
+        "reason": "DB issueDate is 2025-10 (ledger sheet says 2026-04) — report filters by DB issueDate",
+        "dbId": 20,
+        "dbDate": "2025-10-24",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2026-05",
+    "sheet": "MAY 2026",
+    "ledgerCount": 14,
+    "reportCount": 12,
+    "diff": 2,
+    "missing": [
+      {
+        "customer": "BHUVANESHWARI",
+        "pn": "(blank)",
+        "reason": "No policy number — not importable"
+      },
+      {
+        "customer": "KAVIN",
+        "pn": "(blank)",
+        "reason": "No policy number — not importable"
+      },
+      {
+        "customer": "PARTHASARATHY SELVARAJ",
+        "pn": "K8718031",
+        "reason": "DB issueDate is 2026-04 (ledger sheet says 2026-05) — report filters by DB issueDate",
+        "dbId": 153,
+        "dbDate": "2026-04-07",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "month": "2026-06",
+    "sheet": "JUNE 2026",
+    "ledgerCount": 17,
+    "reportCount": 13,
+    "diff": 4,
+    "missing": [
+      {
+        "customer": "POONGODI",
+        "pn": "UW PENDING",
+        "reason": "Not in DB — not imported"
+      },
+      {
+        "customer": "SIVAN",
+        "pn": "D272064431 / 17062026",
+        "reason": "Not in DB — not imported"
+      },
+      {
+        "customer": "PANDIYAN S",
+        "pn": "L020376289",
+        "reason": "DB issueDate is 2026-05 (ledger sheet says 2026-06) — report filters by DB issueDate",
+        "dbId": 160,
+        "dbDate": "2026-05-11",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "SENTHILKUMAR PALSAMY",
+        "pn": "958112600018689",
+        "reason": "DB issueDate is 2026-03 (ledger sheet says 2026-06) — report filters by DB issueDate",
+        "dbId": 131,
+        "dbDate": "2026-03-29",
+        "dbStatus": "ACTIVE"
+      },
+      {
+        "customer": "JEEVARATHINAM",
+        "pn": "195933858",
+        "reason": "DB issueDate is 2026-04 (ledger sheet says 2026-06) — report filters by DB issueDate",
+        "dbId": 151,
+        "dbDate": "2026-04-26",
+        "dbStatus": "ACTIVE"
+      }
+    ]
+  }
+]

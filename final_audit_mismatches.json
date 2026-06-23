@@ -1,0 +1,598 @@
+[
+  {
+    "policyNumber": "3001/399980049/00/B00",
+    "customer": "R BHASKARAN RAMASAMY",
+    "field": "Lead Source",
+    "ledger": "Bhaskar POSP",
+    "db": "Bhaskar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P109281287",
+    "customer": "P Balakrishnan",
+    "field": "Customer Name",
+    "ledger": "P.Balakrishnan",
+    "db": "P Balakrishnan",
+    "category": "DISCREPANCY",
+    "assessment": "Name mismatch — verify correct customer"
+  },
+  {
+    "policyNumber": "1708003125P109281287",
+    "customer": "P Balakrishnan",
+    "field": "Lead Source",
+    "ledger": "Ranga POSP",
+    "db": "Ranga",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "20903827",
+    "customer": "SUDHANYA LOGANATHAN",
+    "field": "Lead Source",
+    "ledger": "Sugitha POSP",
+    "db": "Sugitha",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "20902962",
+    "customer": "LOGANATHAN J",
+    "field": "Lead Source",
+    "ledger": "Sugitha POSP",
+    "db": "Sugitha",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4038/411057967/00/000",
+    "customer": "ROTARY DISTRICT 3234",
+    "field": "Lead Source",
+    "ledger": "Ranga POSP",
+    "db": "Ranga",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "K6819292",
+    "customer": "Dr Bama",
+    "field": "Customer Name",
+    "ledger": "Dr.Bama",
+    "db": "Dr Bama",
+    "category": "DISCREPANCY",
+    "assessment": "Name mismatch — verify correct customer"
+  },
+  {
+    "policyNumber": "2332112600031189",
+    "customer": "ROSHINI P",
+    "field": "Lead Source",
+    "ledger": "Shalini",
+    "db": "Shalini D",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100029591300",
+    "customer": "Naveen Senguttuvan",
+    "field": "Lead Source",
+    "ledger": "Ranga POSP",
+    "db": "Ranga",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4172/417729912/00/000",
+    "customer": "NAVEEN SENGUTTUVAN",
+    "field": "Lead Source",
+    "ledger": "Ranga POSP",
+    "db": "Ranga",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P113706460",
+    "customer": "KANCHANA BHARATHI",
+    "field": "Customer Name",
+    "ledger": "SYED ALI FATHIMA",
+    "db": "KANCHANA BHARATHI",
+    "category": "DISCREPANCY",
+    "assessment": "Name mismatch — verify correct customer"
+  },
+  {
+    "policyNumber": "1708003125P113916260",
+    "customer": "SRIDEVI CHANDRASEKAR",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P114312408",
+    "customer": "UMA S BHASKARAN",
+    "field": "Customer Name",
+    "ledger": "UMA S (BHASKARAN)",
+    "db": "UMA S BHASKARAN",
+    "category": "EXPECTED",
+    "assessment": "Minor name variation (spacing/abbreviation)"
+  },
+  {
+    "policyNumber": "4233/421405302/00/000",
+    "customer": "GURUMURTHY GOMPALAHALLY",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/421406235/00/000",
+    "customer": "MINAL DAYANAND PRABHU",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/421119396/00/000",
+    "customer": "JAYARAM KIKKERI SURYANARAYANA",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/421395465/00/000",
+    "customer": "SRINIDHI MATHUR",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/421398016/00/000",
+    "customer": "BALASUBRAMANIYAM",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/421399094/00/000",
+    "customer": "GAYATHRI SRIRAM",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "190000029440674",
+    "customer": "ELIZABETH",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100034391600",
+    "customer": "SRIDHAR S",
+    "field": "Customer Name",
+    "ledger": "SRIDHAR A",
+    "db": "SRIDHAR S",
+    "category": "EXPECTED",
+    "assessment": "Minor name variation (spacing/abbreviation)"
+  },
+  {
+    "policyNumber": "100035075700",
+    "customer": "SRIDHAR S",
+    "field": "Customer Name",
+    "ledger": "SRIDHAR A",
+    "db": "SRIDHAR S",
+    "category": "EXPECTED",
+    "assessment": "Minor name variation (spacing/abbreviation)"
+  },
+  {
+    "policyNumber": "1708003125P114811380",
+    "customer": "SARAVANAN B",
+    "field": "Lead Source",
+    "ledger": "Ranga POSP",
+    "db": "Ranga",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P114921811",
+    "customer": "PARAMASIVAM J",
+    "field": "Customer Name",
+    "ledger": "SAIPRASAD N",
+    "db": "PARAMASIVAM J",
+    "category": "DISCREPANCY",
+    "assessment": "Name mismatch — verify correct customer"
+  },
+  {
+    "policyNumber": "100036094700",
+    "customer": "GEETHA R",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/423237310/00/000",
+    "customer": "SUVIN PRASAD MANI",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P115430293",
+    "customer": "MADHESHWARAN",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "2800000017246600000",
+    "customer": "SITHUKKANNAN",
+    "field": "Lead Source",
+    "ledger": "Ramaraj POSP",
+    "db": "Ramaraj",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P115936154",
+    "customer": "SELVARAJ",
+    "field": "Lead Source",
+    "ledger": "Siva POSP",
+    "db": "Siva",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100038795500",
+    "customer": "VEER GANESH",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P117171243",
+    "customer": "AFROSE",
+    "field": "Lead Source",
+    "ledger": "Mahalakshmi POSP",
+    "db": "Mahalakshmi",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "D250918681",
+    "customer": "SUDAKAR",
+    "field": "Lead Source",
+    "ledger": "Mahalakshmi POSP",
+    "db": "Mahalakshmi",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100044132900",
+    "customer": "KVSS SESHADRI SASTRI",
+    "field": "Commission Amount",
+    "ledger": "₹7613.8",
+    "db": "₹3806.96",
+    "category": "DISCREPANCY",
+    "assessment": "Commission amount mismatch"
+  },
+  {
+    "policyNumber": "100044374300",
+    "customer": "KVSS SESHADRI SASTRI",
+    "field": "Commission Amount",
+    "ledger": "₹453.87",
+    "db": "₹680.89",
+    "category": "DISCREPANCY",
+    "assessment": "Commission amount mismatch"
+  },
+  {
+    "policyNumber": "1708001125P117764236",
+    "customer": "KALKI IRON AND STEEL TRADERS",
+    "field": "Customer Name",
+    "ledger": "KALKI IRON &STEEL TRADERS",
+    "db": "KALKI IRON AND STEEL TRADERS",
+    "category": "EXPECTED",
+    "assessment": "Minor name variation (spacing/abbreviation)"
+  },
+  {
+    "policyNumber": "1708001125P117764236",
+    "customer": "KALKI IRON AND STEEL TRADERS",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100045542800",
+    "customer": "JAYASANKAR",
+    "field": "Commission Amount",
+    "ledger": "₹7402.12",
+    "db": "₹6955.02",
+    "category": "DISCREPANCY",
+    "assessment": "Commission amount mismatch"
+  },
+  {
+    "policyNumber": "100045807000",
+    "customer": "JAYASANKAR",
+    "field": "Commission Amount",
+    "ledger": "₹476.36",
+    "db": "₹714.61",
+    "category": "DISCREPANCY",
+    "assessment": "Commission amount mismatch"
+  },
+  {
+    "policyNumber": "1708003125P118125463",
+    "customer": "VIJAY",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100048074400",
+    "customer": "SUDAKARAN J",
+    "field": "Commission Amount",
+    "ledger": "₹53850",
+    "db": "₹53844.43",
+    "category": "DISCREPANCY",
+    "assessment": "Commission amount mismatch"
+  },
+  {
+    "policyNumber": "K8993183",
+    "customer": "BHASKARAN RAMASAMY",
+    "field": "Lead Source",
+    "ledger": "Bhaskar POSP",
+    "db": "Bhaskar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P118755191",
+    "customer": "PRIYA T",
+    "field": "Lead Source",
+    "ledger": "Manikandan POSP",
+    "db": "Manikandan",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "K9042973",
+    "customer": "UMA",
+    "field": "Lead Source",
+    "ledger": "Bhaskar POSP",
+    "db": "Bhaskar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "3839112600059339",
+    "customer": "SIVAKUMAR DURAISAMY",
+    "field": "Lead Source",
+    "ledger": "Sivamurthy POSP",
+    "db": "Sivamurthy",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P119146515",
+    "customer": "MAHALAKSHMI",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P118701987",
+    "customer": "PURAVALAN FRIGHT",
+    "field": "Lead Source",
+    "ledger": "Mahalakshmi POSP",
+    "db": "Mahalakshmi",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "6862112600092246",
+    "customer": "SIVA MURTHY",
+    "field": "Lead Source",
+    "ledger": "Sivamurthy POSP",
+    "db": "Sivamurthy",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003125P119601974",
+    "customer": "ALAGAPPAN R",
+    "field": "Lead Source",
+    "ledger": "Siva POSP",
+    "db": "Siva",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "D257237704 / 18032026",
+    "customer": "THARUN K",
+    "insurer": "Digit General",
+    "field": "RECORD",
+    "ledger": "Present",
+    "db": "NOT IN DB",
+    "category": "MISSING",
+    "assessment": "Not found in database"
+  },
+  {
+    "policyNumber": "C295450326",
+    "customer": "SIVAMURTHY",
+    "field": "Lead Source",
+    "ledger": "Sivamurthy POSP",
+    "db": "Sivamurthy",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "100053843300",
+    "customer": "RITHIKA MOHAN",
+    "field": "Lead Source",
+    "ledger": "Manimehalai POSP",
+    "db": "Manimehalai",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "958112600018689",
+    "customer": "SENTHILKUMAR PALSAMY",
+    "field": "Commission %",
+    "ledger": "35%",
+    "db": "29.66%",
+    "category": "DISCREPANCY",
+    "assessment": "Commission rate mismatch"
+  },
+  {
+    "policyNumber": "D260162035",
+    "customer": "MATHA ENGINEERING",
+    "field": "Lead Source",
+    "ledger": "Manikandan POSP",
+    "db": "Manikandan",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003126P100491700",
+    "customer": "BHASKARAN",
+    "field": "Lead Source",
+    "ledger": "Bhaskar POSP",
+    "db": "Bhaskar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "2302208509234800000",
+    "customer": "PRABHU",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "1708003126P101630107",
+    "customer": "SANTHOSH KUMAR K",
+    "field": "Lead Source",
+    "ledger": "Manikandan POSP",
+    "db": "Manikandan",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "8879112700040512",
+    "customer": "GOWTHAMAN",
+    "field": "Insurer",
+    "ledger": "STAR Health",
+    "db": "HDFC Ergo General",
+    "category": "EXPECTED",
+    "assessment": "Legacy alias vs canonical name — handled by INSURER_ALIASES in invoice aggregation"
+  },
+  {
+    "policyNumber": "A8573140",
+    "customer": "GANESH",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "28000000329756",
+    "customer": "SHANMUGATHAI B",
+    "field": "Customer Name",
+    "ledger": "SHANMUGATHAI B/ ARUNADEVI",
+    "db": "SHANMUGATHAI B",
+    "category": "EXPECTED",
+    "assessment": "Minor name variation (spacing/abbreviation)"
+  },
+  {
+    "policyNumber": "L020376289",
+    "customer": "PANDIYAN S",
+    "field": "Net Premium",
+    "ledger": "₹3000",
+    "db": "₹34615",
+    "category": "IMPORT_ISSUE",
+    "assessment": "Net premium differs — possible multi-year vs annual, or import column miss"
+  },
+  {
+    "policyNumber": "D266760817",
+    "customer": "GOPALAN SELVAKUMAR",
+    "field": "Lead Source",
+    "ledger": "Manikandan POSP",
+    "db": "Manikandan",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/440992147/00/000",
+    "customer": "S A VAIRAPRAKASH",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "B3255339",
+    "customer": "MK NITHIYANANDHAM",
+    "field": "Lead Source",
+    "ledger": "Madhesh POSP",
+    "db": "Madhesh",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/441468027/00/000",
+    "customer": "K ISHWARYA",
+    "field": "Lead Source",
+    "ledger": "Eashwar POSP",
+    "db": "Eashwar",
+    "category": "EXPECTED",
+    "assessment": "Minor name variant"
+  },
+  {
+    "policyNumber": "4233/443209062/00/000",
+    "customer": "ELANGO P",
+    "field": "Lead Source",
+    "ledger": "Leadership",
+    "db": "Ranjith",
+    "category": "DISCREPANCY",
+    "assessment": "Lead source differs — verify POSP/executive assignment"
+  },
+  {
+    "policyNumber": "D272064431 / 17062026",
+    "customer": "SIVAN",
+    "insurer": "Digit General",
+    "field": "RECORD",
+    "ledger": "Present",
+    "db": "NOT IN DB",
+    "category": "MISSING",
+    "assessment": "Not found in database"
+  }
+]
