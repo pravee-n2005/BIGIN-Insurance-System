@@ -4,11 +4,20 @@ import { Field, Input, Select, Textarea, SectionHeading } from './FormField';
 import { fetchAllInsurers, fetchAllProductsByInsurer, fetchLeadMembers } from '../api/masters';
 
 const CATEGORIES     = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
-const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY', 'TWO_YEAR', 'THREE_YEAR', 'FOUR_YEAR', 'FIVE_YEAR'];
+const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
 const FREQUENCY_LABELS = {
   MONTHLY: 'MONTHLY', QUARTERLY: 'QUARTERLY', HALF_YEARLY: 'HALF YEARLY', YEARLY: 'YEARLY',
-  TWO_YEAR: '2 YEARS', THREE_YEAR: '3 YEARS', FOUR_YEAR: '4 YEARS', FIVE_YEAR: '5 YEARS',
 };
+
+const TERM_OPTIONS = [
+  { value: 1,  label: '1 YEAR'  },
+  { value: 2,  label: '2 YEARS' },
+  { value: 3,  label: '3 YEARS' },
+  { value: 4,  label: '4 YEARS' },
+  { value: 5,  label: '5 YEARS' },
+  { value: 10, label: '10 YEARS' },
+  { value: 15, label: '15 YEARS' },
+];
 const STATUSES       = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const PAYMENT_MODES  = ['ONLINE', 'CARD', 'UPI', 'CHEQUE', 'BNPL', 'FINSALL', 'FIBE', 'CC', 'BIMAPAY'];
 
@@ -491,16 +500,17 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           </Select>
         </Field>
 
-        <Field label="Term (years)" error={fieldErrors.term}>
-          <Input
-            type="number"
-            min="1"
-            step="1"
+        <Field label="Term" error={fieldErrors.term}>
+          <Select
             value={form.term}
             onChange={(e) => set('term', e.target.value)}
-            placeholder="e.g. 1, 2, 3…"
             error={fieldErrors.term}
-          />
+          >
+            <option value="">Select term…</option>
+            {TERM_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </Select>
         </Field>
 
         <Field label="Policy Status" error={fieldErrors.status}>

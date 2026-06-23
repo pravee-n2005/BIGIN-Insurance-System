@@ -29,10 +29,6 @@ enum PaymentFrequency {
   QUARTERLY
   HALF_YEARLY
   YEARLY
-  TWO_YEAR
-  THREE_YEAR
-  FOUR_YEAR
-  FIVE_YEAR
 }
 
 enum PolicyStatus {

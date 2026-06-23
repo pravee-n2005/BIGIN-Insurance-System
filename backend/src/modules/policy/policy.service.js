@@ -8,10 +8,6 @@ const FREQUENCY_MONTHS = {
   QUARTERLY: 3,
   HALF_YEARLY: 6,
   YEARLY: 12,
-  TWO_YEAR: 24,
-  THREE_YEAR: 36,
-  FOUR_YEAR: 48,
-  FIVE_YEAR: 60,
 };
 
 function calcRenewalDate(issueDate, paymentFrequency) {
