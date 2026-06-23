@@ -65,7 +65,7 @@ const MONTH_OPTIONS = [
 
 const FREQUENCY_LABELS = {
   MONTHLY: 'Monthly', QUARTERLY: 'Quarterly', HALF_YEARLY: 'Half Yearly', YEARLY: 'Yearly',
-  TWO_YEAR: '2 Year', THREE_YEAR: '3 Year',
+  TWO_YEAR: '2 Years', THREE_YEAR: '3 Years', FOUR_YEAR: '4 Years', FIVE_YEAR: '5 Years',
 };
 
 function yearOptions() {

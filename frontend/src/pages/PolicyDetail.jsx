@@ -145,6 +145,7 @@ export default function PolicyDetail() {
           <Row label="Issue Date" value={fmtDate(policy.issueDate)} />
           <Row label="Renewal Date" value={fmtDate(policy.renewalDate)} />
           <Row label="Payment Frequency" value={policy.paymentFrequency?.replace('_', ' ')} />
+          {policy.term != null && <Row label="Term (years)" value={policy.term} />}
           <Row label="Status" value={policy.status} />
         </Section>
 

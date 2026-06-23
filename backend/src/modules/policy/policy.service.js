@@ -10,6 +10,8 @@ const FREQUENCY_MONTHS = {
   YEARLY: 12,
   TWO_YEAR: 24,
   THREE_YEAR: 36,
+  FOUR_YEAR: 48,
+  FIVE_YEAR: 60,
 };
 
 function calcRenewalDate(issueDate, paymentFrequency) {
@@ -53,7 +55,7 @@ function buildPolicyData(body, userId) {
   const {
     insurerName, insuranceCategory, productName,
     customerName, customerPhone, customerEmail,
-    policyNumber, issueDate, paymentFrequency,
+    policyNumber, issueDate, paymentFrequency, term,
     grossPremium, netPremium,
     gstPercent, commissionPercent, tdsPercent,
     leadSource, invoiceNumber, invoiceDate, creditedDate,
@@ -78,6 +80,7 @@ function buildPolicyData(body, userId) {
     renewalDate,
     nextDueDate: renewalDate,
     paymentFrequency,
+    term: term != null && term !== '' ? parseInt(term, 10) : null,
     status: status || 'ACTIVE',
     grossPremium: Number(grossPremium),
     netPremium: Number(netPremium),
@@ -177,6 +180,7 @@ async function update(id, body, userId) {
     issueDate: body.issueDate ?? existing.issueDate,
     paymentFrequency: body.paymentFrequency ?? existing.paymentFrequency,
     status: body.status ?? existing.status,
+    term: 'term' in body ? (body.term != null && body.term !== '' ? parseInt(body.term, 10) : null) : existing.term,
     grossPremium: body.grossPremium ?? existing.grossPremium,
     netPremium: body.netPremium ?? existing.netPremium,
     gstPercent: 'gstPercent' in body ? normalizePercent(body.gstPercent) : existing.gstPercent,
@@ -219,6 +223,7 @@ async function update(id, body, userId) {
       renewalDate,
       nextDueDate: renewalDate,
       paymentFrequency: merged.paymentFrequency,
+      term: merged.term ?? null,
       status: merged.status,
       grossPremium: Number(merged.grossPremium),
       netPremium: Number(merged.netPremium),

@@ -31,6 +31,8 @@ enum PaymentFrequency {
   YEARLY
   TWO_YEAR
   THREE_YEAR
+  FOUR_YEAR
+  FIVE_YEAR
 }
 
 enum PolicyStatus {
@@ -410,6 +412,7 @@ model Policy {
   renewalDate      DateTime
   nextDueDate      DateTime?
   paymentFrequency PaymentFrequency
+  term             Int?
   status           PolicyStatus     @default(ACTIVE)
 
   // ── Financial (all Decimal for accuracy) ──────────────────────────────────

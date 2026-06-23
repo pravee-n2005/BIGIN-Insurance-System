@@ -240,3 +240,27 @@ test('validateUpdate — rejects out-of-range gstPercent when provided', () => {
   assert.ok(validateUpdate({ gstPercent: 150 }).length > 0);
   assert.deepStrictEqual(validateUpdate({ gstPercent: 18 }), []);
 });
+
+test('validateCreate — accepts FOUR_YEAR and FIVE_YEAR payment frequencies', () => {
+  assert.deepStrictEqual(validateCreate({ ...BASE_CREATE_BODY, paymentFrequency: 'FOUR_YEAR' }), []);
+  assert.deepStrictEqual(validateCreate({ ...BASE_CREATE_BODY, paymentFrequency: 'FIVE_YEAR' }), []);
+});
+
+test('validateCreate — rejects unknown payment frequency', () => {
+  const errors = validateCreate({ ...BASE_CREATE_BODY, paymentFrequency: 'SIX_YEAR' });
+  assert.ok(errors.some(e => e.includes('paymentFrequency')));
+});
+
+test('calcRenewalDate — FOUR_YEAR adds 48 months', () => {
+  const { calcRenewalDate } = require('./policy.service');
+  const issue   = new Date('2026-01-01T00:00:00.000Z');
+  const renewal = calcRenewalDate(issue, 'FOUR_YEAR');
+  assert.strictEqual(renewal.toISOString().slice(0, 7), '2030-01');
+});
+
+test('calcRenewalDate — FIVE_YEAR adds 60 months', () => {
+  const { calcRenewalDate } = require('./policy.service');
+  const issue   = new Date('2026-01-01T00:00:00.000Z');
+  const renewal = calcRenewalDate(issue, 'FIVE_YEAR');
+  assert.strictEqual(renewal.toISOString().slice(0, 7), '2031-01');
+});

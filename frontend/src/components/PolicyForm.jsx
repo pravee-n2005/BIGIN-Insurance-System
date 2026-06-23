@@ -4,10 +4,10 @@ import { Field, Input, Select, Textarea, SectionHeading } from './FormField';
 import { fetchAllInsurers, fetchAllProductsByInsurer, fetchLeadMembers } from '../api/masters';
 
 const CATEGORIES     = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
-const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY', 'TWO_YEAR', 'THREE_YEAR'];
+const FREQUENCIES    = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY', 'TWO_YEAR', 'THREE_YEAR', 'FOUR_YEAR', 'FIVE_YEAR'];
 const FREQUENCY_LABELS = {
   MONTHLY: 'MONTHLY', QUARTERLY: 'QUARTERLY', HALF_YEARLY: 'HALF YEARLY', YEARLY: 'YEARLY',
-  TWO_YEAR: '2 YEAR', THREE_YEAR: '3 YEAR',
+  TWO_YEAR: '2 YEARS', THREE_YEAR: '3 YEARS', FOUR_YEAR: '4 YEARS', FIVE_YEAR: '5 YEARS',
 };
 const STATUSES       = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const PAYMENT_MODES  = ['ONLINE', 'CARD', 'UPI', 'CHEQUE', 'BNPL', 'FINSALL', 'FIBE', 'CC', 'BIMAPAY'];
@@ -47,6 +47,7 @@ const EMPTY = {
   policyNumber: '',
   issueDate: '',
   paymentFrequency: 'YEARLY',
+  term: '',
   status: 'ACTIVE',
   grossPremium: '',
   netPremium: '',
@@ -289,6 +290,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
       policyNumber: form.policyNumber.trim(),
       issueDate: form.issueDate,
       paymentFrequency: form.paymentFrequency,
+      term: form.term !== '' ? Number(form.term) : undefined,
       status: form.status,
       // Numeric fields — backend calculates derived amounts
       grossPremium: Number(form.grossPremium),
@@ -487,6 +489,18 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           >
             {FREQUENCIES.map((f) => <option key={f} value={f}>{FREQUENCY_LABELS[f]}</option>)}
           </Select>
+        </Field>
+
+        <Field label="Term (years)" error={fieldErrors.term}>
+          <Input
+            type="number"
+            min="1"
+            step="1"
+            value={form.term}
+            onChange={(e) => set('term', e.target.value)}
+            placeholder="e.g. 1, 2, 3…"
+            error={fieldErrors.term}
+          />
         </Field>
 
         <Field label="Policy Status" error={fieldErrors.status}>

@@ -15,6 +15,7 @@ const COLUMNS = [
   { header: 'Product Name',       key: 'productName',       type: 'string', required: true },
   { header: 'Issue Date',         key: 'issueDate',         type: 'date',   required: true },
   { header: 'Payment Frequency',  key: 'paymentFrequency',  type: 'enum',   required: true },
+  { header: 'Term (Years)',       key: 'term',              type: 'number', required: false },
   { header: 'Gross Premium',      key: 'grossPremium',      type: 'number', required: true },
   { header: 'Net Premium',        key: 'netPremium',        type: 'number', required: true },
   { header: 'GST Percent',        key: 'gstPercent',        type: 'number', required: true },
