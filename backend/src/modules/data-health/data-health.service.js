@@ -22,8 +22,8 @@ const CONFIRMED_ZERO_COMMISSION_IDS = new Set([
   183,
   // United India General (8)
   7, 13, 28, 181, 192, 193, 194, 195,
-  // Go Digit General + Life (4)
-  141, 160, 161, 189,
+  // Go Digit General + Life (5) — 209 = KAVIPRAKASH / D268552197, ledger confirms ₹0
+  141, 160, 161, 189, 209,
   // New India Assurance (1)
   6,
   // Max Life (1)
