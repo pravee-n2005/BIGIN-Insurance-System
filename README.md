@@ -314,8 +314,7 @@ Sensitive production data, client information, credentials, and proprietary busi
 
 B.Tech Computer Science (Big Data Analytics)
 
-GitHub: https://github.com/yourusername
+GitHub: https://github.com/pravee-n2005
 
-LinkedIn: https://linkedin.com/in/yourprofile
-
+LinkedIn: (https://www.linkedin.com/in/praveen-adithya-b-7bb79b275/)
 ---
