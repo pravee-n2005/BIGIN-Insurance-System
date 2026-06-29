@@ -56,6 +56,7 @@ function buildPolicyData(body, userId) {
     gstPercent, commissionPercent, tdsPercent,
     leadSource, invoiceNumber, invoiceDate, creditedDate,
     paymentMode, remarks, status,
+    sumAssured, clientType,
   } = body;
 
   const financials = calcFinancials({
@@ -93,6 +94,8 @@ function buildPolicyData(body, userId) {
     creditedDate: creditedDate ? new Date(creditedDate) : null,
     paymentMode: paymentMode || null,
     remarks: remarks || null,
+    sumAssured: sumAssured || null,
+    clientType: clientType || null,
     createdById: userId,
   };
 }
@@ -109,7 +112,7 @@ const POLICY_INCLUDE = {
   cancelledBy: { select: { id: true, name: true } },
 };
 
-async function list({ page, limit, month, insurerName, leadSource, insuranceCategory, status, invoiceStatus }) {
+async function list({ page, limit, month, insurerName, leadSource, insuranceCategory, status, invoiceStatus, clientType }) {
   const skip = (page - 1) * limit;
   const where = {};
 
@@ -122,6 +125,7 @@ async function list({ page, limit, month, insurerName, leadSource, insuranceCate
 
   if (insurerName) where.insurerName = { contains: insurerName, mode: 'insensitive' };
   if (leadSource) where.leadSource = { contains: leadSource, mode: 'insensitive' };
+  if (clientType) where.clientType = clientType;
 
   if (month) {
     const [year, mon] = month.split('-').map(Number);
@@ -188,6 +192,8 @@ async function update(id, body, userId) {
     creditedDate: 'creditedDate' in body ? body.creditedDate : existing.creditedDate,
     paymentMode: 'paymentMode' in body ? body.paymentMode : existing.paymentMode,
     remarks: 'remarks' in body ? body.remarks : existing.remarks,
+    sumAssured: 'sumAssured' in body ? body.sumAssured : existing.sumAssured,
+    clientType: 'clientType' in body ? body.clientType : existing.clientType,
     cancellationReason: 'cancellationReason' in body ? body.cancellationReason : existing.cancellationReason,
     cancellationReasonOther: 'cancellationReasonOther' in body ? body.cancellationReasonOther : existing.cancellationReasonOther,
   };
@@ -236,6 +242,8 @@ async function update(id, body, userId) {
       creditedDate: merged.creditedDate ? new Date(merged.creditedDate) : null,
       paymentMode: merged.paymentMode || null,
       remarks: merged.remarks || null,
+      sumAssured: merged.sumAssured || null,
+      clientType: merged.clientType || null,
       cancellationReason: merged.cancellationReason || null,
       cancellationReasonOther: merged.cancellationReasonOther || null,
       ...cancellationData,

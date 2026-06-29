@@ -25,6 +25,7 @@ export default function Policies() {
     page: 1, limit: 20,
     month: '', insurerName: '', leadSource: '', insuranceCategory: '', status: '',
     invoiceStatus: searchParams.get('invoiceStatus') || '',
+    clientType: '',
   });
 
   useEffect(() => {
@@ -81,7 +82,7 @@ export default function Policies() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <input
           type="month"
           value={filters.month}
@@ -128,6 +129,15 @@ export default function Policies() {
           {INVOICE_STATUSES.filter(Boolean).map((s) => (
             <option key={s} value={s}>{s === 'INVOICED' ? 'Invoiced' : 'Not Invoiced'}</option>
           ))}
+        </select>
+        <select
+          value={filters.clientType}
+          onChange={(e) => setFilter('clientType', e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All client types</option>
+          <option value="Fresh">Fresh</option>
+          <option value="Portability">Portability</option>
         </select>
       </div>
 

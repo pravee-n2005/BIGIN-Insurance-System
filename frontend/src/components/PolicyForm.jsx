@@ -69,6 +69,8 @@ const EMPTY = {
   invoiceDate: '',
   creditedDate: '',
   remarks: '',
+  sumAssured: '',
+  clientType: '',
   cancellationReason: '',
   cancellationReasonOther: '',
 };
@@ -434,6 +436,18 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           </Select>
         </Field>
 
+        <Field label="Client Type" error={fieldErrors.clientType}>
+          <Select
+            value={form.clientType}
+            onChange={(e) => set('clientType', e.target.value)}
+            error={fieldErrors.clientType}
+          >
+            <option value="">— Not specified —</option>
+            <option value="Fresh">Fresh</option>
+            <option value="Portability">Portability</option>
+          </Select>
+        </Field>
+
         {/* ── Customer ──────────────────────────────────────────────────── */}
         <SectionHeading>Customer Information</SectionHeading>
 
@@ -470,7 +484,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
         {/* ── Policy Details ─────────────────────────────────────────────── */}
         <SectionHeading>Policy Details</SectionHeading>
 
-        <Field label="Policy Number" required error={fieldErrors.policyNumber}>
+        <Field label="Proposal / Policy Number" required error={fieldErrors.policyNumber}>
           <Input
             value={form.policyNumber}
             onChange={(e) => set('policyNumber', e.target.value)}
@@ -480,7 +494,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           />
         </Field>
 
-        <Field label="Issue Date" required error={fieldErrors.issueDate}>
+        <Field label="Login / Issue Date" required error={fieldErrors.issueDate}>
           <Input
             type="date"
             value={form.issueDate}
@@ -509,6 +523,19 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
             <option value="">Select term…</option>
             {TERM_OPTIONS.map(({ value, label }) => (
               <option key={value} value={value}>{label}</option>
+            ))}
+          </Select>
+        </Field>
+
+        <Field label="Sum Assured" error={fieldErrors.sumAssured}>
+          <Select
+            value={form.sumAssured}
+            onChange={(e) => set('sumAssured', e.target.value)}
+            error={fieldErrors.sumAssured}
+          >
+            <option value="">— Not specified —</option>
+            {['5 Lakh', '10 Lakh', '20 Lakh', '25 Lakh', '50 Lakh', '1 Crore', '2 Crore'].map((v) => (
+              <option key={v} value={v}>{v}</option>
             ))}
           </Select>
         </Field>
@@ -738,7 +765,7 @@ export default function PolicyForm({ initialData, onSubmit, submitLabel = 'Save 
           />
         </Field>
 
-        <Field label="Remarks" error={fieldErrors.remarks}>
+        <Field label="Remarks (Add if there is any Rider)" error={fieldErrors.remarks}>
           <Textarea
             value={form.remarks}
             onChange={(e) => set('remarks', e.target.value)}

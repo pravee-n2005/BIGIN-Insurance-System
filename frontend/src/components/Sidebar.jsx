@@ -3,13 +3,13 @@ import { useAuth } from '../context/AuthContext';
 
 const NAV = [
   { to: '/dashboard',         label: 'Dashboard',             icon: HomeIcon },
+  { to: '/master-data',       label: 'Master Data',           icon: MasterDataIcon, adminOnly: true },
   { to: '/policies',          label: 'Policies',              icon: DocumentIcon },
   { to: '/reports',           label: 'Reports',               icon: ChartIcon },
   { to: '/statements',        label: 'Pre Invoice Process',   icon: GstIcon },
   { to: '/invoices',          label: 'GST Invoice',           icon: InvoiceIcon },
   { to: '/daily-incentives',  label: 'Lead Incentive System', icon: DailyIncentiveIcon },
   { to: '/renewals',          label: 'Renewals',              icon: RenewalIcon },
-  { to: '/master-data',       label: 'Master Data',           icon: MasterDataIcon, adminOnly: true },
   { to: '/invoice-profiles',  label: 'Insurer Profiles',      icon: ReceiptIcon, adminOnly: true },
   { to: '/data-health',       label: 'Data Health',           icon: DataHealthIcon, adminOnly: true },
 ];

@@ -130,6 +130,7 @@ export default function PolicyDetail() {
           <Row label="Insurer" value={policy.insurerName} />
           <Row label="Category" value={policy.insuranceCategory} />
           <Row label="Product" value={policy.productName} />
+          {policy.clientType && <Row label="Client Type" value={policy.clientType} />}
         </Section>
 
         {/* Customer */}
@@ -141,13 +142,14 @@ export default function PolicyDetail() {
 
         {/* Policy */}
         <Section title="Policy Details">
-          <Row label="Policy Number" value={policy.policyNumber} />
-          <Row label="Issue Date" value={fmtDate(policy.issueDate)} />
+          <Row label="Proposal / Policy Number" value={policy.policyNumber} />
+          <Row label="Login / Issue Date" value={fmtDate(policy.issueDate)} />
           <Row label="Renewal Date" value={fmtDate(policy.renewalDate)} />
           <Row label="Payment Frequency" value={policy.paymentFrequency?.replace('_', ' ')} />
           {policy.term != null && (
             <Row label="Term" value={policy.term === 1 ? '1 YEAR' : `${policy.term} YEARS`} />
           )}
+          {policy.sumAssured && <Row label="Sum Assured" value={policy.sumAssured} />}
           <Row label="Status" value={policy.status} />
         </Section>
 
@@ -168,7 +170,7 @@ export default function PolicyDetail() {
           <Row label="Invoice Number" value={policy.invoiceNumber} />
           <Row label="Invoice Date" value={fmtDate(policy.invoiceDate)} />
           <Row label="Credited Date" value={fmtDate(policy.creditedDate)} />
-          <Row label="Remarks" value={policy.remarks} />
+          <Row label="Remarks (Add if there is any Rider)" value={policy.remarks} />
           <Row label="Created By" value={policy.createdBy?.name} />
           <Row label="Created At" value={fmtDate(policy.createdAt)} />
         </Section>

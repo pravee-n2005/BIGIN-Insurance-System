@@ -1,5 +1,6 @@
 const INSURANCE_CATEGORIES = ['LIFE', 'HEALTH', 'MOTOR', 'TRAVEL', 'PROPERTY', 'COMMERCIAL', 'GENERAL'];
 const PAYMENT_FREQUENCIES = ['MONTHLY', 'QUARTERLY', 'HALF_YEARLY', 'YEARLY'];
+const CLIENT_TYPES = ['Fresh', 'Portability'];
 const POLICY_STATUSES = ['ACTIVE', 'PENDING', 'EXPIRED', 'CANCELLED'];
 const CANCELLATION_REASONS = [
   'CUSTOMER_DECLINED', 'CUSTOMER_REQUESTED_CANCELLATION', 'PREMIUM_TOO_HIGH',
@@ -58,6 +59,9 @@ function validateCreate(body) {
   if (body.status && !POLICY_STATUSES.includes(body.status))
     errors.push(`status must be one of: ${POLICY_STATUSES.join(', ')}.`);
 
+  if (body.clientType !== undefined && body.clientType !== '' && !CLIENT_TYPES.includes(body.clientType))
+    errors.push(`clientType must be one of: ${CLIENT_TYPES.join(', ')}.`);
+
   if (body.invoiceDate && !isValidDate(body.invoiceDate))
     errors.push('invoiceDate must be a valid date.');
   if (body.creditedDate && !isValidDate(body.creditedDate))
@@ -93,6 +97,8 @@ function validateUpdate(body) {
     errors.push('invoiceDate must be a valid date.');
   if (body.creditedDate !== undefined && body.creditedDate !== null && !isValidDate(body.creditedDate))
     errors.push('creditedDate must be a valid date.');
+  if (body.clientType !== undefined && body.clientType !== '' && !CLIENT_TYPES.includes(body.clientType))
+    errors.push(`clientType must be one of: ${CLIENT_TYPES.join(', ')}.`);
 
   return errors;
 }
@@ -122,5 +128,5 @@ function validateCancellation(body, existingStatus) {
 
 module.exports = {
   validateCreate, validateUpdate, validateCancellation, isPositiveNumber, isAboveZero, isPercent, isOptionalPercent,
-  INSURANCE_CATEGORIES, PAYMENT_FREQUENCIES, POLICY_STATUSES,
+  INSURANCE_CATEGORIES, PAYMENT_FREQUENCIES, POLICY_STATUSES, CLIENT_TYPES,
 };

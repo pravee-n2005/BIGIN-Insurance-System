@@ -14,6 +14,10 @@
  */
 
 const PDFDocument = require('pdfkit');
+const path        = require('path');
+const fs          = require('fs');
+
+const SIGNATURE_PATH = path.join(__dirname, '../../assets/signature.jpeg');
 
 // ── Supplier constants (never stored in DB — BIGIN is always the supplier) ───
 
@@ -419,7 +423,7 @@ function drawInvoice(doc, invoice) {
 
   // ── 5. Signature box ─────────────────────────────────────────────────────
 
-  const SIG_H  = 52;
+  const SIG_H  = 60;
   const SIG_W  = W / 2;     // right half of the page
 
   // Left half — blank (could hold notes/bank details in the future)
@@ -427,6 +431,18 @@ function drawInvoice(doc, invoice) {
 
   // Right half — authorised signatory block
   box(ML + SIG_W, y, SIG_W, SIG_H);
+
+  // Embed digital signature image if the asset file exists
+  if (fs.existsSync(SIGNATURE_PATH)) {
+    const sigImgW = SIG_W - 20;   // leave 10 pt padding each side
+    const sigImgH = SIG_H - 22;   // leave room for label below
+    doc.image(
+      SIGNATURE_PATH,
+      ML + SIG_W + 10,
+      y + 2,
+      { width: sigImgW, height: sigImgH, fit: [sigImgW, sigImgH], align: 'center', valign: 'center' }
+    );
+  }
 
   // Signature line (drawn 20 pts above the bottom of the box)
   const sigLineY = y + SIG_H - 22;

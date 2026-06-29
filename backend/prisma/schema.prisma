@@ -422,6 +422,10 @@ model Policy {
   tdsAmount         Decimal  @db.Decimal(18, 2)
   finalReceivable   Decimal  @db.Decimal(18, 2)
 
+  // ── Sum Assured & Client Type ─────────────────────────────────────────────
+  sumAssured String?
+  clientType String?
+
   // ── Business / Tracking ───────────────────────────────────────────────────
   leadSource    String
   invoiceNumber String?
