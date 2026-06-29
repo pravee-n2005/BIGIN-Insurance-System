@@ -51,6 +51,12 @@ export const fetchLeadMembers = (leadType) =>
 export const fetchAllLeadMembers = () =>
   api.get('/masters/lead-members', { params: { all: 'true' } }).then((r) => r.data.data);
 
+export const createLeadMember = (payload) =>
+  api.post('/masters/lead-members', payload).then((r) => r.data.leadMember);
+
+export const updateLeadMember = (id, payload) =>
+  api.put(`/masters/lead-members/${id}`, payload).then((r) => r.data.leadMember);
+
 export const activateLeadMember = (id) =>
   api.patch(`/masters/lead-members/${id}/activate`).then((r) => r.data.leadMember);
 

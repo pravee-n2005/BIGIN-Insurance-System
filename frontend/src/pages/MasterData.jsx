@@ -3,7 +3,7 @@ import { Field, Input, Select, SectionHeading } from '../components/FormField';
 import {
   fetchAllInsurers, createInsurer, updateInsurer, activateInsurer, deactivateInsurer,
   fetchAllProducts, createProduct, updateProduct, activateProduct, deactivateProduct,
-  fetchAllLeadMembers, activateLeadMember, deactivateLeadMember,
+  fetchAllLeadMembers, createLeadMember, updateLeadMember, activateLeadMember, deactivateLeadMember,
 } from '../api/masters';
 
 const INSURER_TYPES       = ['GENERAL', 'HEALTH', 'LIFE'];
@@ -517,6 +517,7 @@ function LeadMembersTab() {
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState('');
   const [toggling, setToggling] = useState(null);
+  const [editing, setEditing]   = useState(null); // null | 'NEW' | { ...member }
 
   const load = useCallback(() => {
     setLoading(true);
@@ -544,8 +545,14 @@ function LeadMembersTab() {
 
   return (
     <>
-      <div className="mb-4">
+      <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-600">{members.length} lead member{members.length !== 1 ? 's' : ''}</p>
+        <button
+          onClick={() => setEditing('NEW')}
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+        >
+          + Add Member
+        </button>
       </div>
 
       <ErrorBanner error={error} />
@@ -580,6 +587,7 @@ function LeadMembersTab() {
                   <td className="px-4 py-3 text-right">
                     <ActionButtons
                       active={m.active}
+                      onEdit={() => setEditing(m)}
                       onToggle={() => handleToggle(m)}
                       toggling={toggling === m.id}
                     />
@@ -590,7 +598,102 @@ function LeadMembersTab() {
           </tbody>
         </table>
       </div>
+
+      {editing !== null && (
+        <LeadMemberModal
+          member={editing === 'NEW' ? null : editing}
+          onClose={() => setEditing(null)}
+          onSaved={(saved) => {
+            if (editing === 'NEW') {
+              setMembers((prev) => [...prev, saved]);
+            } else {
+              setMembers((prev) => prev.map((m) => m.id === saved.id ? saved : m));
+            }
+            setEditing(null);
+          }}
+        />
+      )}
     </>
+  );
+}
+
+function LeadMemberModal({ member, onClose, onSaved }) {
+  const isNew = !member;
+  const [form, setForm]         = useState({ name: member?.name ?? '', leadType: member?.leadType ?? 'POSP' });
+  const [error, setError]       = useState('');
+  const [saving, setSaving]     = useState(false);
+  const [nameChanged, setNameChanged] = useState(false);
+
+  function set(key, value) { setForm((f) => ({ ...f, [key]: value })); }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    if (!form.name.trim()) { setError('Member name is required.'); return; }
+
+    // Warn once if the name is being changed — renaming won't update existing policy records
+    if (!isNew && form.name.trim() !== member.name && !nameChanged) {
+      setNameChanged(true);
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const result = isNew
+        ? await createLeadMember({ name: form.name.trim(), leadType: form.leadType })
+        : await updateLeadMember(member.id, { name: form.name.trim(), leadType: form.leadType });
+      onSaved(result);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to save lead member.');
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Modal title={isNew ? 'Add Lead Member' : 'Edit Lead Member'} onClose={onClose}>
+      <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+        {nameChanged && !isNew && (
+          <div className="px-4 py-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800">
+            Warning: Renaming this member will not update policies that already reference the old name. Click Save again to confirm.
+          </div>
+        )}
+        <ErrorBanner error={error} />
+
+        <Field label="Member Name" required>
+          <Input
+            value={form.name}
+            onChange={(e) => { set('name', e.target.value); setNameChanged(false); }}
+            placeholder="e.g. Kavitha"
+            autoFocus
+          />
+        </Field>
+
+        <Field label="Lead Type" required>
+          <Select value={form.leadType} onChange={(e) => set('leadType', e.target.value)}>
+            {Object.entries(LEAD_TYPE_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </Select>
+        </Field>
+
+        <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
+          <button
+            type="submit"
+            disabled={saving}
+            className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {saving ? 'Saving…' : nameChanged ? 'Confirm Rename' : isNew ? 'Add Member' : 'Save Changes'}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-5 py-2 border border-gray-300 text-sm text-gray-700 font-medium rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 }
 

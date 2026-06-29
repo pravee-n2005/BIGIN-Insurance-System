@@ -115,26 +115,47 @@ const listLeadMembers = ({ leadType, activeOnly = true } = {}) =>
 const getLeadMember = (id) =>
   prisma.leadMember.findUnique({ where: { id }, select: LEAD_MEMBER_SELECT });
 
-const createLeadMember = (data) =>
-  prisma.leadMember.create({
-    data: {
-      name:     data.name.trim(),
-      leadType: data.leadType,
-      active:   data.active ?? true,
-    },
+const createLeadMember = async (data) => {
+  const trimmed = data.name.trim();
+  const existing = await prisma.leadMember.findFirst({
+    where: { name: { equals: trimmed, mode: 'insensitive' } },
+    select: { id: true },
+  });
+  if (existing) {
+    const err = new Error('Lead member name already exists.');
+    err.code = 'P2002';
+    throw err;
+  }
+  return prisma.leadMember.create({
+    data: { name: trimmed, leadType: data.leadType, active: data.active ?? true },
     select: LEAD_MEMBER_SELECT,
   });
+};
 
-const updateLeadMember = (id, data) =>
-  prisma.leadMember.update({
+const updateLeadMember = async (id, data) => {
+  if (data.name !== undefined) {
+    const trimmed = data.name.trim();
+    const conflict = await prisma.leadMember.findFirst({
+      where: { name: { equals: trimmed, mode: 'insensitive' }, NOT: { id } },
+      select: { id: true },
+    });
+    if (conflict) {
+      const err = new Error('Lead member name already exists.');
+      err.code = 'P2002';
+      throw err;
+    }
+    data = { ...data, name: trimmed };
+  }
+  return prisma.leadMember.update({
     where: { id },
     data: {
-      ...(data.name     !== undefined && { name: data.name.trim() }),
+      ...(data.name     !== undefined && { name: data.name }),
       ...(data.leadType !== undefined && { leadType: data.leadType }),
       ...(data.active   !== undefined && { active: data.active }),
     },
     select: LEAD_MEMBER_SELECT,
   });
+};
 
 const setLeadMemberActive = (id, active) =>
   prisma.leadMember.update({ where: { id }, data: { active }, select: LEAD_MEMBER_SELECT });
